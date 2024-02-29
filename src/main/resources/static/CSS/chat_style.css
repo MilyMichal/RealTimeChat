@@ -1,0 +1,169 @@
+/* Welcome screen with */
+.loginScreen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    }
+
+/* Top chat header displaying name of current chat*/
+#chat-with {
+    visibility: hidden;
+    background-color: grey;
+    width: 90vw;
+    height: 25px;
+    text-align: center;
+}
+/* Main container for other chat parts */
+.chat {
+ width: 90vw;
+ visibility: hidden;
+ display: flex;
+ flex-direction: row;
+ flex: 1;
+    }
+
+/* Users displaying window */
+#users {
+    overflow-y: auto;
+        height: 50vh;
+        width: 90vw;
+        padding: 5px;
+        border: 1px inset;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex:1;
+    }
+
+/* Each online user display settings */
+.user-container {
+    display: flex;
+    flex-direction: row;
+    background-color: Azure;
+    height: 25px;
+    width: 88%;
+    display:flex;
+    border-radius: 10px;
+    border: outline;
+
+    text-align: center;
+    cursor: pointer;
+}
+
+.new-message-counter {
+  visibility: hidden;
+  color: red;
+  border-radius: 6px;
+  width:  15px;
+  height: 15px;
+  align-self: center;
+}
+
+.user {
+  flex-grow: 8;
+}
+
+/* Messages displaying window */
+#messages {
+    overflow-y: auto;
+    height: 50vh;
+    width: 90vw;
+    padding: 5px;
+    border: 1px inset;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 3;
+    }
+
+/* Message object settings*/
+.date {
+    color: grey;
+    font: Courier New;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    }
+
+.message {
+    font-family: "Caveat", sans-serif;
+    font-size: 18px;
+    font: Arial;
+    position: absolute;
+    top: 30px;
+    left: 10px;
+    }
+
+.sender  {
+    font-family: "Audiowide", sans-serif;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    }
+
+/* Window for message displaying */
+
+.message-container {
+    position: relative;
+    width: 95%;
+    height: 8vh;
+    border-color: black;
+    border-radius: 10px;
+    border: 1px inset;
+    text-align: left;
+    padding: 10px;
+    flex-shrink: 0;
+    margin: 2px;
+    flex-wrap: wrap;
+    }
+
+/* Container for sending button,
+ message text field and chat switch button*/
+.inputContainer {
+visibility: hidden;
+display: flex;
+align-items: center;
+justify-content: space-around;
+}
+
+/* Text field for writing messages */
+#input-msg {
+      padding: 10px;
+      height: 50px;
+      width: 85%;
+      border-radius: 10px;
+      margin: 5px;
+
+      }
+
+/* Message send button */
+#send-msg-btn {
+   width: 60px;
+   height: 50px;
+   cursor: pointer;
+   margin: 8px;
+   }
+
+#send-msg-btn:hover {
+    border: outset;
+    }
+
+#send-msg-btn:active {
+    border: inset;
+    }
+
+button img {
+    width: 50%;
+    height: 100%;
+    position: relative;
+    }
+
+/* Public to USer chat switching button*/
+#public-chat-btn {
+   width: 28%;
+   height: 50px;
+   cursor: pointer;
+   background-color: blue;
+
+
+}
