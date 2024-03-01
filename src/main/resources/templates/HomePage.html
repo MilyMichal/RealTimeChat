@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome page</title>
+</head>
+<body>
+Welcome to out realTimeChat!
+<form th:action="@{/chat}" method="get">
+    <input type="submit" value="Open Chat">
+
+</form>
+</body>
+</html>

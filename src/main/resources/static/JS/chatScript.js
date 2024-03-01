@@ -14,14 +14,14 @@ let stompClient = null;
 var userName;
 
 
-userNameInput.focus();
+/*userNameInput.focus();*/
 
 // event listener for register user name by pressing Enter
-userNameInput.addEventListener("keypress", (event) => {
+/*userNameInput.addEventListener("keypress", (event) => {
     if (event.code == "Enter" && userNameInput.value !== "") {
         register();
     }
-});
+});*/
 
 
 //event listener for sending msg by pressing Enter
@@ -51,11 +51,11 @@ function register() {
 
 
         // switching login and chat screen
-        chatWithElement.style.setProperty("visibility", "visible");
+        /*chatWithElement.style.setProperty("visibility", "visible");
         loginScreen.style.setProperty("visibility", "hidden");
         chatScreen.style.setProperty("visibility", "visible");
         inputContainer.style.setProperty("visibility", "visible");
-        msgInputWindow.focus();
+        msgInputWindow.focus();*/
     }
 }
 

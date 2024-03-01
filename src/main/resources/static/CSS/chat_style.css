@@ -7,7 +7,7 @@
 
 /* Top chat header displaying name of current chat*/
 #chat-with {
-    visibility: hidden;
+    /*visibility: hidden;*/
     background-color: grey;
     width: 90vw;
     height: 25px;
@@ -16,7 +16,7 @@
 /* Main container for other chat parts */
 .chat {
  width: 90vw;
- visibility: hidden;
+ /*visibility: hidden;*/
  display: flex;
  flex-direction: row;
  flex: 1;
@@ -51,7 +51,7 @@
 }
 
 .new-message-counter {
-  visibility: hidden;
+ /* visibility: hidden;*/
   color: red;
   border-radius: 6px;
   width:  15px;
@@ -120,7 +120,7 @@
 /* Container for sending button,
  message text field and chat switch button*/
 .inputContainer {
-visibility: hidden;
+/*visibility: hidden;*/
 display: flex;
 align-items: center;
 justify-content: space-around;

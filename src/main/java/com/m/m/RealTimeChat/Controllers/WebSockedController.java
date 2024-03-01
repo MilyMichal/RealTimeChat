@@ -5,6 +5,7 @@ import com.m.m.RealTimeChat.Models.MessageHisrotyStorage;
 
 import com.m.m.RealTimeChat.Models.OnlineUserStorage;
 import com.m.m.RealTimeChat.Services.MessageHistoryService;
+import com.m.m.RealTimeChat.Services.UserStorageService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -19,12 +20,15 @@ public class WebSockedController {
 
     //
     private final MessageHistoryService messageHistoryService;
+    private final UserStorageService userStorageService;
+
     //
     private final OnlineUserStorage userStorage;
     private final MessageHisrotyStorage storage;
 
-    public WebSockedController(MessageHistoryService messageHistoryService, OnlineUserStorage userStorage, MessageHisrotyStorage storage) {
+    public WebSockedController(MessageHistoryService messageHistoryService, UserStorageService userStorageService, OnlineUserStorage userStorage, MessageHisrotyStorage storage) {
         this.messageHistoryService = messageHistoryService;
+        this.userStorageService = userStorageService;
         this.userStorage = userStorage;
         this.storage = storage;
     }
@@ -47,6 +51,7 @@ public class WebSockedController {
     public List<String> newUser(@Payload Message message, SimpMessageHeaderAccessor headerAccessor) {
         headerAccessor.getSessionAttributes().put("sender", message.getSender());
 
+        //userStorageService.saveUserToStorage();
         userStorage.getOnlineUsers().add(message.getSender());
         return userStorage.getOnlineUsers();
     }
