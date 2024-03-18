@@ -1,6 +1,6 @@
 //used elements stored in variables
-let userNameInput = document.getElementById("input-username");
-let loginScreen = document.querySelector(".loginScreen");
+//let userNameInput = document.getElementById("input-username");
+//let loginScreen = document.querySelector(".loginScreen");
 let inputContainer = document.querySelector(".inputContainer");
 let chatScreen = document.querySelector(".chat");
 let msgInputWindow = document.getElementById("input-msg");
@@ -11,8 +11,10 @@ let publicBtn = document.getElementById("public-chat-btn");
 
 
 let stompClient = null;
-var userName;
-
+register();
+var userNameElement = document.getElementById("user-data");
+var userName = userNameElement.getAttribute("data-user");
+console.log(userName);
 
 /*userNameInput.focus();*/
 
@@ -36,9 +38,8 @@ msgInputWindow.addEventListener("keypress", (event) => {
 //defined functions
 
 function register() {
-    if (userNameInput.value !== "") {
-        userName = userNameInput.value;
-
+    /*if (userNameInput.value !== "") {*/
+        //userName = "pokus";/*userNameInput.value;*/
         // establishing connection
         let sock = new SockJS("http://localhost:28852/chat");
         stompClient = Stomp.over(sock);
@@ -56,7 +57,7 @@ function register() {
         chatScreen.style.setProperty("visibility", "visible");
         inputContainer.style.setProperty("visibility", "visible");
         msgInputWindow.focus();*/
-    }
+    /*}*/
 }
 
 //function for sending msg to server
@@ -83,7 +84,6 @@ function send() {
             }
 
         }
-
         stompClient.send("/app/chat", {}, JSON.stringify(finalMsg));
         let activeUser = usersContainer.querySelector("." + chatWithElement.innerHTML);
         usersContainer.insertBefore(activeUser, usersContainer.firstChild);
@@ -93,6 +93,7 @@ function send() {
 //function for getting messages and online users from server
 function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
+    console.log("DEBUG" + message);
     if (message.type === "Leave") {
         let disconnectedUser = message.user;
         if (usersContainer.querySelector("." + disconnectedUser)) {
@@ -138,12 +139,13 @@ function onMessageReceived(payload) {
             if (usersContainer.querySelectorAll("*").length === 0) {
                 console.log(" var 1 triggered")
 
-                message.forEach((onlineUser) => {
-                    if (onlineUser !== userName) {
-                        let user = "<button class='user-container " + onlineUser + "' type='button'><div class='user'>" + onlineUser + "</div></button>"
+                message.forEach(onlineUser => {
+                    console.log(onlineUser.nickname);
+                    if (onlineUser.nickname !== userName) { // username
+                        let user = "<button class='user-container " + onlineUser.nickname + "' type='button'><div class='user'>" + onlineUser.nickname + "</div></button>"
 
                         usersContainer.insertAdjacentHTML("beforeend", user);
-                        let userBtn = document.querySelector("." + onlineUser);
+                        let userBtn = document.querySelector("." + onlineUser.nickname);
 
                         userBtn.addEventListener("click", () => {
                             if (chatWithElement.innerHTML !== "Public chat") {
@@ -155,7 +157,7 @@ function onMessageReceived(payload) {
                             if (userBtn.querySelector(".new-message-counter") !== null) {
                                 userBtn.querySelector(".new-message-counter").remove();
                             }
-                            chatWithElement.innerHTML = onlineUser;
+                            chatWithElement.innerHTML = onlineUser.nickname;
                             getHistory();
                         });
 
@@ -192,6 +194,7 @@ function onMessageReceived(payload) {
 
 //function for connecting new user
 function onConnectedSuccessfully() {
+console.log("connected");
     stompClient.subscribe("/topic/chat", onMessageReceived);
 
     stompClient.send("/app/user", {}, JSON.stringify(

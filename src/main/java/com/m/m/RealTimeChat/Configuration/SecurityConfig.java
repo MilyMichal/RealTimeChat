@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 
 @Configuration
@@ -24,14 +25,14 @@ public class SecurityConfig {
 
 
     @Bean
-    SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/").permitAll()
                         .anyRequest().authenticated())
-               .formLogin(form -> form.loginPage("/login")
-                       .permitAll())
 
-               //.httpBasic(Customizer.withDefaults())
+                .formLogin(form -> form.loginPage("/login")
+                        .permitAll())
+                .logout(logout -> logout.logoutSuccessUrl("/").permitAll())
                 .userDetailsService(appUserDetailService)
                 .build();
     }
@@ -40,5 +41,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 
 }

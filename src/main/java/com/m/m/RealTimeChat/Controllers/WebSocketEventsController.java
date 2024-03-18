@@ -1,6 +1,7 @@
 package com.m.m.RealTimeChat.Controllers;
 
 import com.m.m.RealTimeChat.Models.OnlineUserStorage;
+import com.m.m.RealTimeChat.Services.OnlineUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -15,21 +16,22 @@ import java.util.Map;
 @Component
 public class WebSocketEventsController {
 
-    private final OnlineUserStorage storage;
+
+    private final OnlineUserService onlineUserService;
 
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
-    public WebSocketEventsController(OnlineUserStorage storage) {
-        this.storage = storage;
+    public WebSocketEventsController( OnlineUserService onlineUserService) {
+        this.onlineUserService = onlineUserService;
     }
 
     @EventListener
-    public void disconect(SessionDisconnectEvent event) {
+    public void disconnect(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
         String username = (String) headerAccessor.getSessionAttributes().get("sender");
-        storage.onlineUsers.remove(username);
+        onlineUserService.removeOnlineUser(username);
         Map<String,String> disconnectedUser = new HashMap<>();
         disconnectedUser.put("type","Leave");
         disconnectedUser.put("user",username);

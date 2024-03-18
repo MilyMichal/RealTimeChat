@@ -13,7 +13,7 @@ class UserStorageServiceTest {
     @Autowired
     UserStorageService userStorageService;
     Long id  = 2L;
-    User user = new User(id,"admin","admin","mail","admin");
+    User user = new User(id,"skaman","skaman","maill","user");
     @Test
     void addUser(){
 
