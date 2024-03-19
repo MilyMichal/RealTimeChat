@@ -24,4 +24,9 @@ public class MessageHistoryService {
     public List<Message> getPublicHistory() {
       return   messageRepository.findAllPublicMessages();
     }
+
+
+    public List<Message> getPrivateHistory(String sendTo, String sender) {
+        return messageRepository.findAllPrivateMessages(sendTo,sender);
+    }
 }

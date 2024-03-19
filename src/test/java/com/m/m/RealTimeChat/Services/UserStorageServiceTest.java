@@ -12,8 +12,8 @@ class UserStorageServiceTest {
 
     @Autowired
     UserStorageService userStorageService;
-    Long id  = 2L;
-    User user = new User(id,"skaman","skaman","maill","user");
+    Long id  = 3L;
+    User user = new User(id,"Azrael","azrael","maillW","user");
     @Test
     void addUser(){
 
@@ -21,7 +21,7 @@ class UserStorageServiceTest {
 
         userStorageService.saveUserToStorage(user);
 
-        assertEquals(2,userStorageService.getUsersList().size());
+        assertEquals(3,userStorageService.getUsersList().size());
 
 
     }

@@ -2,10 +2,9 @@ package com.m.m.RealTimeChat.Controllers;
 
 
 import com.m.m.RealTimeChat.Models.Message;
-import com.m.m.RealTimeChat.Models.MessageHisrotyStorage;
-import com.m.m.RealTimeChat.Models.OnlineUserStorage;
 import com.m.m.RealTimeChat.Services.MessageHistoryService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,27 +12,26 @@ import java.util.List;
 
 
 @RestController
-public class webSocketMessageControler {
+public class webSocketMessageController {
 
     private final MessageHistoryService messageHistoryService;
 
-    //Deprecated
-    private final MessageHisrotyStorage storage;
 
 
-    public webSocketMessageControler(MessageHisrotyStorage storage, OnlineUserStorage userStorage, MessageHistoryService messageHistoryService) {
-        this.storage = storage;
+    public webSocketMessageController(MessageHistoryService messageHistoryService) {
         this.messageHistoryService = messageHistoryService;
     }
 
     @GetMapping("/history")
     @ResponseBody
     public List<Message> distributeMessageHistory() {
-        //new
         return messageHistoryService.getPublicHistory();
-        //
-        //return storage.getMessageHistory();
     }
 
+    @GetMapping("/history/{sendTo}-{sender}")
+    @ResponseBody
+    public List<Message> distributePrivateMessageHistory(@PathVariable String sendTo,@PathVariable String sender) {
+        return messageHistoryService.getPrivateHistory(sendTo,sender);
+    }
 
 }

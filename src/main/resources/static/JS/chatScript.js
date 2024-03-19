@@ -1,6 +1,3 @@
-//used elements stored in variables
-//let userNameInput = document.getElementById("input-username");
-//let loginScreen = document.querySelector(".loginScreen");
 let inputContainer = document.querySelector(".inputContainer");
 let chatScreen = document.querySelector(".chat");
 let msgInputWindow = document.getElementById("input-msg");
@@ -16,15 +13,6 @@ var userNameElement = document.getElementById("user-data");
 var userName = userNameElement.getAttribute("data-user");
 console.log(userName);
 
-/*userNameInput.focus();*/
-
-// event listener for register user name by pressing Enter
-/*userNameInput.addEventListener("keypress", (event) => {
-    if (event.code == "Enter" && userNameInput.value !== "") {
-        register();
-    }
-});*/
-
 
 //event listener for sending msg by pressing Enter
 msgInputWindow.addEventListener("keypress", (event) => {
@@ -34,12 +22,9 @@ msgInputWindow.addEventListener("keypress", (event) => {
 });
 
 
-
 //defined functions
-
 function register() {
-    /*if (userNameInput.value !== "") {*/
-        //userName = "pokus";/*userNameInput.value;*/
+
         // establishing connection
         let sock = new SockJS("http://localhost:28852/chat");
         stompClient = Stomp.over(sock);
@@ -49,16 +34,7 @@ function register() {
 
         // loading chat history for new user
         getHistory();
-
-
-        // switching login and chat screen
-        /*chatWithElement.style.setProperty("visibility", "visible");
-        loginScreen.style.setProperty("visibility", "hidden");
-        chatScreen.style.setProperty("visibility", "visible");
-        inputContainer.style.setProperty("visibility", "visible");
-        msgInputWindow.focus();*/
-    /*}*/
-}
+  }
 
 //function for sending msg to server
 function send() {
@@ -85,19 +61,21 @@ function send() {
 
         }
         stompClient.send("/app/chat", {}, JSON.stringify(finalMsg));
+        /*if (usersContainer.querySelectorAll("*").length >= 1) {
         let activeUser = usersContainer.querySelector("." + chatWithElement.innerHTML);
         usersContainer.insertBefore(activeUser, usersContainer.firstChild);
+        }*/
     }
 }
 
 //function for getting messages and online users from server
 function onMessageReceived(payload) {
+     console.log("MESSAGE DEBUG: " + payload) ;
     var message = JSON.parse(payload.body);
-    console.log("DEBUG" + message);
+
     if (message.type === "Leave") {
         let disconnectedUser = message.user;
         if (usersContainer.querySelector("." + disconnectedUser)) {
-
             usersContainer.querySelector("." + disconnectedUser).remove();
         }
 
@@ -105,7 +83,6 @@ function onMessageReceived(payload) {
         // displaying newest message
         if (message.type === 'message') {
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === "public") {
-
                 let html = "<div class='message-container'><div class='sender'>" + message.sender + "</div>"
                     + "<div class='message'>" + message.content + "</div><div class='date'>" + message.date + "</div></div>";
                 messageContainer.insertAdjacentHTML("beforeend", html);
@@ -122,8 +99,6 @@ function onMessageReceived(payload) {
                 msgCounter.style.setProperty("visibility", "visible");
                 let count = parseInt(msgCounter.innerText) + 1;
                 msgCounter.innerText = count;
-
-
             }
 
             if ((userName == message.sendTo && message.sender == chatWithElement.innerHTML) ||
@@ -140,8 +115,7 @@ function onMessageReceived(payload) {
                 console.log(" var 1 triggered")
 
                 message.forEach(onlineUser => {
-                    console.log(onlineUser.nickname);
-                    if (onlineUser.nickname !== userName) { // username
+                    if (onlineUser.nickname !== userName) {
                         let user = "<button class='user-container " + onlineUser.nickname + "' type='button'><div class='user'>" + onlineUser.nickname + "</div></button>"
 
                         usersContainer.insertAdjacentHTML("beforeend", user);
@@ -165,7 +139,7 @@ function onMessageReceived(payload) {
                 });
             } else {
                 console.log(" var 2 triggered")
-                let newestUser = message[message.length - 1];
+                let newestUser = message[message.length - 1].nickname;
                 console.log(newestUser);
                 let user = "<button class='user-container " + newestUser + "' type='button'><div class='user'>" + newestUser + "</div></button>"
                 usersContainer.insertAdjacentHTML("beforeend", user);
@@ -219,7 +193,6 @@ function switchToPublic() {
 }
 
 function getHistory() {
-
     if (chatWithElement.innerHTML === "Public chat") {
         fetch("http://localhost:28852/history")
             .then(response => response.json())
@@ -236,10 +209,11 @@ function getHistory() {
                 });
             });
     } else {
-        fetch("http://localhost:28852/history")
+            fetch("http://localhost:28852/history/" + chatWithElement.innerHTML + "-" + userName)
             .then(response => response.json())
             .then(message => {
                 message.forEach((msg) => {
+                console.log("MESSAGE DEBUGGER: send to= " + msg.sendTo + "\n msg sender:" + msg.sender + "\n chatWithElement: " + chatWithElement.innerHTML)
                     if ((msg.sendTo == userName && msg.sender == chatWithElement.innerHTML) || (msg.sendTo == chatWithElement.innerHTML && msg.sender == userName)) {
                         let history = "<div class='message-container'><div class='sender'>"
                             + msg.sender + "</div>"

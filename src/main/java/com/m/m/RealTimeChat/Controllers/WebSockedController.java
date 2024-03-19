@@ -1,7 +1,6 @@
 package com.m.m.RealTimeChat.Controllers;
 
 import com.m.m.RealTimeChat.Models.Message;
-import com.m.m.RealTimeChat.Models.MessageHisrotyStorage;
 
 import com.m.m.RealTimeChat.Models.OnlineUser;
 import com.m.m.RealTimeChat.Models.OnlineUserStorage;
@@ -22,19 +21,16 @@ public class WebSockedController {
 
     //
     private final MessageHistoryService messageHistoryService;
-    private final UserStorageService userStorageService;
+
 
     //
-    private final OnlineUserStorage userStorage;
-    private final MessageHisrotyStorage storage;
 
     private final OnlineUserService onlineUserService;
 
-    public WebSockedController(MessageHistoryService messageHistoryService, UserStorageService userStorageService, OnlineUserStorage userStorage, MessageHisrotyStorage storage, OnlineUserService onlineUserService) {
+    public WebSockedController(MessageHistoryService messageHistoryService,OnlineUserService onlineUserService) {
         this.messageHistoryService = messageHistoryService;
-        this.userStorageService = userStorageService;
-        this.userStorage = userStorage;
-        this.storage = storage;
+
+
         this.onlineUserService = onlineUserService;
     }
 
@@ -45,8 +41,6 @@ public class WebSockedController {
         //
         messageHistoryService.saveMessage(msg);
         //
-
-        storage.saveMessage(msg);
         return msg;
     }
 
@@ -56,10 +50,7 @@ public class WebSockedController {
     public List<OnlineUser> newUser(@Payload Message message, SimpMessageHeaderAccessor headerAccessor) {
         headerAccessor.getSessionAttributes().put("sender", message.getSender());
         onlineUserService.addOnlineUser(message.getSender());
-        //userStorageService.saveUserToStorage();
-        //userStorage.getOnlineUsers().add(message.getSender());
-        return onlineUserService.getAllOnlineUsers(); /*userStorage.getOnlineUsers();*/
+        return onlineUserService.getAllOnlineUsers();
+
     }
-
 }
-
