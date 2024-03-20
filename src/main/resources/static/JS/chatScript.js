@@ -5,13 +5,29 @@ let messageContainer = document.getElementById("messages");
 let chatWithElement = document.getElementById("chat-with");
 let usersContainer = document.getElementById("users");
 let publicBtn = document.getElementById("public-chat-btn");
-
+let privateChatWith;
 
 let stompClient = null;
+
 register();
+
 var userNameElement = document.getElementById("user-data");
 var userName = userNameElement.getAttribute("data-user");
 console.log(userName);
+
+
+//event listener for deleting online user from list after closing chat page
+window.addEventListener('beforeunload', function(event) {
+     fetch('http://localhost:28852/logout', {
+        method: 'POST'
+    })
+    .then(response => {
+        console.log("user " + userName + " disconnected")
+    })
+    .catch(error => {
+        console.error('Error while logout:', error);
+    });
+});
 
 
 //event listener for sending msg by pressing Enter
@@ -56,22 +72,20 @@ function send() {
                 "sender": userName,
                 "date": date,
                 "type": 'message',
-                "sendTo": chatWithElement.innerHTML
+                "sendTo": privateChatWith
             }
 
         }
         stompClient.send("/app/chat", {}, JSON.stringify(finalMsg));
-        /*if (usersContainer.querySelectorAll("*").length >= 1) {
-        let activeUser = usersContainer.querySelector("." + chatWithElement.innerHTML);
-        usersContainer.insertBefore(activeUser, usersContainer.firstChild);
-        }*/
-    }
+        }
 }
 
 //function for getting messages and online users from server
 function onMessageReceived(payload) {
-     console.log("MESSAGE DEBUG: " + payload) ;
+     console.log("! DEBUG ! ON MESSAGE RECEIVED PAYLOAD : \n" + payload) ;
     var message = JSON.parse(payload.body);
+console.log("\n\n ! DEBUG ! PAYLOAD BODY:\n" + message);
+console.log("\n\n ! DEBUG ! MESSAGE TYPE:\n" + message.type);
 
     if (message.type === "Leave") {
         let disconnectedUser = message.user;
@@ -101,8 +115,8 @@ function onMessageReceived(payload) {
                 msgCounter.innerText = count;
             }
 
-            if ((userName == message.sendTo && message.sender == chatWithElement.innerHTML) ||
-                (message.sendTo == chatWithElement.innerHTML && message.sender == userName)) {
+            if ((userName == message.sendTo && message.sender == privateChatWith) ||
+                (message.sendTo == privateChatWith && message.sender == userName)) {
 
                 let html = "<div class='message-container'><div class='sender'>" + message.sender + "</div>"
                     + "<div class='message'>" + message.content + "</div><div class='date'>" + message.date + "</div></div>";
@@ -123,7 +137,7 @@ function onMessageReceived(payload) {
 
                         userBtn.addEventListener("click", () => {
                             if (chatWithElement.innerHTML !== "Public chat") {
-                                document.querySelector("." + chatWithElement.innerHTML).style.setProperty("Background-color", "Azure");
+                                document.querySelector("." + privateChatWith).style.setProperty("Background-color", "Azure");
                             }
                             userBtn.style.setProperty("Background-color", "blue");
                             publicBtn.style.setProperty("Background-color", "grey")
@@ -131,7 +145,9 @@ function onMessageReceived(payload) {
                             if (userBtn.querySelector(".new-message-counter") !== null) {
                                 userBtn.querySelector(".new-message-counter").remove();
                             }
-                            chatWithElement.innerHTML = onlineUser.nickname;
+                          //  console.log("DEBUG CHATwithELEMENT BEFORE CHANGE: " + chatWithElement);
+                            chatWithElement.innerHTML = "Private chat with:" + onlineUser.nickname;
+                            privateChatWith = onlineUser.nickname;
                             getHistory();
                         });
 
@@ -140,14 +156,14 @@ function onMessageReceived(payload) {
             } else {
                 console.log(" var 2 triggered")
                 let newestUser = message[message.length - 1].nickname;
-                console.log(newestUser);
+                console.log("DEBUG NER USER: " + newestUser);
                 let user = "<button class='user-container " + newestUser + "' type='button'><div class='user'>" + newestUser + "</div></button>"
                 usersContainer.insertAdjacentHTML("beforeend", user);
 
                 let userBtn = document.querySelector("." + newestUser);
                 userBtn.addEventListener("click", () => {
                     if (chatWithElement.innerHTML !== "Public chat") {
-                        document.querySelector("." + chatWithElement.innerHTML).style.setProperty("Background-color", "Azure");
+                        document.querySelector("." + privateChatWith).style.setProperty("Background-color", "Azure");
                     }
                     userBtn.style.setProperty("Background-color", "blue");
                     publicBtn.style.setProperty("Background-color", "grey")
@@ -155,7 +171,8 @@ function onMessageReceived(payload) {
                     if (userBtn.querySelector(".new-message-counter") !== null) {
                         userBtn.querySelector(".new-message-counter").remove();
                     }
-                    chatWithElement.innerHTML = newestUser;
+                    chatWithElement.innerHTML = "Private chat with: " + newestUser;
+                    privateChatWith = onlineUser.newestUser;
                     getHistory();
                 });
             }
@@ -177,11 +194,11 @@ console.log("connected");
             type: 'newUser'
         }));
 }
-
+//"Public chat" switch button function
 function switchToPublic() {
 
     if (chatWithElement.innerHTML !== "Public chat") {
-        let activeBtn = document.querySelector("." + chatWithElement.innerHTML);
+        let activeBtn = document.querySelector("." + privateChatWith);
         chatWithElement.innerHTML = "Public chat";
         messages.innerHTML = "";
         publicBtn.style.setProperty("background-color", "blue");
@@ -194,34 +211,33 @@ function switchToPublic() {
 
 function getHistory() {
     if (chatWithElement.innerHTML === "Public chat") {
-        fetch("http://localhost:28852/history")
+        fetch("http://localhost:28852/history/public")
             .then(response => response.json())
             .then(message => {
                 message.forEach((msg) => {
-                    if (msg.sendTo === "public") {
-                        let history = "<div class='message-container'><div class='sender'>"
+
+                        let history =
+                         "<div class='message-container'><div class='sender'>"
                             + msg.sender + "</div>"
                             + "<div class='message'>" + msg.content + "</div><div class='date'>"
                             + msg.date + "</div></div>";
 
                         messageContainer.insertAdjacentHTML("beforeend", history);
-                    }
+
                 });
             });
     } else {
-            fetch("http://localhost:28852/history/" + chatWithElement.innerHTML + "-" + userName)
+            fetch("http://localhost:28852/history/" + privateChatWith + "-" + userName)
             .then(response => response.json())
             .then(message => {
                 message.forEach((msg) => {
-                console.log("MESSAGE DEBUGGER: send to= " + msg.sendTo + "\n msg sender:" + msg.sender + "\n chatWithElement: " + chatWithElement.innerHTML)
-                    if ((msg.sendTo == userName && msg.sender == chatWithElement.innerHTML) || (msg.sendTo == chatWithElement.innerHTML && msg.sender == userName)) {
+                //console.log("MESSAGE DEBUGGER: send to= " + msg.sendTo + "\n msg sender:" + msg.sender + "\n chatWithElement: " + chatWithElement.innerHTML)
                         let history = "<div class='message-container'><div class='sender'>"
                             + msg.sender + "</div>"
                             + "<div class='message'>" + msg.content + "</div><div class='date'>"
                             + msg.date + "</div></div>";
-
                         messageContainer.insertAdjacentHTML("beforeend", history);
-                    }
+
                 });
             });
     }

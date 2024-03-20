@@ -3,10 +3,8 @@ package com.m.m.RealTimeChat.Controllers;
 import com.m.m.RealTimeChat.Models.Message;
 
 import com.m.m.RealTimeChat.Models.OnlineUser;
-import com.m.m.RealTimeChat.Models.OnlineUserStorage;
 import com.m.m.RealTimeChat.Services.MessageHistoryService;
 import com.m.m.RealTimeChat.Services.OnlineUserService;
-import com.m.m.RealTimeChat.Services.UserStorageService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -37,10 +35,8 @@ public class WebSockedController {
     @MessageMapping("/chat")
     @SendTo("/topic/chat")
     public Message sendMsg(Message msg) {
-        //new feature
-        //
+
         messageHistoryService.saveMessage(msg);
-        //
         return msg;
     }
 

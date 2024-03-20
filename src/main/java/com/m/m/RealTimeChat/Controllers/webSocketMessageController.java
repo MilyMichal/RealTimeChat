@@ -22,7 +22,7 @@ public class webSocketMessageController {
         this.messageHistoryService = messageHistoryService;
     }
 
-    @GetMapping("/history")
+    @GetMapping("/history/public")
     @ResponseBody
     public List<Message> distributeMessageHistory() {
         return messageHistoryService.getPublicHistory();
