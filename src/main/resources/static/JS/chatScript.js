@@ -92,7 +92,10 @@ console.log("\n\n ! DEBUG ! MESSAGE TYPE:\n" + message.type);
         if (usersContainer.querySelector("." + disconnectedUser)) {
             usersContainer.querySelector("." + disconnectedUser).remove();
         }
-
+    }
+        if (message.type === 'newUser') {
+        let welcomeMsg = "<div class='message-container'> <div class='message'>" + message.content + "</div><div class='date'>" + message.date + "</div></div></div>";
+                        messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
     } else {
         // displaying newest message
         if (message.type === 'message') {
@@ -125,6 +128,8 @@ console.log("\n\n ! DEBUG ! MESSAGE TYPE:\n" + message.type);
             }
         } else {
             // adding incoming user to online users list
+
+
             if (usersContainer.querySelectorAll("*").length === 0) {
                 console.log(" var 1 triggered")
 
@@ -146,7 +151,7 @@ console.log("\n\n ! DEBUG ! MESSAGE TYPE:\n" + message.type);
                                 userBtn.querySelector(".new-message-counter").remove();
                             }
                           //  console.log("DEBUG CHATwithELEMENT BEFORE CHANGE: " + chatWithElement);
-                            chatWithElement.innerHTML = "Private chat with:" + onlineUser.nickname;
+                            chatWithElement.innerHTML = "Private chat with: " + onlineUser.nickname;
                             privateChatWith = onlineUser.nickname;
                             getHistory();
                         });
@@ -186,12 +191,16 @@ console.log("\n\n ! DEBUG ! MESSAGE TYPE:\n" + message.type);
 //function for connecting new user
 function onConnectedSuccessfully() {
 console.log("connected");
+let date = new Date().toLocaleString();
     stompClient.subscribe("/topic/chat", onMessageReceived);
 
     stompClient.send("/app/user", {}, JSON.stringify(
         {
             sender: userName,
-            type: 'newUser'
+            type: 'newUser',
+            content: userName + ' just joined chatroom. Welcome!',
+            sendTo: "public",
+            date: date
         }));
 }
 //"Public chat" switch button function
@@ -215,7 +224,11 @@ function getHistory() {
             .then(response => response.json())
             .then(message => {
                 message.forEach((msg) => {
+                        if(msg.type === "newUser") {
+                        let welcomeMsg = "<div class='message-container'><div class='message'> " + msg.content + "</div><div class='date'>" + msg.date + "</div></div></div>";
+                                        messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
 
+                        } else {
                         let history =
                          "<div class='message-container'><div class='sender'>"
                             + msg.sender + "</div>"
@@ -223,7 +236,7 @@ function getHistory() {
                             + msg.date + "</div></div>";
 
                         messageContainer.insertAdjacentHTML("beforeend", history);
-
+                    }
                 });
             });
     } else {
