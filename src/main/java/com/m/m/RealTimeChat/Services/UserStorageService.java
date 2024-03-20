@@ -20,21 +20,28 @@ public class UserStorageService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void saveUserToStorage(User user) {
+    public String saveUserToStorage(User user) {
+        System.out.println("SAVE USER TO STORAGE DEBUG");
         if (user != null) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-            userRepository.save(user);
+            if (userRepository.findUserByUserName(user.getUserName()).isEmpty()){
+                System.out.println(userRepository.findUserByUserName(user.getUserName()));
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+                user.setRoles("user");
+                userRepository.save(user);
+                return "Registration successful!";
+            }
         }
+        return "User name already exist";
     }
-    public List<User> getUsersList(){
+
+    public List<User> getUsersList() {
         return userRepository.findAll();
     }
 
-public void removeUserFromStorage(User user) {
-            if(userRepository.exists(Example.of(user))) {
+    public void removeUserFromStorage(User user) {
+        if (userRepository.exists(Example.of(user))) {
             userRepository.delete(user);
         }
-}
+    }
 }
 
