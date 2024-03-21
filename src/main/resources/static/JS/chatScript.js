@@ -17,16 +17,16 @@ console.log(userName);
 
 
 //event listener for deleting online user from list after closing chat page
-window.addEventListener('beforeunload', function(event) {
-     fetch('http://localhost:28852/logout', {
+window.addEventListener('beforeunload', function (event) {
+    fetch('http://localhost:28852/logout', {
         method: 'POST'
     })
-    .then(response => {
-        console.log("user " + userName + " disconnected")
-    })
-    .catch(error => {
-        console.error('Error while logout:', error);
-    });
+        .then(response => {
+            console.log("user " + userName + " disconnected")
+        })
+        .catch(error => {
+            console.error('Error while logout:', error);
+        });
 });
 
 
@@ -41,16 +41,16 @@ msgInputWindow.addEventListener("keypress", (event) => {
 //defined functions
 function register() {
 
-        // establishing connection
-        let sock = new SockJS("http://localhost:28852/chat");
-        stompClient = Stomp.over(sock);
-        stompClient.connect({}, onConnectedSuccessfully, (error) => {
-            console.log('unable to connect' + error);
-        });
+    // establishing connection
+    let sock = new SockJS("http://localhost:28852/chat");
+    stompClient = Stomp.over(sock);
+    stompClient.connect({}, onConnectedSuccessfully, (error) => {
+        console.log('unable to connect' + error);
+    });
 
-        // loading chat history for new user
-        getHistory();
-  }
+    // loading chat history for new user
+    getHistory();
+}
 
 //function for sending msg to server
 function send() {
@@ -77,26 +77,27 @@ function send() {
 
         }
         stompClient.send("/app/chat", {}, JSON.stringify(finalMsg));
-        }
+    }
 }
 
 //function for getting messages and online users from server
 function onMessageReceived(payload) {
-     console.log("! DEBUG ! ON MESSAGE RECEIVED PAYLOAD : \n" + payload) ;
+    // console.log("! DEBUG ! ON MESSAGE RECEIVED PAYLOAD : \n" + payload) ;
     var message = JSON.parse(payload.body);
-console.log("\n\n ! DEBUG ! PAYLOAD BODY:\n" + message);
-console.log("\n\n ! DEBUG ! MESSAGE TYPE:\n" + message.type);
-
-    if (message.type === "Leave") {
-        let disconnectedUser = message.user;
-        if (usersContainer.querySelector("." + disconnectedUser)) {
-            usersContainer.querySelector("." + disconnectedUser).remove();
+    //console.log("\n\n ! DEBUG ! PAYLOAD BODY:\n" + message);
+    console.log("\n\n ! DEBUG ! MESSAGE TYPE:\n" + message.type);
+    if (message.type) {
+        if (message.type === "Leave") {
+            let date = new Date().toLocaleString();
+            let disconnectedUser = message.user;
+            let disconnectedMsg = "<div class='message-container'> <div class='message'>" + message.content + "</div><div class='date'>" + date + "</div></div></div>";
+            messageContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
+            if (usersContainer.querySelector("." + disconnectedUser)) {
+                usersContainer.querySelector("." + disconnectedUser).remove();
+            }
         }
-    }
-        if (message.type === 'newUser') {
-        let welcomeMsg = "<div class='message-container'> <div class='message'>" + message.content + "</div><div class='date'>" + message.date + "</div></div></div>";
-                        messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
-    } else {
+
+
         // displaying newest message
         if (message.type === 'message') {
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === "public") {
@@ -126,20 +127,56 @@ console.log("\n\n ! DEBUG ! MESSAGE TYPE:\n" + message.type);
                 messageContainer.insertAdjacentHTML("beforeend", html);
                 msgInputWindow.value = "";
             }
-        } else {
-            // adding incoming user to online users list
+        }
 
+        if (message.type === 'newUser') {
+            let welcomeMsg = "<div class='message-container'> <div class='message'>" + message.content + "</div><div class='date'>" + message.date + "</div></div></div>";
+            messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
 
             if (usersContainer.querySelectorAll("*").length === 0) {
                 console.log(" var 1 triggered")
+                fetch("http://localhost:28852/users")
+                    .then(response => response.json())
+                    .then(message => {
 
-                message.forEach(onlineUser => {
-                    if (onlineUser.nickname !== userName) {
-                        let user = "<button class='user-container " + onlineUser.nickname + "' type='button'><div class='user'>" + onlineUser.nickname + "</div></button>"
+                        message.forEach(onlineUser => {
+                        console.log("DEBUG TRIGGER 1 EACH USER: " + onlineUser.nickname);
+                            if (onlineUser.nickname !== userName) {
+                                let user = "<button class='user-container " + onlineUser.nickname + "' type='button'><div class='user'>" + onlineUser.nickname + "</div></button>"
 
+                                usersContainer.insertAdjacentHTML("beforeend", user);
+                                let userBtn = document.querySelector("." + onlineUser.nickname);
+
+                                userBtn.addEventListener("click", () => {
+                                    if (chatWithElement.innerHTML !== "Public chat") {
+                                        document.querySelector("." + privateChatWith).style.setProperty("Background-color", "Azure");
+                                    }
+                                    userBtn.style.setProperty("Background-color", "blue");
+                                    publicBtn.style.setProperty("Background-color", "grey")
+                                    messageContainer.innerHTML = "";
+                                    if (userBtn.querySelector(".new-message-counter") !== null) {
+                                        userBtn.querySelector(".new-message-counter").remove();
+                                    }
+
+                                    chatWithElement.innerHTML = "Private chat with: " + onlineUser.nickname;
+                                    privateChatWith = onlineUser.nickname;
+                                    getHistory();
+                                });
+                            }
+                        });
+                    });
+
+            } else {
+                console.log(" var 2 triggered")
+                fetch("http://localhost:28852/users")
+                    .then(response => response.json())
+                    .then(message => {
+                        let newestUser = message[message.length - 1].nickname;
+                        console.log("DEBUG NER USER: " + newestUser);
+                        let user = "<button class='user-container " + newestUser + "' type='button'><div class='user'>" + newestUser + "</div></button>"
                         usersContainer.insertAdjacentHTML("beforeend", user);
-                        let userBtn = document.querySelector("." + onlineUser.nickname);
 
+                        let userBtn = document.querySelector("." + newestUser);
                         userBtn.addEventListener("click", () => {
                             if (chatWithElement.innerHTML !== "Public chat") {
                                 document.querySelector("." + privateChatWith).style.setProperty("Background-color", "Azure");
@@ -150,111 +187,85 @@ console.log("\n\n ! DEBUG ! MESSAGE TYPE:\n" + message.type);
                             if (userBtn.querySelector(".new-message-counter") !== null) {
                                 userBtn.querySelector(".new-message-counter").remove();
                             }
-                          //  console.log("DEBUG CHATwithELEMENT BEFORE CHANGE: " + chatWithElement);
-                            chatWithElement.innerHTML = "Private chat with: " + onlineUser.nickname;
-                            privateChatWith = onlineUser.nickname;
+                            chatWithElement.innerHTML = "Private chat with: " + newestUser;
+                            privateChatWith = newestUser;
                             getHistory();
                         });
+                    });
 
-                    }
-                });
-            } else {
-                console.log(" var 2 triggered")
-                let newestUser = message[message.length - 1].nickname;
-                console.log("DEBUG NER USER: " + newestUser);
-                let user = "<button class='user-container " + newestUser + "' type='button'><div class='user'>" + newestUser + "</div></button>"
-                usersContainer.insertAdjacentHTML("beforeend", user);
-
-                let userBtn = document.querySelector("." + newestUser);
-                userBtn.addEventListener("click", () => {
-                    if (chatWithElement.innerHTML !== "Public chat") {
-                        document.querySelector("." + privateChatWith).style.setProperty("Background-color", "Azure");
-                    }
-                    userBtn.style.setProperty("Background-color", "blue");
-                    publicBtn.style.setProperty("Background-color", "grey")
-                    messageContainer.innerHTML = "";
-                    if (userBtn.querySelector(".new-message-counter") !== null) {
-                        userBtn.querySelector(".new-message-counter").remove();
-                    }
-                    chatWithElement.innerHTML = "Private chat with: " + newestUser;
-                    privateChatWith = onlineUser.newestUser;
-                    getHistory();
-                });
             }
-
         }
+
     }
 }
 
 
+        //function for connecting new user
+        function onConnectedSuccessfully() {
+            console.log("connected");
+            let date = new Date().toLocaleString();
+            stompClient.subscribe("/topic/chat", onMessageReceived);
 
-//function for connecting new user
-function onConnectedSuccessfully() {
-console.log("connected");
-let date = new Date().toLocaleString();
-    stompClient.subscribe("/topic/chat", onMessageReceived);
-
-    stompClient.send("/app/user", {}, JSON.stringify(
-        {
-            sender: userName,
-            type: 'newUser',
-            content: userName + ' just joined chatroom. Welcome!',
-            sendTo: "public",
-            date: date
-        }));
-}
-//"Public chat" switch button function
-function switchToPublic() {
-
-    if (chatWithElement.innerHTML !== "Public chat") {
-        let activeBtn = document.querySelector("." + privateChatWith);
-        chatWithElement.innerHTML = "Public chat";
-        messages.innerHTML = "";
-        publicBtn.style.setProperty("background-color", "blue");
-        if (activeBtn) {
-            activeBtn.style.setProperty("Background-color", "Azure");
+            stompClient.send("/app/user", {}, JSON.stringify(
+                {
+                    sender: userName,
+                    type: 'newUser',
+                    content: userName + ' just joined chatroom. Welcome!',
+                    sendTo: "public",
+                    date: date
+                }));
         }
-        getHistory();
-    }
-}
+        //"Public chat" switch button function
+        function switchToPublic() {
 
-function getHistory() {
-    if (chatWithElement.innerHTML === "Public chat") {
-        fetch("http://localhost:28852/history/public")
-            .then(response => response.json())
-            .then(message => {
-                message.forEach((msg) => {
-                        if(msg.type === "newUser") {
-                        let welcomeMsg = "<div class='message-container'><div class='message'> " + msg.content + "</div><div class='date'>" + msg.date + "</div></div></div>";
-                                        messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
+            if (chatWithElement.innerHTML !== "Public chat") {
+                let activeBtn = document.querySelector("." + privateChatWith);
+                chatWithElement.innerHTML = "Public chat";
+                messages.innerHTML = "";
+                publicBtn.style.setProperty("background-color", "blue");
+                if (activeBtn) {
+                    activeBtn.style.setProperty("Background-color", "Azure");
+                }
+                getHistory();
+            }
+        }
 
-                        } else {
-                        let history =
-                         "<div class='message-container'><div class='sender'>"
-                            + msg.sender + "</div>"
-                            + "<div class='message'>" + msg.content + "</div><div class='date'>"
-                            + msg.date + "</div></div>";
+        function getHistory() {
+            if (chatWithElement.innerHTML === "Public chat") {
+                fetch("http://localhost:28852/history/public")
+                    .then(response => response.json())
+                    .then(message => {
+                        message.forEach((msg) => {
+                            if (msg.type === "newUser") {
+                                let welcomeMsg = "<div class='message-container'><div class='message'> " + msg.content + "</div><div class='date'>" + msg.date + "</div></div></div>";
+                                messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
 
-                        messageContainer.insertAdjacentHTML("beforeend", history);
-                    }
-                });
-            });
-    } else {
-            fetch("http://localhost:28852/history/" + privateChatWith + "-" + userName)
-            .then(response => response.json())
-            .then(message => {
-                message.forEach((msg) => {
-                //console.log("MESSAGE DEBUGGER: send to= " + msg.sendTo + "\n msg sender:" + msg.sender + "\n chatWithElement: " + chatWithElement.innerHTML)
-                        let history = "<div class='message-container'><div class='sender'>"
-                            + msg.sender + "</div>"
-                            + "<div class='message'>" + msg.content + "</div><div class='date'>"
-                            + msg.date + "</div></div>";
-                        messageContainer.insertAdjacentHTML("beforeend", history);
+                            } else {
+                                let history =
+                                    "<div class='message-container'><div class='sender'>"
+                                    + msg.sender + "</div>"
+                                    + "<div class='message'>" + msg.content + "</div><div class='date'>"
+                                    + msg.date + "</div></div>";
 
-                });
-            });
-    }
-}
+                                messageContainer.insertAdjacentHTML("beforeend", history);
+                            }
+                        });
+                    });
+            } else {
+                fetch("http://localhost:28852/history/" + privateChatWith + "-" + userName)
+                    .then(response => response.json())
+                    .then(message => {
+                        message.forEach((msg) => {
+                            let history = "<div class='message-container'><div class='sender'>"
+                                + msg.sender + "</div>"
+                                + "<div class='message'>" + msg.content + "</div><div class='date'>"
+                                + msg.date + "</div></div>";
+                            messageContainer.insertAdjacentHTML("beforeend", history);
 
+                        });
+                    });
+            }
+        }
+    
 
 

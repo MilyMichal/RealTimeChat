@@ -23,15 +23,6 @@ public class UserStorageService {
     public void saveUserToStorage(User user) {
         System.out.println("SAVE USER TO STORAGE DEBUG");
         if (user != null) {
-           /* if (userRepository.findUserByUserName(user.getUserName()).isEmpty()){
-                System.out.println(userRepository.findUserByUserName(user.getUserName()));
-                user.setPassword(passwordEncoder.encode(user.getPassword()));
-                user.setRoles("user");
-                userRepository.save(user);
-                return "Registration successful!";
-            }
-        }
-        return "User name already exist";*/
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRoles("user");
             userRepository.save(user);

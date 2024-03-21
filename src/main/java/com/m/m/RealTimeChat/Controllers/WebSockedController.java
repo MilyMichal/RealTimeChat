@@ -21,8 +21,6 @@ public class WebSockedController {
 
     //
     private final MessageHistoryService messageHistoryService;
-
-
     //
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
@@ -44,13 +42,19 @@ public class WebSockedController {
 
     @MessageMapping("/user")
     @SendTo("/topic/chat")
-    public List<OnlineUser> newUser(@Payload Message message, SimpMessageHeaderAccessor headerAccessor) {
+    public Message newUser(@Payload Message message, SimpMessageHeaderAccessor headerAccessor) {
         headerAccessor.getSessionAttributes().put("sender", message.getSender());
         messageHistoryService.saveMessage(message);
         onlineUserService.addOnlineUser(message.getSender());
-        messagingTemplate.convertAndSend("/topic/chat",message);
-
-        return onlineUserService.getAllOnlineUsers();
+        return message;
 
     }
+
+
+   /* @MessageMapping("/users")
+    @SendTo("/topic/chat")
+    public List<OnlineUser> newUser() {
+        return onlineUserService.getAllOnlineUsers();
+
+    }*/
 }

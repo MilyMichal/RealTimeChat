@@ -9,7 +9,10 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -35,6 +38,9 @@ public class WebSocketEventsController {
         Map<String,String> disconnectedUser = new HashMap<>();
         disconnectedUser.put("type","Leave");
         disconnectedUser.put("user",username);
+        //new feature
+        disconnectedUser.put("content",username + " just left the chatroom");
+        //
         messagingTemplate.convertAndSend("/topic/chat", disconnectedUser);
         System.out.println("Disconnect event: " + username);
 
