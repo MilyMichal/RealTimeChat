@@ -147,24 +147,12 @@ function onMessageReceived(payload) {
                                 usersContainer.insertAdjacentHTML("beforeend", user);
                                 let userBtn = document.querySelector("." + onlineUser.nickname);
 
-                                userBtn.addEventListener("click", () => {
-                                    if (chatWithElement.innerHTML !== "Public chat") {
-                                        document.querySelector("." + privateChatWith).style.setProperty("Background-color", "Azure");
-                                    }
-                                    userBtn.style.setProperty("Background-color", "blue");
-                                    publicBtn.style.setProperty("Background-color", "grey")
-                                    messageContainer.innerHTML = "";
-                                    if (userBtn.querySelector(".new-message-counter") !== null) {
-                                        userBtn.querySelector(".new-message-counter").remove();
-                                    }
+                                setUpOnlineUserBtn(userBtn,onlineUser.nickname);
 
-                                    chatWithElement.innerHTML = "Private chat with: " + onlineUser.nickname;
-                                    privateChatWith = onlineUser.nickname;
-                                    getHistory();
-                                });
                             }
                         });
                     });
+
 
             } else {
                 console.log(" var 2 triggered")
@@ -177,22 +165,10 @@ function onMessageReceived(payload) {
                         usersContainer.insertAdjacentHTML("beforeend", user);
 
                         let userBtn = document.querySelector("." + newestUser);
-                        userBtn.addEventListener("click", () => {
-                            if (chatWithElement.innerHTML !== "Public chat") {
-                                document.querySelector("." + privateChatWith).style.setProperty("Background-color", "Azure");
-                            }
-                            userBtn.style.setProperty("Background-color", "blue");
-                            publicBtn.style.setProperty("Background-color", "grey")
-                            messageContainer.innerHTML = "";
-                            if (userBtn.querySelector(".new-message-counter") !== null) {
-                                userBtn.querySelector(".new-message-counter").remove();
-                            }
-                            chatWithElement.innerHTML = "Private chat with: " + newestUser;
-                            privateChatWith = newestUser;
-                            getHistory();
-                        });
-                    });
 
+                        setUpOnlineUserBtn(userBtn,newestUser);
+
+                    });
             }
         }
 
@@ -200,9 +176,9 @@ function onMessageReceived(payload) {
 }
 
 
-        //function for connecting new user
+        //connecting new user
         function onConnectedSuccessfully() {
-            console.log("connected");
+            //console.log("connected");
             let date = new Date().toLocaleString();
             stompClient.subscribe("/topic/chat", onMessageReceived);
 
@@ -215,7 +191,7 @@ function onMessageReceived(payload) {
                     date: date
                 }));
         }
-        //"Public chat" switch button function
+        //"Public chat" switch button
         function switchToPublic() {
 
             if (chatWithElement.innerHTML !== "Public chat") {
@@ -229,7 +205,7 @@ function onMessageReceived(payload) {
                 getHistory();
             }
         }
-
+// getting message history form server
         function getHistory() {
             if (chatWithElement.innerHTML === "Public chat") {
                 fetch("http://localhost:28852/history/public")
@@ -265,6 +241,25 @@ function onMessageReceived(payload) {
                         });
                     });
             }
+
+
+        }
+// online user button set up
+        function setUpOnlineUserBtn(btn,newUser) {
+         btn.addEventListener("click", () => {
+                                    if (chatWithElement.innerHTML !== "Public chat") {
+                                        document.querySelector("." + privateChatWith).style.setProperty("Background-color", "Azure");
+                                    }
+                                    btn.style.setProperty("Background-color", "blue");
+                                    publicBtn.style.setProperty("Background-color", "grey")
+                                    messageContainer.innerHTML = "";
+                                    if (btn.querySelector(".new-message-counter") !== null) {
+                                        btn.querySelector(".new-message-counter").remove();
+                                    }
+                                    chatWithElement.innerHTML = "Private chat with: " + newUser;
+                                    privateChatWith = newUser;
+                                    getHistory();
+                                });
         }
     
 
