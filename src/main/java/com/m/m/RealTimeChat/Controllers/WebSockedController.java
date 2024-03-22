@@ -34,7 +34,7 @@ public class WebSockedController {
     @MessageMapping("/chat")
     @SendTo("/topic/chat")
     public Message sendMsg(Message msg) {
-
+        System.out.println("RECEIVED MSG DEBUG:" + msg);
         messageHistoryService.saveMessage(msg);
         return msg;
     }

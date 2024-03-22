@@ -7,13 +7,14 @@ let usersContainer = document.getElementById("users");
 let publicBtn = document.getElementById("public-chat-btn");
 let privateChatWith;
 
+
 let stompClient = null;
 
 register();
 
 var userNameElement = document.getElementById("user-data");
 var userName = userNameElement.getAttribute("data-user");
-console.log(userName);
+//console.log(userName);
 
 
 //event listener for deleting online user from list after closing chat page
@@ -38,7 +39,7 @@ msgInputWindow.addEventListener("keypress", (event) => {
 });
 
 
-//defined functions
+
 function register() {
 
     // establishing connection
@@ -90,13 +91,23 @@ function onMessageReceived(payload) {
         if (message.type === "Leave") {
             let date = new Date().toLocaleString();
             let disconnectedUser = message.user;
-            let disconnectedMsg = "<div class='message-container'> <div class='message'>" + message.content + "</div><div class='date'>" + date + "</div></div></div>";
+            let disconnectedMsg = "<div class='event-message-container'> <div class='event-message logout-event'>" + message.content + "</div></div>";
             messageContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
             if (usersContainer.querySelector("." + disconnectedUser)) {
                 usersContainer.querySelector("." + disconnectedUser).remove();
             }
         }
-
+        if (message.type === "logout") {
+            let date = new Date().toLocaleString();
+            let logOutMsg = {
+                 "content": message.content,
+                 "sender": message.sender,
+                 "date": date,
+                 "type": 'Leave',
+                 "sendTo": 'public'
+                 }
+        stompClient.send("/app/chat", {}, JSON.stringify(logOutMsg));
+        }
 
         // displaying newest message
         if (message.type === 'message') {
@@ -113,8 +124,10 @@ function onMessageReceived(payload) {
                 }
                 let incomingMsgUser = document.querySelector("." + message.sender);
                 let msgCounter = incomingMsgUser.querySelector(".new-message-counter");
+
                 usersContainer.insertBefore(incomingMsgUser, usersContainer.firstChild);
                 msgCounter.style.setProperty("visibility", "visible");
+
                 let count = parseInt(msgCounter.innerText) + 1;
                 msgCounter.innerText = count;
             }
@@ -129,8 +142,9 @@ function onMessageReceived(payload) {
             }
         }
 
+// displaying new user in chat and online user panel
         if (message.type === 'newUser') {
-            let welcomeMsg = "<div class='message-container'> <div class='message'>" + message.content + "</div><div class='date'>" + message.date + "</div></div></div>";
+            let welcomeMsg = "<div class='event-message-container'> <div class='event-message login-event'>" + message.content + "</div></div>";
             messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
 
             if (usersContainer.querySelectorAll("*").length === 0) {
@@ -213,10 +227,14 @@ function onMessageReceived(payload) {
                     .then(message => {
                         message.forEach((msg) => {
                             if (msg.type === "newUser") {
-                                let welcomeMsg = "<div class='message-container'><div class='message'> " + msg.content + "</div><div class='date'>" + msg.date + "</div></div></div>";
+                                let welcomeMsg = "<div class='event-message-container'><div class='event-message  login-event'> " + msg.content + "</div></div>";
                                 messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
-
-                            } else {
+                                }
+                            if(msg.type ==="Leave") {
+                                let disconnectedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + message.content + "</div></div>";
+                                messageContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
+                                }
+                            if (msg.type === "message") {
                                 let history =
                                     "<div class='message-container'><div class='sender'>"
                                     + msg.sender + "</div>"

@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OnlineUserService {
@@ -32,5 +33,9 @@ public class OnlineUserService {
         OnlineUser user = onlineUserRepository.findOnlineUserByNickname(name)
                 .orElseThrow(()-> new UsernameNotFoundException("Not found"));
         onlineUserRepository.delete(user);
+    }
+
+    public Optional<OnlineUser> findOnlineUser(String name) {
+       return onlineUserRepository.findOnlineUserByNickname(name);
     }
 }

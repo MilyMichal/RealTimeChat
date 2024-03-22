@@ -117,6 +117,44 @@
     flex-wrap: wrap;
     }
 
+.event-message-container {
+    /*background-color: MediumAquaMarine;*/
+    position: relative;
+    width: 95%;
+    height: 2vh;
+    border-color: black;
+    border-radius: 10px;
+    border: 1px inset;
+    /*text-align: left;*/
+    padding: 1px;
+    flex-shrink: 0;
+    margin: 2px;
+    flex-wrap: wrap;
+}
+
+.event-message {
+    font-family: "Caveat", sans-serif;
+    font-size: 18px;
+    font: Arial;
+    text-align: center;
+    position: relative;
+    }
+
+.login-event {
+    background-color: MediumAquaMarine;
+    text: yellow;
+    }
+
+.logout-event {
+    background-color: red;
+    text: red;
+    }
+
+
+    /*top: 30px;
+    left: 10px;*/
+    }
+
 /* Container for sending button,
  message text field and chat switch button*/
 .inputContainer {

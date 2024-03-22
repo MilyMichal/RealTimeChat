@@ -1,6 +1,8 @@
 package com.m.m.RealTimeChat.Controllers;
 
+import com.m.m.RealTimeChat.Models.Message;
 import com.m.m.RealTimeChat.Models.OnlineUserStorage;
+import com.m.m.RealTimeChat.Services.MessageHistoryService;
 import com.m.m.RealTimeChat.Services.OnlineUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -25,7 +27,7 @@ public class WebSocketEventsController {
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
-    public WebSocketEventsController( OnlineUserService onlineUserService) {
+    public WebSocketEventsController(OnlineUserService onlineUserService, MessageHistoryService messageHistoryService) {
         this.onlineUserService = onlineUserService;
     }
 
@@ -35,9 +37,15 @@ public class WebSocketEventsController {
 
         String username = (String) headerAccessor.getSessionAttributes().get("sender");
         onlineUserService.removeOnlineUser(username);
+        /*Message disconnectMsg = new Message();
+        disconnectMsg.setContent(username + " just left the chatroom");
+        disconnectMsg.setType("Leave");
+        disconnectMsg.setSender(username);
+        disconnectMsg.setSendTo("public");*/
+
         Map<String,String> disconnectedUser = new HashMap<>();
-        disconnectedUser.put("type","Leave");
-        disconnectedUser.put("user",username);
+        disconnectedUser.put("type","logout");
+        disconnectedUser.put("sender",username);
         //new feature
         disconnectedUser.put("content",username + " just left the chatroom");
         //

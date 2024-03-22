@@ -12,7 +12,7 @@ public class AppUserDetailService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public AppUserDetailService(UserRepository userRepository) {
+    public AppUserDetailService(UserRepository userRepository, OnlineUserService onlineUserService) {
         this.userRepository = userRepository;
     }
 
