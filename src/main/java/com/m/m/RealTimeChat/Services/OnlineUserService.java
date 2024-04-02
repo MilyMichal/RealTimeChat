@@ -2,6 +2,7 @@ package com.m.m.RealTimeChat.Services;
 
 import com.m.m.RealTimeChat.Models.OnlineUser;
 import com.m.m.RealTimeChat.Repository.OnlineUserRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,6 @@ public class OnlineUserService {
     }
 
     public Optional<OnlineUser> findOnlineUser(String name) {
-       return onlineUserRepository.findOnlineUserByNickname(name);
+            return onlineUserRepository.findOnlineUserByNickname(name);
     }
 }
