@@ -1,25 +1,40 @@
 package com.m.m.RealTimeChat.Configuration;
 
 import com.m.m.RealTimeChat.Services.AppUserDetailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.CompositeLogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.web.socket.WebSocketSession;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final CustomAuthenticationProvider customAuthenticationProvider;
+
     private final AppUserDetailService appUserDetailService;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplates;
+
 
     public SecurityConfig(CustomAuthenticationProvider customAuthenticationProvider, AppUserDetailService appUserDetailService) {
         this.customAuthenticationProvider = customAuthenticationProvider;
@@ -32,7 +47,7 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/", "/register", "/sessionError").permitAll()
+                        .requestMatchers("/", "/register", "/sessionError", "logout").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.loginPage("/login")
@@ -44,16 +59,20 @@ public class SecurityConfig {
 
                 .authenticationProvider(customAuthenticationProvider)
                 .userDetailsService(appUserDetailService)
-                /*.sessionManagement(session -> session
-                        //.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .sessionManagement(session -> session
+                        .invalidSessionUrl("/")
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(true)
-                        .expiredUrl("/sessionError"))*/
-
+                        .expiredUrl("/sessionError"))
                 .logout(logout -> logout.logoutSuccessUrl("/").permitAll()
-                        .deleteCookies("JSESSIONID").invalidateHttpSession(true))
+                        .addLogoutHandler(customLogoutHandler())
+                        .deleteCookies("JSESSIONID").invalidateHttpSession(true)
+                        .getLogoutHandlers().forEach(logoutHandler -> {
+                            System.out.println("DEBUG HANDLER: " + logoutHandler);
+                        }))/*forEach(System.out::println))*/
 
-                /*.csrf(AbstractHttpConfigurer::disable)*/
+                .csrf(AbstractHttpConfigurer::disable)
 
                 .build();
     }
@@ -73,5 +92,20 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    LogoutHandler customLogoutHandler() {
+        return new CustomLogoutHandler(messagingTemplates);
+    }
+
+
+   /* @Bean
+    public LogoutHandler customLogoutHandler() {
+        return new CustomLogoutHandler((request, response, authentication) ->
+
+            System.out.println("custom logout"));
+
+
+    }*/
 
 }

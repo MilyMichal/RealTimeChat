@@ -19,23 +19,22 @@ import java.util.List;
 @Controller
 public class WebSockedController {
 
-    //
+
     private final MessageHistoryService messageHistoryService;
-    //
-    @Autowired
-    private SimpMessageSendingOperations messagingTemplate;
+
     private final OnlineUserService onlineUserService;
 
-    public WebSockedController(MessageHistoryService messageHistoryService,OnlineUserService onlineUserService) {
+    public WebSockedController(MessageHistoryService messageHistoryService, OnlineUserService onlineUserService) {
         this.messageHistoryService = messageHistoryService;
         this.onlineUserService = onlineUserService;
     }
 
     @MessageMapping("/chat")
     @SendTo("/topic/chat")
-    public Message sendMsg(Message msg) {
+    public Message sendMsg(@Payload Message msg) {
         System.out.println("RECEIVED MSG DEBUG:" + msg);
         messageHistoryService.saveMessage(msg);
+        System.out.println("MESSAGE SAVING DEBUG: sendMsg method");
         return msg;
     }
 
@@ -43,18 +42,15 @@ public class WebSockedController {
     @MessageMapping("/user")
     @SendTo("/topic/chat")
     public Message newUser(@Payload Message message, SimpMessageHeaderAccessor headerAccessor) {
+        System.out.println("DEBUG USERS SESSION ID: " + headerAccessor.getSessionId());
         headerAccessor.getSessionAttributes().put("sender", message.getSender());
         messageHistoryService.saveMessage(message);
-        onlineUserService.addOnlineUser(message.getSender());
+        if (onlineUserService.findOnlineUser(message.getSender()).isEmpty()) {
+            onlineUserService.addOnlineUser(message.getSender());
+        }
+        System.out.println("MESSAGE SAVING DEBUG: newUser method");
         return message;
 
     }
 
-
-   /* @MessageMapping("/users")
-    @SendTo("/topic/chat")
-    public List<OnlineUser> newUser() {
-        return onlineUserService.getAllOnlineUsers();
-
-    }*/
 }

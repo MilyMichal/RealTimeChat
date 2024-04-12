@@ -52,4 +52,18 @@ public class SecurityUser implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
+    /*@Override
+    public boolean equals(Object obj) {
+        if (obj instanceof User) {
+            return user.getUserName().equals( ((User) obj).getUserName() );
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return user.getUserName() != null ? user.hashCode() :  0;
+    }*/
 }

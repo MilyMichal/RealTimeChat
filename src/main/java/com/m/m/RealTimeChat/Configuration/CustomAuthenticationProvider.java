@@ -3,12 +3,14 @@ package com.m.m.RealTimeChat.Configuration;
 import com.m.m.RealTimeChat.Errors.AccountAlreadyLoggedInException;
 import com.m.m.RealTimeChat.Services.AppUserDetailService;
 import com.m.m.RealTimeChat.Services.OnlineUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.session.SessionRepository;
 import org.springframework.stereotype.Component;
 
 @Component

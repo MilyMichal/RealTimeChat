@@ -19,16 +19,18 @@ var userName = userNameElement.getAttribute("data-user");
 
 //event listener for deleting online user from list after closing chat page
 window.addEventListener('beforeunload', function (event) {
-    fetch('http://localhost:28852/logout', {
-        method: 'POST'
-    })
-        .then(response => {
-            console.log("user " + userName + " disconnected")
-        })
-        .catch(error => {
-            console.error('Error while logout:', error);
-        });
-});
+    event.preventDefault(); // Zabraňuje zavření okna, dokud není dokončen odhlášení
+          try {
+                 const response = fetch('http://localhost:28852/logout', {
+                     method: 'POST'
+                 });
+
+                 console.log("user " + userName + " disconnected");
+             } catch (error) {
+                 console.error('Error while logout:', error);
+             }
+         });
+
 
 
 //event listener for sending msg by pressing Enter
@@ -90,23 +92,13 @@ function onMessageReceived(payload) {
     if (message.type) {
         if (message.type === "Leave") {
             let date = new Date().toLocaleString();
-            let disconnectedUser = message.user;
+            let disconnectedUser = message.sender;
             let disconnectedMsg = "<div class='event-message-container'> <div class='event-message logout-event'>" + message.content + "</div></div>";
             messageContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
             if (usersContainer.querySelector("." + disconnectedUser)) {
                 usersContainer.querySelector("." + disconnectedUser).remove();
             }
-        }
-        if (message.type === "logout") {
-            let date = new Date().toLocaleString();
-            let logOutMsg = {
-                 "content": message.content,
-                 "sender": message.sender,
-                 "date": date,
-                 "type": 'Leave',
-                 "sendTo": 'public'
-                 }
-        stompClient.send("/app/chat", {}, JSON.stringify(logOutMsg));
+
         }
 
         // displaying newest message
@@ -148,7 +140,7 @@ function onMessageReceived(payload) {
             messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
 
             if (usersContainer.querySelectorAll("*").length === 0) {
-                console.log(" var 1 triggered")
+                console.log(" var 1 triggered num of users " + usersContainer.querySelectorAll("*").length)
                 fetch("http://localhost:28852/users")
                     .then(response => response.json())
                     .then(message => {
@@ -169,7 +161,7 @@ function onMessageReceived(payload) {
 
 
             } else {
-                console.log(" var 2 triggered")
+                console.log(" var 2 triggered num of users " + usersContainer.querySelectorAll("*").length)
                 fetch("http://localhost:28852/users")
                     .then(response => response.json())
                     .then(message => {
@@ -231,9 +223,9 @@ function onMessageReceived(payload) {
                                 messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
                                 }
                             if(msg.type ==="Leave") {
-                                let disconnectedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + message.content + "</div></div>";
+                                let disconnectedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + msg.content + "</div></div>";
                                 messageContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
-                                }
+                                                              }
                             if (msg.type === "message") {
                                 let history =
                                     "<div class='message-container'><div class='sender'>"

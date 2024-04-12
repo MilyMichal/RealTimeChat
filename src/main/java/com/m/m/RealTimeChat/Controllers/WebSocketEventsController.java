@@ -1,3 +1,4 @@
+/*
 package com.m.m.RealTimeChat.Controllers;
 
 import com.m.m.RealTimeChat.Services.OnlineUserService;
@@ -29,7 +30,8 @@ public class WebSocketEventsController {
     public void disconnect(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
-        String username = (String) headerAccessor.getSessionAttributes().get("sender");
+        */
+/*String username = (String) headerAccessor.getSessionAttributes().get("sender");
         onlineUserService.removeOnlineUser(username);
         Map<String,String> disconnectedUser = new HashMap<>();
         disconnectedUser.put("type","logout");
@@ -37,10 +39,13 @@ public class WebSocketEventsController {
 
         disconnectedUser.put("content",username + " just left the chatroom");
 
-        messagingTemplate.convertAndSend("/topic/chat", disconnectedUser);
+        messagingTemplate.convertAndSend("/topic/chat", disconnectedUser);*//*
+
+
         System.out.println("Disconnect event: " + username);
 
     }
 
 }
 
+*/
