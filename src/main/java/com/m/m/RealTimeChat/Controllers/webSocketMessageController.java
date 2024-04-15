@@ -23,8 +23,8 @@ public class webSocketMessageController {
     private final MessageHistoryService messageHistoryService;
     private final OnlineUserService onlineUserService;
 
-    @Autowired
-    SessionRegistry sessionRegistry;
+    /*@Autowired
+    SessionRegistry sessionRegistry;*/
 
 
     public webSocketMessageController(MessageHistoryService messageHistoryService, OnlineUserService onlineUserService) {
@@ -46,7 +46,7 @@ public class webSocketMessageController {
 
     @GetMapping("/users")
     @ResponseBody
-    public List<OnlineUser> getUsers(HttpSession session) {
+    public List<OnlineUser> getUsers() {
 
         return onlineUserService.getAllOnlineUsers();
     }

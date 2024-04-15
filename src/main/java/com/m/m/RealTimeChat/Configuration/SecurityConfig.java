@@ -5,24 +5,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.logout.CompositeLogoutHandler;
+
 import org.springframework.security.web.authentication.logout.LogoutHandler;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+
 import org.springframework.security.web.session.HttpSessionEventPublisher;
-import org.springframework.web.socket.WebSocketSession;
+
 
 @Configuration
 @EnableWebSecurity
@@ -70,7 +67,7 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID").invalidateHttpSession(true)
                         .getLogoutHandlers().forEach(logoutHandler -> {
                             System.out.println("DEBUG HANDLER: " + logoutHandler);
-                        }))/*forEach(System.out::println))*/
+                        }))
 
                 .csrf(AbstractHttpConfigurer::disable)
 
@@ -98,14 +95,5 @@ public class SecurityConfig {
         return new CustomLogoutHandler(messagingTemplates);
     }
 
-
-   /* @Bean
-    public LogoutHandler customLogoutHandler() {
-        return new CustomLogoutHandler((request, response, authentication) ->
-
-            System.out.println("custom logout"));
-
-
-    }*/
 
 }

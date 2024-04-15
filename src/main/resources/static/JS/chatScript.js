@@ -14,21 +14,20 @@ register();
 
 var userNameElement = document.getElementById("user-data");
 var userName = userNameElement.getAttribute("data-user");
-//console.log(userName);
 
 
-//event listener for deleting online user from list after closing chat page
-window.addEventListener('beforeunload', function (event) {
-    event.preventDefault(); // Zabraňuje zavření okna, dokud není dokončen odhlášení
-          try {
-                 const response = fetch('http://localhost:28852/logout', {
+
+//event listener for logout user from list after closing chat page
+window.addEventListener('unload', async function (event) {
+              try {
+                 const response = await fetch('http://localhost:28852/logout', {
                      method: 'POST'
                  });
 
-                 console.log("user " + userName + " disconnected");
-             } catch (error) {
+                            } catch (error) {
                  console.error('Error while logout:', error);
              }
+             stompClient.disconnect();
          });
 
 
@@ -39,7 +38,6 @@ msgInputWindow.addEventListener("keypress", (event) => {
         send();
     }
 });
-
 
 
 function register() {
@@ -184,7 +182,7 @@ function onMessageReceived(payload) {
 
         //connecting new user
         function onConnectedSuccessfully() {
-            //console.log("connected");
+
             let date = new Date().toLocaleString();
             stompClient.subscribe("/topic/chat", onMessageReceived);
 
