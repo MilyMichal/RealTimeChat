@@ -27,7 +27,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     }
 
     @Override
-
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         UserDetails userDetails = appUserDetailService.loadUserByUsername(authentication.getName());
 

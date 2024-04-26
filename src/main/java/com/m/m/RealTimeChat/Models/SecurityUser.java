@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 
 public class SecurityUser implements UserDetails {
 
@@ -53,7 +54,19 @@ public class SecurityUser implements UserDetails {
         return true;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SecurityUser that = (SecurityUser) o;
+        return Objects.equals(user, that.user);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(user);
+    }
+}
     /*@Override
     public boolean equals(Object obj) {
         if (obj instanceof User) {
@@ -66,4 +79,3 @@ public class SecurityUser implements UserDetails {
     public int hashCode() {
         return user.getUserName() != null ? user.hashCode() :  0;
     }*/
-}

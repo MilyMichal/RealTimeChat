@@ -31,9 +31,20 @@
 <!---->
 <div id="user-data" th:data-user="${user}"></div>
 <!---->
-<!--<form th:action="@{/logout}" method="post">-->
-    <input type="button" value="Logout" onclick="logOutUser()">
-<!--</form>-->
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Logout">
+</form>
+
+<!-- >
+admin features
+<!-->
+<div class="admin-feat">
+    <select id="select" class="form-select" aria-label="Default select example">
+        <option value="0">select user</option>
+        <option th:each="user : ${users}" th:value="${user.nickname}" th:text="${user.nickname}"></option>
+    </select>
+    <button id="kick" type="button" onclick="kickUser()" >Kick user</button>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"
         integrity="sha512-aHuAnb+FZ/yM5zYvdiA8q0sxLdsBQ3PRwO8D/08qsenCLQ2gWsosB43Cn1X8esAz0IpaC7Ns5cAPyKIdJQ0hNw=="
@@ -43,7 +54,7 @@
         integrity="sha512-tL4PIUsPy+Rks1go4kQG8M8/ItpRMvKnbBjQm4d2DQnFwgcBYRRN00QdyQnWSCwNMsoY/MfJY8nHp2CzlNdtZA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-<script type="text/javascript" th:src="@{JS/chatScript.js}"></script>
+<script type="text/javascript" th:src="@{JS/adminChatScript.js}"></script>
 
 </body>
 </html>

@@ -24,7 +24,11 @@ public class UserStorageService {
         System.out.println("SAVE USER TO STORAGE DEBUG");
         if (user != null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setRoles("user");
+            if (user.getUserName().equals("Admin")) {
+                user.setRoles("admin");
+            } else {
+                user.setRoles("user");
+            }
             userRepository.save(user);
         }
     }

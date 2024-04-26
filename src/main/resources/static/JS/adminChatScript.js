@@ -6,7 +6,7 @@ let chatWithElement = document.getElementById("chat-with");
 let usersContainer = document.getElementById("users");
 let publicBtn = document.getElementById("public-chat-btn");
 let privateChatWith;
-var loggedOutByButton = false;
+let onlineUsers = document.getElementById("select");
 
 
 let stompClient = null;
@@ -19,11 +19,16 @@ var userName = userNameElement.getAttribute("data-user");
 
 
 //event listener for logout user from list after closing chat page
-window.addEventListener('unload', function (event) {
-    if (!loggedOutByButton) {
-        logOutUser();
-    }
+window.addEventListener('unload', async function (event) {
+    try {
+        const response = await fetch('http://localhost:28852/logout', {
+            method: 'POST'
+        });
 
+    } catch (error) {
+        console.error('Error while logout:', error);
+    }
+    stompClient.disconnect();
 });
 
 
@@ -92,16 +97,17 @@ function onMessageReceived(payload) {
             if (usersContainer.querySelector("." + disconnectedUser)) {
                 usersContainer.querySelector("." + disconnectedUser).remove();
             }
+            console.log("DEBUG LEAVE MESSAGE " + disconnectedUser)
+            removeKickerUserOption(disconnectedUser);
+        }
 
-        }
-        if (message.type === "kick") {
-            if (userName === message.sendTo) {
-                logOutUser();
-                alert("You have been kicked out by admin!");
-            }
-            let kickedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + message.content + "</div></div>";
-            messageContainer.insertAdjacentHTML("beforeend", kickedMsg);
-        }
+        /*    if (message.type === "kick") {
+               if(userName === message.sendTo) {
+                   fetch('http://localhost:28852/logout', {method: 'POST'});
+               }
+               let kickedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + message.content + "</div></div>";
+               messageContainer.insertAdjacentHTML("beforeend", kickedMsg);
+            }*/
 
         // displaying newest message
         if (message.type === 'message') {
@@ -140,6 +146,8 @@ function onMessageReceived(payload) {
         if (message.type === 'newUser') {
             let welcomeMsg = "<div class='event-message-container'> <div class='event-message login-event'>" + message.content + "</div></div>";
             messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
+
+            addOnlineUserOption(message.sender);
 
             if (usersContainer.querySelectorAll("*").length === 0) {
                 console.log(" var 1 triggered num of users " + usersContainer.querySelectorAll("*").length)
@@ -237,6 +245,7 @@ function getHistory() {
                         messageContainer.insertAdjacentHTML("beforeend", history);
                     }
 
+
                 });
             });
     } else {
@@ -273,8 +282,9 @@ function setUpOnlineUserBtn(btn, newUser) {
         getHistory();
     });
 }
+// admin features:
 
-
+//Kick selected user from chat
 function kickUser() {
     var select = document.getElementById("select").value;
     let date = new Date().toLocaleString();
@@ -288,22 +298,24 @@ function kickUser() {
         }));
 }
 
-function logOutUser() {
-    loggedOutByButton = true;
-    try {
-        fetch('http://localhost:28852/logout', {
-            method: 'POST'
-        }).then(response => {
-            if (response.ok) {
-                window.location.href = 'http://localhost:28852/login';
-            }
-        });
-    } catch (error) {
-        console.error('Error while logout:', error);
+// remove kicked user from option list
+function removeKickerUserOption(kickedUser) {
+    var options = select.options;
+    for (var i = 0; i < options.length; i++) {
+        if (options[i].value === kickedUser) {
+            select.remove(i);
+            break;
+        }
     }
-    stompClient.disconnect();
 }
 
+// add incoming user to option list
+function addOnlineUserOption(loggedUser) {
+    var option = document.createElement("option");
+    option.text = loggedUser;
+    option.value = loggedUser;
+    select.add(option);
+}
 
 
 

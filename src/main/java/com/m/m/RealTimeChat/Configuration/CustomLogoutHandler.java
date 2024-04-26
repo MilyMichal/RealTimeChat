@@ -61,7 +61,7 @@ public class CustomLogoutHandler implements LogoutHandler {
                     throw new RuntimeException(e);
                 }
 
-                messagingTemplate.convertAndSend("/topic/chat", message); ///topic/chat
+                messagingTemplate.convertAndSend("/topic/chat", message);
                 if (onlineUserService.findOnlineUser(user).isPresent()) {
                     onlineUserService.removeOnlineUser(user);
                 }
