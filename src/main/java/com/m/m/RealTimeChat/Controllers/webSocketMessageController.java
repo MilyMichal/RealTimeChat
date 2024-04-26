@@ -5,15 +5,11 @@ import com.m.m.RealTimeChat.Models.Message;
 import com.m.m.RealTimeChat.Models.OnlineUser;
 import com.m.m.RealTimeChat.Services.MessageHistoryService;
 import com.m.m.RealTimeChat.Services.OnlineUserService;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
 import java.util.List;
 
 
@@ -22,10 +18,6 @@ public class webSocketMessageController {
 
     private final MessageHistoryService messageHistoryService;
     private final OnlineUserService onlineUserService;
-
-    /*@Autowired
-    SessionRegistry sessionRegistry;*/
-
 
     public webSocketMessageController(MessageHistoryService messageHistoryService, OnlineUserService onlineUserService) {
         this.messageHistoryService = messageHistoryService;

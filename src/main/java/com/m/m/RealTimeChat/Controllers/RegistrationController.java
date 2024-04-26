@@ -2,13 +2,10 @@ package com.m.m.RealTimeChat.Controllers;
 
 import com.m.m.RealTimeChat.Models.User;
 import com.m.m.RealTimeChat.Services.UserStorageService;
-import org.springframework.dao.DataIntegrityViolationException;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.sql.SQLException;
-import java.util.Objects;
 
 @Controller
 @RequestMapping("/register")

@@ -3,14 +3,13 @@ package com.m.m.RealTimeChat.Configuration;
 import com.m.m.RealTimeChat.Errors.AccountAlreadyLoggedInException;
 import com.m.m.RealTimeChat.Services.AppUserDetailService;
 import com.m.m.RealTimeChat.Services.OnlineUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.session.SessionRepository;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -30,7 +29,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         UserDetails userDetails = appUserDetailService.loadUserByUsername(authentication.getName());
 
-        /*System.out.println("AUTH DEBUG IS USE ONLINE: " + onlineUserService.findOnlineUser(userDetails.getUsername()).isPresent());*/
         if (onlineUserService.findOnlineUser(userDetails.getUsername()).isPresent()) {
             System.out.println("AUTH DEBUG: AUTHENTICATION FAILED");
             throw new AccountAlreadyLoggedInException("User \"" + authentication.getName() + "\" is already online");

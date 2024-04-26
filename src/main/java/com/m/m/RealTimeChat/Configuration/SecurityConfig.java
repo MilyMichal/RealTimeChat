@@ -1,7 +1,5 @@
 package com.m.m.RealTimeChat.Configuration;
 
-//import com.m.m.RealTimeChat.ErrorHandlers.CustomExpiredSessionStrategy;
-
 import com.m.m.RealTimeChat.Services.AppUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -67,9 +65,7 @@ public class SecurityConfig {
                 .logout(logout -> logout.logoutSuccessUrl("/").permitAll()
                         .addLogoutHandler(customLogoutHandler())
                         .deleteCookies("JSESSIONID").invalidateHttpSession(true)
-                        /*.getLogoutHandlers().forEach(logoutHandler -> {
-                            System.out.println("DEBUG HANDLER: " + logoutHandler);
-                        })*/)
+                       )
 
                 .csrf(AbstractHttpConfigurer::disable)
 
