@@ -21,7 +21,8 @@ public class AppUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
                return userRepository.findUserByUserName(username)
-               .map(SecurityUser::new).orElseThrow(()-> new UsernameNotFoundException("User doesn't exist"));
+               .map(SecurityUser::new)
+               .orElseThrow(()-> new UsernameNotFoundException("User doesn't exist"));
     }
 
     @Override

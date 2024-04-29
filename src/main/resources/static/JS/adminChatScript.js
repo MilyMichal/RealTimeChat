@@ -147,7 +147,9 @@ function onMessageReceived(payload) {
             let welcomeMsg = "<div class='event-message-container'> <div class='event-message login-event'>" + message.content + "</div></div>";
             messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
 
-            addOnlineUserOption(message.sender);
+                if (message.sender != userName) {
+                    addOnlineUserOption(message.sender);
+                }
 
             if (usersContainer.querySelectorAll("*").length === 0) {
                 console.log(" var 1 triggered num of users " + usersContainer.querySelectorAll("*").length)
@@ -287,6 +289,7 @@ function setUpOnlineUserBtn(btn, newUser) {
 //Kick selected user from chat
 function kickUser() {
     var select = document.getElementById("select").value;
+    if (select != "0") {
     let date = new Date().toLocaleString();
     stompClient.send("/app/chat", {}, JSON.stringify(
         {
@@ -296,6 +299,7 @@ function kickUser() {
             sendTo: select,
             date: date
         }));
+        };
 }
 
 // remove kicked user from option list

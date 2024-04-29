@@ -41,7 +41,8 @@ admin features
 <div class="admin-feat">
     <select id="select" class="form-select" aria-label="Default select example">
         <option value="0">select user</option>
-        <option th:each="user : ${users}" th:value="${user.nickname}" th:text="${user.nickname}"></option>
+        <option th:each="user : ${users}" th:if="${user.nickname != 'Admin'" th:value="${user.nickname}" th:text="${user.nickname}"></option>
+
     </select>
     <button id="kick" type="button" onclick="kickUser()" >Kick user</button>
 </div>
