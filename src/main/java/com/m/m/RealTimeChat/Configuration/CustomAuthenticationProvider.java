@@ -35,10 +35,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         }
 
         if (!userDetails.getUsername().equals(authentication.getName())) {
+            System.out.println("AUTHENTICATION USERNAME EXCEPTION DEBUG ");
             throw new BadCredentialsException("Username not found");
         }
         if (!userDetails.getPassword().equals(authentication.getCredentials().toString())) {
             throw new BadCredentialsException("Incorrect password");
+        }
+        if (!userDetails.isAccountNonLocked()) {
+            throw new BadCredentialsException("Your account is banned!");
         }
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

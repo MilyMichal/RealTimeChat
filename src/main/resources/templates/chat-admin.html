@@ -38,13 +38,32 @@
 <!-- >
 admin features
 <!-->
-<div class="admin-feat">
+<div class="admin-feat" id="kick-option">
     <select id="select" class="form-select" aria-label="Default select example">
         <option value="0">select user</option>
-        <option th:each="user : ${users}" th:if="${user.nickname != 'Admin'" th:value="${user.nickname}" th:text="${user.nickname}"></option>
+        <option th:each="user : ${users}"
+                th:value="${user.nickname}"
+                th:text="${user.nickname}">
+        </option>
 
     </select>
-    <button id="kick" type="button" onclick="kickUser()" >Kick user</button>
+    <button id="kick-btn" type="button" onclick="kickUser()">Kick user</button>
+</div>
+<div class="admin-feat" id="ban-option">
+    <button id="BAN-btn" type="button" onclick="banUser()">BAN user</button>
+
+</div>
+
+<div class="admin-feat" id="unBan-option">
+    <select id="banned-users" class="form-select" aria-label="Default select example">
+        <option value="0">select user</option>
+        <option th:each="bannedUser : ${bannedUsers}"
+                th:value="${bannedUser.userName}"
+                th:text="${bannedUser.userName}">
+        </option>
+    </select>
+     <button id="unBan-Btn" type="button" onclick="unBanUser()">Unban user</button>
+
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"

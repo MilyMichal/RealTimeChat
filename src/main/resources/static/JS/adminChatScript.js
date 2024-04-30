@@ -100,14 +100,13 @@ function onMessageReceived(payload) {
             console.log("DEBUG LEAVE MESSAGE " + disconnectedUser)
             removeKickerUserOption(disconnectedUser);
         }
+if(message.type === "UNBAN") {
+                fetch("http://localhost:28852/admin/unban/" + message.sendTo, {
+                                method: 'POST'
+                            });
 
-        /*    if (message.type === "kick") {
-               if(userName === message.sendTo) {
-                   fetch('http://localhost:28852/logout', {method: 'POST'});
-               }
-               let kickedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + message.content + "</div></div>";
-               messageContainer.insertAdjacentHTML("beforeend", kickedMsg);
-            }*/
+}
+
 
         // displaying newest message
         if (message.type === 'message') {
@@ -288,8 +287,9 @@ function setUpOnlineUserBtn(btn, newUser) {
 
 //Kick selected user from chat
 function kickUser() {
-    var select = document.getElementById("select").value;
+
     if (select != "0") {
+     var select = document.getElementById("select").value;
     let date = new Date().toLocaleString();
     stompClient.send("/app/chat", {}, JSON.stringify(
         {
@@ -320,6 +320,39 @@ function addOnlineUserOption(loggedUser) {
     option.value = loggedUser;
     select.add(option);
 }
+
+// BAN selected user
+function banUser() {
+ var select = document.getElementById("select").value;
+    if (select != "0") {
+        let date = new Date().toLocaleString();
+        stompClient.send("/app/chat", {}, JSON.stringify(
+            {
+                sender: 'admin',
+                type: 'BAN',
+                content: select + ' was BANNED by admin!',
+                sendTo: select,
+                date: date
+            }));
+            };
+}
+
+function unBanUser() {
+ var select = document.getElementById("banned-users").value;
+    if (select != "0") {
+        let date = new Date().toLocaleString();
+        stompClient.send("/app/chat", {}, JSON.stringify(
+            {
+                sender: 'admin',
+                type: 'UNBAN',
+                content: select + ' was set free by admin!',
+                sendTo: select,
+                date: date
+            }));
+            };
+}
+
+
 
 
 

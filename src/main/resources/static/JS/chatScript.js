@@ -103,6 +103,27 @@ function onMessageReceived(payload) {
             messageContainer.insertAdjacentHTML("beforeend", kickedMsg);
         }
 
+        /////
+        if (message.type === "BAN") {
+         if (userName === message.sendTo) {
+            fetch("http://localhost:28852/admin/banned/" + message.sendTo, {
+                        method: 'POST'
+                    }).then(response => {
+                        if (response.ok) {
+                       fetch('http://localhost:28852/logout', {
+                                   method: 'POST'
+                               });
+                            window.location.href = 'http://localhost:28852/login';
+                            alert("Admin banned you")
+                        }
+
+                    });
+             }
+        }
+
+
+
+
         // displaying newest message
         if (message.type === 'message') {
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === "public") {

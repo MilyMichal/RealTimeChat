@@ -2,6 +2,7 @@ package com.m.m.RealTimeChat.Services;
 
 import com.m.m.RealTimeChat.Repository.UserRepository;
 import org.springframework.data.domain.Example;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.m.m.RealTimeChat.Models.User;
@@ -41,6 +42,25 @@ public class UserStorageService {
         if (userRepository.exists(Example.of(user))) {
             userRepository.delete(user);
         }
+    }
+
+    public void banUser(String user) {
+
+        System.out.println("BANNED DEBUG: user " + user + " is BANNED!");
+        User banndedUser = userRepository.findUserByUserName(user).orElseThrow(() -> new UsernameNotFoundException("User doesn't exist"));
+        banndedUser.setNonBanned(false);
+        userRepository.save(banndedUser);
+
+    }
+
+    public void unBanUser(String user) {
+        User allowedUser = userRepository.findUserByUserName(user).orElseThrow(() -> new UsernameNotFoundException("User doesn't exist"));
+        allowedUser.setNonBanned(true);
+        userRepository.save(allowedUser);
+    }
+
+    public List<User> getBannedUsers() {
+       return userRepository.findAllBannedUsers();
     }
 }
 

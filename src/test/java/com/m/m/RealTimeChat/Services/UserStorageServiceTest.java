@@ -13,7 +13,7 @@ class UserStorageServiceTest {
     @Autowired
     UserStorageService userStorageService;
     Long id  = 3L;
-    User user = new User(id,"Test","admin","maill@admuuin.cz","admin");
+    User user = new User(id,"Azrael","azrael","maill@admuuin.cz","user",true);
     @Test
     void addUser(){
 
@@ -30,6 +30,12 @@ class UserStorageServiceTest {
     void removeUserFromStorage() {
         userStorageService.removeUserFromStorage(user);
 
-        assertEquals(0,userStorageService.getUsersList().size());
+        assertEquals(2,userStorageService.getUsersList().size());
+    }
+
+    @Test
+    void getAllBannedUsers() {
+        assertEquals(2,userStorageService.getBannedUsers().size());
+
     }
 }

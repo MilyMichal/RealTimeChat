@@ -5,6 +5,7 @@ import com.m.m.RealTimeChat.Services.UserStorageService;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -24,7 +25,7 @@ public class RegistrationController {
     }
 
     @PostMapping
-    public String registerNerUser(Model model, User user, @RequestParam("retypedPass") String pass) {
+    public String registerNerUser(Model model, @Validated User user, @RequestParam("retypedPass") String pass) {
         if (pass.equals(user.getPassword())) {
             userStorageService.saveUserToStorage(user);
             model.addAttribute("message", "Registration Succeed!");
