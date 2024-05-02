@@ -49,8 +49,6 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form.loginPage("/login")
                         .permitAll()
-
-
                         .failureUrl("/login-error")
                 )
 
@@ -58,7 +56,7 @@ public class SecurityConfig {
                 .userDetailsService(appUserDetailService)
                 .sessionManagement(session -> session
                         .invalidSessionUrl("/")
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).maximumSessions(1)
                         /*.maximumSessions(1)
                         .maxSessionsPreventsLogin(true)
                         .expiredUrl("/sessionError")*/)

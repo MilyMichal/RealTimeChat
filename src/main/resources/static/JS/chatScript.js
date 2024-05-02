@@ -113,7 +113,8 @@ function onMessageReceived(payload) {
                        fetch('http://localhost:28852/logout', {
                                    method: 'POST'
                                });
-                            window.location.href = 'http://localhost:28852/login';
+                               stompClient.disconnect();
+                            window.location.href = 'http://localhost:28852/';
                             alert("Admin banned you")
                         }
 

@@ -6,7 +6,8 @@ let chatWithElement = document.getElementById("chat-with");
 let usersContainer = document.getElementById("users");
 let publicBtn = document.getElementById("public-chat-btn");
 let privateChatWith;
-let onlineUsers = document.getElementById("select");
+let onlineUsers = document.getElementById("online-users");
+let bannedUsers = document.getElementById("banned-users")
 
 
 let stompClient = null;
@@ -98,12 +99,13 @@ function onMessageReceived(payload) {
                 usersContainer.querySelector("." + disconnectedUser).remove();
             }
             console.log("DEBUG LEAVE MESSAGE " + disconnectedUser)
-            removeKickerUserOption(disconnectedUser);
+            removeUserFromSelect(disconnectedUser,onlineUsers);
         }
-if(message.type === "UNBAN") {
+            if(message.type === "UNBAN") {
                 fetch("http://localhost:28852/admin/unban/" + message.sendTo, {
                                 method: 'POST'
                             });
+                            removeUserFromSelect(message.sendTo,bannedUsers);
 
 }
 
@@ -147,7 +149,7 @@ if(message.type === "UNBAN") {
             messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
 
                 if (message.sender != userName) {
-                    addOnlineUserOption(message.sender);
+                    addUserToSelect(message.sender,onlineUsers);
                 }
 
             if (usersContainer.querySelectorAll("*").length === 0) {
@@ -303,27 +305,27 @@ function kickUser() {
 }
 
 // remove kicked user from option list
-function removeKickerUserOption(kickedUser) {
-    var options = select.options;
+function removeUserFromSelect(user, options) {
+    /*var options = select.options;*/
     for (var i = 0; i < options.length; i++) {
-        if (options[i].value === kickedUser) {
-            select.remove(i);
+        if (options[i].value === user) {
+            options.remove(i);
             break;
         }
     }
 }
 
 // add incoming user to option list
-function addOnlineUserOption(loggedUser) {
-    var option = document.createElement("option");
-    option.text = loggedUser;
-    option.value = loggedUser;
-    select.add(option);
+function addUserToSelect(user,options) {
+    var newOption = document.createElement("option");
+    newOption.text = user;
+    newOption.value = user;
+    options.add(newOption);
 }
 
 // BAN selected user
 function banUser() {
- var select = document.getElementById("select").value;
+ var select = document.getElementById("online-users").value;
     if (select != "0") {
         let date = new Date().toLocaleString();
         stompClient.send("/app/chat", {}, JSON.stringify(
@@ -334,6 +336,7 @@ function banUser() {
                 sendTo: select,
                 date: date
             }));
+            addUserToSelect(select,bannedUsers);
             };
 }
 

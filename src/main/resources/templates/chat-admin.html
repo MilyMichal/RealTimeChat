@@ -39,7 +39,7 @@
 admin features
 <!-->
 <div class="admin-feat" id="kick-option">
-    <select id="select" class="form-select" aria-label="Default select example">
+    <select id="online-users" class="form-select" aria-label="Default select example">
         <option value="0">select user</option>
         <option th:each="user : ${users}"
                 th:value="${user.nickname}"
