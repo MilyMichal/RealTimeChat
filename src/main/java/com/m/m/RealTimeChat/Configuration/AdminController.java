@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/admin")
 @PreAuthorize("admin")
@@ -20,8 +22,9 @@ public class AdminController {
 
     @PostMapping("/banned/{user}")
     public void banUser(@PathVariable String user) {
+        LocalDateTime banExp = LocalDateTime.now().plusMinutes(1);
         System.out.println("RESTCONTROLLER DEBUG METHOD");
-        userStorageService.banUser(user);
+        userStorageService.banUser(user, banExp);
     }
 
     @PostMapping("/unban/{user}")

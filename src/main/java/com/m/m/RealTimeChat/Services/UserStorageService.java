@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.m.m.RealTimeChat.Models.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -44,11 +45,12 @@ public class UserStorageService {
         }
     }
 
-    public void banUser(String user) {
+    public void banUser(String user, LocalDateTime banExp) {
 
         System.out.println("BANNED DEBUG: user " + user + " is BANNED!");
         User banndedUser = userRepository.findUserByUserName(user).orElseThrow(() -> new UsernameNotFoundException("User doesn't exist"));
         banndedUser.setNonBanned(false);
+        banndedUser.setBanExpiration(banExp);
         userRepository.save(banndedUser);
 
     }
@@ -56,6 +58,7 @@ public class UserStorageService {
     public void unBanUser(String user) {
         User allowedUser = userRepository.findUserByUserName(user).orElseThrow(() -> new UsernameNotFoundException("User doesn't exist"));
         allowedUser.setNonBanned(true);
+        allowedUser.setBanExpiration(null);
         userRepository.save(allowedUser);
     }
 

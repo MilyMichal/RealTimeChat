@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -32,6 +33,8 @@ public class User implements Serializable {
     String roles;
 
     boolean isNonBanned = true;
+
+    LocalDateTime banExpiration;
 
 
 }

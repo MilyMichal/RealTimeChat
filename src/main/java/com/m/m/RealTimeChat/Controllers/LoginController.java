@@ -1,5 +1,6 @@
 package com.m.m.RealTimeChat.Controllers;
 
+import com.m.m.RealTimeChat.Services.AdminService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.AuthenticationException;
@@ -11,26 +12,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class LoginController {
 
+    private final AdminService adminService;
+
+    public LoginController(AdminService adminService) {
+        this.adminService = adminService;
+    }
 
     @GetMapping("/login-error")
-    public String getLoginPage(HttpServletRequest request, Model model)/*@RequestParam(name = "error",required = false)String error)*/ {
-        HttpSession session = request.getSession(false);
-        String errorMessage = null;
-        if (session != null) {
-            AuthenticationException exception = (AuthenticationException) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-            if (exception != null) {
-                if (exception.getMessage().contains("locked")) {
-                    errorMessage = "Your account is BANNED!";
-                } else {
-                    errorMessage = exception.getMessage()/*exception.getMessage()*/;
-                }
-            }
-            model.addAttribute("message", errorMessage);
-        }
+    public String getLoginPage(HttpServletRequest request, Model model) {
+        model.addAttribute("message", adminService.manageErrorMessage(request));
         return "loginPage";
     }
-        @GetMapping("/login")
-        public String getLoginPage () {
-            return "loginPage";
-        }
+
+    @GetMapping("/login")
+    public String getLoginPage() {
+        return "loginPage";
     }
+}

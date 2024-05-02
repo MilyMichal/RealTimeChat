@@ -94,6 +94,8 @@ function onMessageReceived(payload) {
             }
 
         }
+
+
         if (message.type === "kick") {
             if (userName === message.sendTo) {
                 logOutUser();
@@ -103,7 +105,7 @@ function onMessageReceived(payload) {
             messageContainer.insertAdjacentHTML("beforeend", kickedMsg);
         }
 
-        /////
+
         if (message.type === "BAN") {
          if (userName === message.sendTo) {
             fetch("http://localhost:28852/admin/banned/" + message.sendTo, {

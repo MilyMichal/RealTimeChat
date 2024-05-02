@@ -99,15 +99,19 @@ function onMessageReceived(payload) {
                 usersContainer.querySelector("." + disconnectedUser).remove();
             }
             console.log("DEBUG LEAVE MESSAGE " + disconnectedUser)
-            removeUserFromSelect(disconnectedUser,onlineUsers);
+            removeUserFromSelect(disconnectedUser, onlineUsers);
         }
-            if(message.type === "UNBAN") {
-                fetch("http://localhost:28852/admin/unban/" + message.sendTo, {
-                                method: 'POST'
-                            });
-                            removeUserFromSelect(message.sendTo,bannedUsers);
+        if (message.type === "UNBAN") {
+            fetch("http://localhost:28852/admin/unban/" + message.sendTo, {
+                method: 'POST'
+            });
+            removeUserFromSelect(message.sendTo, bannedUsers);
 
-}
+        }
+
+        if(message.type === "BanExpired") {
+            removeUserFromSelect(message.sendTo, bannedUsers);
+        }
 
 
         // displaying newest message
@@ -148,9 +152,9 @@ function onMessageReceived(payload) {
             let welcomeMsg = "<div class='event-message-container'> <div class='event-message login-event'>" + message.content + "</div></div>";
             messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
 
-                if (message.sender != userName) {
-                    addUserToSelect(message.sender,onlineUsers);
-                }
+            if (message.sender != userName) {
+                addUserToSelect(message.sender, onlineUsers);
+            }
 
             if (usersContainer.querySelectorAll("*").length === 0) {
                 console.log(" var 1 triggered num of users " + usersContainer.querySelectorAll("*").length)
@@ -291,17 +295,17 @@ function setUpOnlineUserBtn(btn, newUser) {
 function kickUser() {
 
     if (select != "0") {
-     var select = document.getElementById("select").value;
-    let date = new Date().toLocaleString();
-    stompClient.send("/app/chat", {}, JSON.stringify(
-        {
-            sender: 'admin',
-            type: 'kick',
-            content: select + ' was kicked out by admin!',
-            sendTo: select,
-            date: date
-        }));
-        };
+        var select = document.getElementById("online-users").value;
+        let date = new Date().toLocaleString();
+        stompClient.send("/app/chat", {}, JSON.stringify(
+            {
+                sender: 'admin',
+                type: 'kick',
+                content: select + ' was kicked out by admin!',
+                sendTo: select,
+                date: date
+            }));
+    };
 }
 
 // remove kicked user from option list
@@ -316,7 +320,7 @@ function removeUserFromSelect(user, options) {
 }
 
 // add incoming user to option list
-function addUserToSelect(user,options) {
+function addUserToSelect(user, options) {
     var newOption = document.createElement("option");
     newOption.text = user;
     newOption.value = user;
@@ -325,9 +329,12 @@ function addUserToSelect(user,options) {
 
 // BAN selected user
 function banUser() {
- var select = document.getElementById("online-users").value;
+    var select = document.getElementById("online-users").value;
     if (select != "0") {
         let date = new Date().toLocaleString();
+        /*date.setMinutes(date.getMinutes() + 1);
+        let banExp = date.toLocaleString();
+*/
         stompClient.send("/app/chat", {}, JSON.stringify(
             {
                 sender: 'admin',
@@ -336,12 +343,12 @@ function banUser() {
                 sendTo: select,
                 date: date
             }));
-            addUserToSelect(select,bannedUsers);
-            };
+        addUserToSelect(select, bannedUsers);
+    };
 }
 
 function unBanUser() {
- var select = document.getElementById("banned-users").value;
+    var select = document.getElementById("banned-users").value;
     if (select != "0") {
         let date = new Date().toLocaleString();
         stompClient.send("/app/chat", {}, JSON.stringify(
@@ -352,7 +359,7 @@ function unBanUser() {
                 sendTo: select,
                 date: date
             }));
-            };
+    };
 }
 
 
