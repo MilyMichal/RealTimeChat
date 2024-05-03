@@ -27,7 +27,7 @@ public class UserStorageService {
         if (user != null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             if (user.getUserName().equals("Admin")) {
-                user.setRoles("admin");
+                user.setRoles("ADMIN");
             } else {
                 user.setRoles("user");
             }
@@ -64,6 +64,11 @@ public class UserStorageService {
 
     public List<User> getBannedUsers() {
        return userRepository.findAllBannedUsers();
+    }
+
+
+    public User getUser(String name) {
+        return userRepository.findUserByUserName(name).orElseThrow(() -> new UsernameNotFoundException("Username doesn't exist"));
     }
 }
 

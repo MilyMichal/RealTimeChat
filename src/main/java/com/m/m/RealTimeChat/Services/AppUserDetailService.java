@@ -1,5 +1,5 @@
 package com.m.m.RealTimeChat.Services;
-import com.m.m.RealTimeChat.Models.SecurityUser;
+import com.m.m.RealTimeChat.Models.SecuredUser;
 import com.m.m.RealTimeChat.Repository.UserRepository;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,8 +21,8 @@ public class AppUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
                return userRepository.findUserByUserName(username)
-               .map(SecurityUser::new)
-               .orElseThrow(()-> new UsernameNotFoundException("User doesn't exist"));
+               .map(SecuredUser::new)
+               .orElseThrow(()-> new UsernameNotFoundException("There is no user with username \"" + username + "\""));
     }
 
     @Override

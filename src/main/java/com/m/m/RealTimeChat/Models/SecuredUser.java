@@ -8,11 +8,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
-public class SecurityUser implements UserDetails {
+public class SecuredUser implements UserDetails {
 
     private final User user;
 
-    public SecurityUser(User user) {
+    public SecuredUser(User user) {
         this.user = user;
     }
 
@@ -59,7 +59,7 @@ public class SecurityUser implements UserDetails {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SecurityUser that = (SecurityUser) o;
+        SecuredUser that = (SecuredUser) o;
         return Objects.equals(user, that.user);
     }
 

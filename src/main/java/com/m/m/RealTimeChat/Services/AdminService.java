@@ -1,5 +1,6 @@
 package com.m.m.RealTimeChat.Services;
 
+import com.m.m.RealTimeChat.Models.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -29,11 +30,7 @@ public class AdminService {
         if (session != null) {
             AuthenticationException exception = (AuthenticationException) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
             if (exception != null) {
-                if (exception.getMessage().contains("locked")) {
-                    return "Your account is BANNED!";
-                }
                 return exception.getMessage();
-
             }
         }
         return "Unknown error";

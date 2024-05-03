@@ -95,7 +95,6 @@ function onMessageReceived(payload) {
 
         }
 
-
         if (message.type === "kick") {
             if (userName === message.sendTo) {
                 logOutUser();
@@ -109,7 +108,7 @@ function onMessageReceived(payload) {
         if (message.type === "BAN") {
          if (userName === message.sendTo) {
             fetch("http://localhost:28852/admin/banned/" + message.sendTo, {
-                        method: 'POST'
+                        method: 'PUT'
                     }).then(response => {
                         if (response.ok) {
                        fetch('http://localhost:28852/logout', {

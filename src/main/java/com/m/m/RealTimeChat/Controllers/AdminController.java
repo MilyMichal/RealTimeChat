@@ -1,17 +1,13 @@
-package com.m.m.RealTimeChat.Configuration;
+package com.m.m.RealTimeChat.Controllers;
 
 import com.m.m.RealTimeChat.Services.UserStorageService;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/admin")
-@PreAuthorize("admin")
 public class AdminController {
 
     private final UserStorageService userStorageService;
@@ -19,17 +15,17 @@ public class AdminController {
     public AdminController(UserStorageService userStorageService) {
         this.userStorageService = userStorageService;
     }
-
-    @PostMapping("/banned/{user}")
-    public void banUser(@PathVariable String user) {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/banned/{userName}")
+    public void banUser(@PathVariable String userName) {
         LocalDateTime banExp = LocalDateTime.now().plusMinutes(1);
         System.out.println("RESTCONTROLLER DEBUG METHOD");
-        userStorageService.banUser(user, banExp);
+        userStorageService.banUser(userName, banExp);
     }
-
-    @PostMapping("/unban/{user}")
-    public void unBanUser(@PathVariable String user) {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/unban/{userName}")
+    public void unBanUser(@PathVariable String userName) {
         System.out.println("RESTCONTROLLER UNBAN DEBUG METHOD");
-        userStorageService.unBanUser(user);
+        userStorageService.unBanUser(userName);
     }
 }

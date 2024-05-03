@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -13,7 +15,7 @@ class UserStorageServiceTest {
     @Autowired
     UserStorageService userStorageService;
     Long id  = 3L;
-    User user = new User(id,"Azrael","azrael","maill@admuuin.cz","user",true);
+    User user = new User(id,"Azrael","azrael","maill@admuuin.cz","user",true, LocalDateTime.now());
     @Test
     void addUser(){
 

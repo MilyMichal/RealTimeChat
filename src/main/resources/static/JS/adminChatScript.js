@@ -103,7 +103,7 @@ function onMessageReceived(payload) {
         }
         if (message.type === "UNBAN") {
             fetch("http://localhost:28852/admin/unban/" + message.sendTo, {
-                method: 'POST'
+                method: 'PUT'
             });
             removeUserFromSelect(message.sendTo, bannedUsers);
 
