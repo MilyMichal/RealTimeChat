@@ -1,14 +1,57 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Welcome page</title>
+    <meta charset="utf-8">
+    <!--<link rel="stylesheet" type="text/css" th:href="@{CSS/welcomePage_style.css}">-->
+    <link rel="stylesheet" type="text/css" href="/static/CSS/welcomePage_style.css">
 </head>
 <body>
-Welcome to out realTimeChat!
-<form th:action="@{/chat}" method="get">
+<div class="grid-container">
+    <div class="item1 basicItem">
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur consequuntur provident sapiente ullam unde. Adipisci consequatur et facilis hic illum molestiae obcaecati, perferendis, provident quo, repellat saepe sint tempora tempore!
+        </p>
+    </div>
+    <div class="item2 basicItem">
+        <p>About project</p>
+    </div>
+    <form class="item3 basicItem" th:action="@{/chat}" method="get">
+        <input class="enter_btn" type="submit"  value="Enter chat">
+    </form>
+    <!--<button class="item3 basicItem" type="button">
+        Open chat
+    </button>-->
+    <div class="item4 basicItem">
+        <h1>Introduction</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Debitis doloribus earum enim illum, quae recusandae similique. Aliquam consequatur consequuntur eligendi, eos, id, minima quae quam quidem recusandae rem soluta totam?</p>
+    </div>
+    <div class="item5 basicItem">
+        <p>This is my test projectThis is my test projectThis is my test projectThis is my test projectThis is my test
+            projectThis is my test project</p>
+    </div>
+
+</div>
+
+
+<!--Welcome to my realTimeChat!
+<div class="mainView">
+    <div class="container">
+        <div class="radius rectangle-top-left"></div>
+        <div class="radius rectangle-top-right"></div>
+        <div class="radius rectangle-bottom-right"></div>
+        <div class="radius square-center"></div>
+        <div class="radius rectangle-bottom-left"></div>
+    </div>
+</div>-->
+
+<!--<div class="photo-container">
+    <div class="photo">
+    <img src="/static/Images/profileImg.jpg">
+    </div>
+    </div>-->
+<!--<form th:action="@{/chat}" method="get">
     <input type="submit" value="Open Chat">
 
-</form>
+</form>-->
 </body>
 </html>

@@ -318,7 +318,7 @@ function logOutUser() {
             method: 'POST'
         }).then(response => {
             if (response.ok) {
-                window.location.href = 'http://localhost:28852/login';
+                window.location.href = 'http://localhost:28852/';
             }
         });
     } catch (error) {
