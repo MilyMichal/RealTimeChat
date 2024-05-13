@@ -1,39 +1,94 @@
 /* Welcome screen with */
-.loginScreen {
+/*.loginScreen {
     position: absolute;
     top: 50%;
     left: 50%;
-    }
+    }*/
 
+.chat-window {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-headers {
+    display: flex;
+}
+
+.chat-main-windows {
+    display: flex;
+    flex-direction: row;
+    align-content: flex-start;
+    gap: 10px;
+    
+}
+
+.online-users {
+    flex-grow: 1;
+    text-align: center;
+}
 /* Top chat header displaying name of current chat*/
 #chat-with {
-    /*visibility: hidden;*/
     background-color: grey;
-    width: 90vw;
-    height: 25px;
+    flex-grow: 4;
+    /* width: 90vw;
+    height: 25px;*/
     text-align: center;
 }
 /* Main container for other chat parts */
-.chat {
+/*.chat {
  width: 90vw;
- /*visibility: hidden;*/
+ 
  display: flex;
  flex-direction: row;
  flex: 1;
-    }
+    }/**/
 
 /* Users displaying window */
 #users {
-    overflow-y: auto;
+    /*overflow-y: auto;
         height: 50vh;
-        width: 90vw;
+        width: 30vw;
         padding: 5px;
         border: 1px inset;
         display: flex;
         flex-direction: column;
         align-items: center;
-        flex:1;
-    }
+        flex-grow:1;*/
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /*position: relative;*/
+    width: 100%;
+    height:100%;
+    /*padding: 10px 1rem;*/
+    /*cursor: pointer;*/
+    /*border-bottom: 1px solid #f0f4f8;*/
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    background-color: rgb(72 186 245 / 0.47);
+}
+
+.online-user-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 25%;
+    flex-grow: 2;
+    margin:0px 0px 10px 0px;
+}
+
+.online-users-header {
+    height: 30px;
+    width: 100%;
+    text-align: center;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    background-color: rgb(72 186 245 / 0.47);
+} 
+
+}
 
 /* Each online user display settings */
 .user-container {
@@ -42,25 +97,24 @@
     background-color: Azure;
     height: 25px;
     width: 88%;
-    display:flex;
+    /*display:flex;*/
     border-radius: 10px;
     border: outline;
-
     text-align: center;
     cursor: pointer;
 }
 
 .new-message-counter {
- /* visibility: hidden;*/
-  color: red;
-  border-radius: 6px;
-  width:  15px;
-  height: 15px;
-  align-self: center;
+    /* visibility: hidden;*/
+    color: red;
+    border-radius: 6px;
+    width: 15px;
+    height: 15px;
+    align-self: center;
 }
 
 .user {
-  flex-grow: 8;
+    /*flex-grow: 8;*/
 }
 
 /* Messages displaying window */
@@ -72,9 +126,9 @@
     border: 1px inset;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    flex: 3;
-    }
+    /*align-items: center;*/
+    /*flex-grow: 3;*/
+}
 
 /* Message object settings*/
 .date {
@@ -83,7 +137,7 @@
     position: absolute;
     top: 10px;
     right: 10px;
-    }
+}
 
 .message {
     font-family: "Caveat", sans-serif;
@@ -92,18 +146,83 @@
     position: absolute;
     top: 30px;
     left: 10px;
-    }
+}
 
-.sender  {
+.sender {
     font-family: "Audiowide", sans-serif;
     position: absolute;
     top: 10px;
     left: 10px;
-    }
+}
 
 /* Window for message displaying */
+.new-message-container {
+    /*background-color: red;*/
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    width: 75%;
+    height: auto;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+
+.revert {
+    flex-direction: row-reverse;
+    align-self: flex-end;
+}
+/*.message-content {
+    height: auto;
+    overflow-y: auto;
+    background-color: rgb(165, 159, 159, 0.59);
+    padding: 15px;
+}*/
+.new-message {
+    background-color: rgb(165, 159, 159, 0.59);
+    padding: 15px;
+    border-radius: 10px;
+    /*border-top-left-radius: 0;*/
+    height: auto;
+    overflow-y: auto;
+    flex-grow: 4;
+    order: 1;
+    text-align: left;
+}
+
+.left-msg {
+    border-top-left-radius: 0;
+}
+
+.right-msg {
+    border-top-right-radius: 0;
+}
+
+.new-sender {
+    text-align: center;
+    padding: 0px 15px 0px 15px;
+    /*position:relative;*/
+    top: 10px;
+    left: 10px;
+    /*flex-grow: 1;*/
+}
+
+.new-date {
+    color: blue;
+    font: Courier New;
+    /*text-align:left;*/
+    font-size: 12px;
+}
+
+.profile-img {
+    border-radius: 40px;
+    width: 80px;
+    height: 80px;
+}
+
 
 .message-container {
+    /*flex-grow: 4;*/
     position: relative;
     width: 95%;
     height: 8vh;
@@ -112,96 +231,83 @@
     border: 1px inset;
     text-align: left;
     padding: 10px;
-    flex-shrink: 0;
+    /*flex-shrink: 0;*/
     margin: 2px;
-    flex-wrap: wrap;
-    }
-
-.event-message-container {
-    /*background-color: MediumAquaMarine;*/
-    position: relative;
-    width: 95%;
-    height: 2vh;
-    border-color: black;
-    border-radius: 10px;
-    border: 1px inset;
-    /*text-align: left;*/
-    padding: 1px;
-    flex-shrink: 0;
-    margin: 2px;
-    flex-wrap: wrap;
+    /*flex-wrap: wrap;*/
 }
 
+
+
 .event-message {
+    /* border-top: 1px inset;*/
     font-family: "Caveat", sans-serif;
     font-size: 18px;
-    font: Arial;
+    padding: 3px;
+    /*font: Arial;*/
     text-align: center;
     position: relative;
-    }
+    margin: 8px;
+}
 
 .login-event {
-    background-color: MediumAquaMarine;
-    text: yellow;
-    }
+    background-image: linear-gradient(to right, white, #c9f2c7, white );
+}
 
 .logout-event {
-    background-color: red;
-    text: red;
-    }
+    background-image: linear-gradient(to right, white, #fcb5b5, white );
+}
 
 
-    /*top: 30px;
+/*top: 30px;
     left: 10px;*/
-    }
+}
 
 /* Container for sending button,
  message text field and chat switch button*/
 .inputContainer {
-/*visibility: hidden;*/
-display: flex;
-align-items: center;
-justify-content: space-around;
+    /*visibility: hidden;*/
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
 }
 
 /* Text field for writing messages */
 #input-msg {
-      padding: 10px;
-      height: 50px;
-      width: 85%;
-      border-radius: 10px;
-      margin: 5px;
-
-      }
+    padding: 10px;
+    height: 50px;
+    width: 85%;
+    border-radius: 10px;
+    margin: 5px;
+}
 
 /* Message send button */
 #send-msg-btn {
-   width: 60px;
-   height: 50px;
-   cursor: pointer;
-   margin: 8px;
-   }
+    width: 60px;
+    height: 50px;
+    cursor: pointer;
+    margin: 8px;
+}
 
-#send-msg-btn:hover {
-    border: outset;
+    #send-msg-btn:hover {
+        border: outset;
     }
 
-#send-msg-btn:active {
-    border: inset;
+    #send-msg-btn:active {
+        border: inset;
     }
 
 button img {
     width: 50%;
     height: 100%;
     position: relative;
-    }
+}
 
 /* Public to USer chat switching button*/
 #public-chat-btn {
-   width: 28%;
-   height: 50px;
-   cursor: pointer;
-   background-color: blue;
-
-
+    width: 100%;
+    height: 50px;
+    cursor: pointer;
+    /*background-color: blue;*/
+    background-color: rgb(72 186 245 / 0.47);
+    border-radius: 10px;
 }

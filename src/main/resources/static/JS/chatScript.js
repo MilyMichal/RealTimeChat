@@ -92,7 +92,6 @@ function onMessageReceived(payload) {
             if (usersContainer.querySelector("." + disconnectedUser)) {
                 usersContainer.querySelector("." + disconnectedUser).remove();
             }
-
         }
 
         if (message.type === "kick") {
@@ -104,35 +103,40 @@ function onMessageReceived(payload) {
             messageContainer.insertAdjacentHTML("beforeend", kickedMsg);
         }
 
-
         if (message.type === "BAN") {
-         if (userName === message.sendTo) {
-            fetch("http://localhost:28852/admin/banned/" + message.sendTo, {
-                        method: 'PUT'
-                    }).then(response => {
-                        if (response.ok) {
-                       fetch('http://localhost:28852/logout', {
-                                   method: 'POST'
-                               });
-                               stompClient.disconnect();
-                            window.location.href = 'http://localhost:28852/';
-                            alert("Admin banned you")
-                        }
-
-                    });
-             }
+            if (userName === message.sendTo) {
+                fetch("http://localhost:28852/admin/banned/" + message.sendTo, {
+                    method: 'PUT'
+                }).then(response => {
+                    if (response.ok) {
+                        fetch('http://localhost:28852/logout', {
+                            method: 'POST'
+                        });
+                        stompClient.disconnect();
+                        window.location.href = 'http://localhost:28852/';
+                        alert("Admin banned you")
+                    }
+                });
+            }
         }
-
-
 
 
         // displaying newest message
         if (message.type === 'message') {
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === "public") {
-                let html = "<div class='message-container'><div class='sender'>" + message.sender + "</div>"
-                    + "<div class='message'>" + message.content + "</div><div class='date'>" + message.date + "</div></div>";
-                messageContainer.insertAdjacentHTML("beforeend", html);
-                msgInputWindow.value = "";
+                if (message.sender === userName) {
+                    let html = "<div class='new-message-container revert'><div class='new-sender'>" + message.sender + "</div>"
+                        + "<div class='new-message right-msg'><div class='new-date'>"+ message.date + "</div>" + message.content + "</div></div></div>";
+                    messageContainer.insertAdjacentHTML("beforeend", html);
+                    msgInputWindow.value = "";
+
+                } else {
+                    let html = "<div class='new-message-container'><div class='new-sender'>" + message.sender + "</div>"
+                                                       + "<div class='new-message left-msg'><div class='new-date'>"+ message.date + "</div>" + message.content + "</div></div></div>";
+                    messageContainer.insertAdjacentHTML("beforeend", html);
+                    msgInputWindow.value = "";
+
+                }
             }
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === userName) {
 
@@ -151,11 +155,24 @@ function onMessageReceived(payload) {
 
             if ((userName == message.sendTo && message.sender == privateChatWith) ||
                 (message.sendTo == privateChatWith && message.sender == userName)) {
+                if (message.sender === userName) {
+                    let html = "<div class='new-message-container revert'><div class='new-sender'>" + message.sender + "</div>"
+                                                       + "<div class='new-message right-msg'><div class='new-date'>"+ message.date + "</div>" + message.content + "</div></div>";
+                    messageContainer.insertAdjacentHTML("beforeend", html);
+                    msgInputWindow.value = "";
 
-                let html = "<div class='message-container'><div class='sender'>" + message.sender + "</div>"
+                } else {
+                    let html = "<div class='new-message-container'><div class='new-sender'>" + message.sender + "</div>"
+                     + "<div class='new-message left-msg'><div class='new-date'>"+ message.date + "</div>" + message.content + "</div></div>";
+                    messageContainer.insertAdjacentHTML("beforeend", html);
+                    msgInputWindow.value = "";
+
+
+                }
+                /*let html = "<div class='message-container'><div class='sender'>" + message.sender + "</div>"
                     + "<div class='message'>" + message.content + "</div><div class='date'>" + message.date + "</div></div>";
                 messageContainer.insertAdjacentHTML("beforeend", html);
-                msgInputWindow.value = "";
+                msgInputWindow.value = "";*/
             }
         }
 
@@ -251,15 +268,21 @@ function getHistory() {
                         messageContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
                     }
                     if (msg.type === "message") {
-                        let history =
-                            "<div class='message-container'><div class='sender'>"
-                            + msg.sender + "</div>"
-                            + "<div class='message'>" + msg.content + "</div><div class='date'>"
-                            + msg.date + "</div></div>";
+                    let history;
+                        if (msg.sender === userName) {
+                            history =
+                                "<div class='new-message-container revert'><div class='new-sender'>"
+                                + msg.sender + "</div>"
+                                + "<div class='new-message right-msg'><div class='new-date'>" + msg.date +"</div>" + msg.content + "</div></div>";
 
+                        } else {
+                            history =
+                                "<div class='new-message-container'><div class='new-sender'>"
+                                + msg.sender + "</div>"
+                                + "<div class='new-message left-msg'><div class='date'>" + msg.date + "</div>"+ msg.content + "</div></div>";
+                        }
                         messageContainer.insertAdjacentHTML("beforeend", history);
                     }
-
                 });
             });
     } else {
