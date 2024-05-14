@@ -2,19 +2,15 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <!--<link rel="stylesheet" type="text/css" th:href="@{CSS/chat_style.css}">-->
-    <link rel="stylesheet" type="text/css" href="/static/CSS/chat_style.css">
+    <link rel="stylesheet" type="text/css" th:href="@{CSS/chat_style.css}">
+    <!--<link rel="stylesheet" type="text/css" href="/static/CSS/chat_style.css">-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Caveat">
     <title>Chat</title>
 
 </head>
 <body>
-<div class="chat-window">
-    <!--<div class="chat-headers">
-        <div class="online-users">Online users</div>
-        <div id="chat-with">Public chat</div>
-    </div>-->
+<div class="chat-body">
     <div class="chat-main-windows">
         <!--<div class="chat">-->
         <div class="online-user-panel">
@@ -25,55 +21,57 @@
             </div>
             <button id="public-chat-btn" type="button" onclick="switchToPublic()">Public chat</button>
         </div>
-        <div id="messages">
-            <!---->
-            <div class="new-message-container revert ">
-                <div class="new-sender"> Askir
-                    <img class="profile-img" src="/static/Images/profileImg.jpg" alt="avatar">
-                </div>
-                <div class="new-message right-msg">
-                    <div class="new-date">22.1.2024</div>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
-                    laboriosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae in
-                    molestias officia sed sint ullam.
+        <div class="chat-window">
+            <div id="chat-with">Public chat</div>
+            <div id="messages">
+                <!---->
+                <!-- <div class="new-message-container revert ">
+                     <div class="new-sender"> Askir
+                         <img class="profile-img" src="/static/Images/profileImg.jpg" alt="avatar">
+                     </div>
+                     <div class="new-message right-msg">
+                         <div class="new-date">22.1.2024</div>
+                         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
+                         laboriosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
+                         in
+                         molestias officia sed sint ullam.
 
-                </div>
-            </div>
+                     </div>
+                 </div>
 
-            <div class="new-message-container">
-                <div class="new-sender"> Askir
-                    <img class="profile-img" src="/static/Images/profileImg.jpg" alt="avatar">
-                    <!--<div class="new-date">22.1.2024</div>--></div>
-                <div class="new-message left-msg">
-                    <div class="new-date">22.1.2024</div>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
-                    laboriosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae in
-                    molestias officia sed sint ullam.
+                 <div class="new-message-container">
+                     <div class="new-sender"> Askir
+                         <img class="profile-img" src="/static/Images/profileImg.jpg" alt="avatar">
+                         &lt;!&ndash;<div class="new-date">22.1.2024</div>&ndash;&gt;</div>
+                     <div class="new-message left-msg">
+                         <div class="new-date">22.1.2024</div>
+                         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
+                         laboriosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
+                         in
+                         molestias officia sed sint ullam.
 
-                </div>
+                     </div>
+                 </div>
+                 &lt;!&ndash;<div class="event-message-container">&ndash;&gt;
+                 <div class='event-message logout-event'>
+                     Skaman just logged out.
+                 </div>
+                 &lt;!&ndash;            </div>&ndash;&gt;
+                 &lt;!&ndash;<div class="event-message-container">&ndash;&gt;
+                 <div class='event-message login-event'>
+                     Skaman just enter the chat.
+                 </div>-->
+                <!--</div>-->
             </div>
-            <!--<div class="event-message-container">-->
-            <div class='event-message logout-event'>
-                Skaman just logged out.
-            </div>
-            <!--            </div>-->
-            <!--<div class="event-message-container">-->
-            <div class='event-message login-event'>
-                Skaman just enter the chat.
-            </div>
-            <!--</div>-->
         </div>
     </div>
 
-
-</div>
-
-<div class="inputContainer">
-<!--    <button id="public-chat-btn" type="button" onclick="switchToPublic()">Public chat</button>-->
-    <input id="input-msg" placeholder="Write a message here">
-    <button type="submit" id="send-msg-btn" onclick="send()" name="send_msg_btn" value="Send message">
-        <img src="https://icons.getbootstrap.com/assets/icons/send.svg" alt="Chybí obrázek"/>
-    </button>
+    <div class="inputContainer">
+        <input id="input-msg" placeholder="Write a message here">
+        <button type="submit" id="send-msg-btn" onclick="send()" name="send_msg_btn" value="Send message">
+            <img src="https://icons.getbootstrap.com/assets/icons/send.svg" alt="Chybí obrázek"/>
+        </button>
+    </div>
 </div>
 <!---->
 <div id="user-data" th:data-user="${user}"></div>

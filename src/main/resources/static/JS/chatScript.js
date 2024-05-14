@@ -126,13 +126,13 @@ function onMessageReceived(payload) {
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === "public") {
                 if (message.sender === userName) {
                     let html = "<div class='new-message-container revert'><div class='new-sender'>" + message.sender + "</div>"
-                        + "<div class='new-message right-msg'><div class='new-date'>"+ message.date + "</div>" + message.content + "</div></div></div>";
+                        + "<div class='new-message right-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div></div>";
                     messageContainer.insertAdjacentHTML("beforeend", html);
                     msgInputWindow.value = "";
 
                 } else {
                     let html = "<div class='new-message-container'><div class='new-sender'>" + message.sender + "</div>"
-                                                       + "<div class='new-message left-msg'><div class='new-date'>"+ message.date + "</div>" + message.content + "</div></div></div>";
+                        + "<div class='new-message left-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div></div>";
                     messageContainer.insertAdjacentHTML("beforeend", html);
                     msgInputWindow.value = "";
 
@@ -157,13 +157,13 @@ function onMessageReceived(payload) {
                 (message.sendTo == privateChatWith && message.sender == userName)) {
                 if (message.sender === userName) {
                     let html = "<div class='new-message-container revert'><div class='new-sender'>" + message.sender + "</div>"
-                                                       + "<div class='new-message right-msg'><div class='new-date'>"+ message.date + "</div>" + message.content + "</div></div>";
+                        + "<div class='new-message right-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div>";
                     messageContainer.insertAdjacentHTML("beforeend", html);
                     msgInputWindow.value = "";
 
                 } else {
                     let html = "<div class='new-message-container'><div class='new-sender'>" + message.sender + "</div>"
-                     + "<div class='new-message left-msg'><div class='new-date'>"+ message.date + "</div>" + message.content + "</div></div>";
+                        + "<div class='new-message left-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div>";
                     messageContainer.insertAdjacentHTML("beforeend", html);
                     msgInputWindow.value = "";
 
@@ -268,18 +268,18 @@ function getHistory() {
                         messageContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
                     }
                     if (msg.type === "message") {
-                    let history;
+                        let history;
                         if (msg.sender === userName) {
                             history =
                                 "<div class='new-message-container revert'><div class='new-sender'>"
                                 + msg.sender + "</div>"
-                                + "<div class='new-message right-msg'><div class='new-date'>" + msg.date +"</div>" + msg.content + "</div></div>";
+                                + "<div class='new-message right-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
 
                         } else {
                             history =
                                 "<div class='new-message-container'><div class='new-sender'>"
                                 + msg.sender + "</div>"
-                                + "<div class='new-message left-msg'><div class='date'>" + msg.date + "</div>"+ msg.content + "</div></div>";
+                                + "<div class='new-message left-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
                         }
                         messageContainer.insertAdjacentHTML("beforeend", history);
                     }

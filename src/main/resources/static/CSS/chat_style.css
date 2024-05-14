@@ -5,10 +5,22 @@
     left: 50%;
     }*/
 
+body {
+    background-image: linear-gradient(to right, #2196f3, #5eb1bf );
+}
+
+/* Main container for other chat parts */
+.chat-body {
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+}
+
 .chat-window {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    width: 100%;
 }
 
 .chat-headers {
@@ -18,9 +30,10 @@
 .chat-main-windows {
     display: flex;
     flex-direction: row;
+    padding: 8px;
     align-content: flex-start;
     gap: 10px;
-    
+    width: 90%;
 }
 
 .online-users {
@@ -29,20 +42,23 @@
 }
 /* Top chat header displaying name of current chat*/
 #chat-with {
-    background-color: grey;
-    flex-grow: 4;
+    /* background-color: grey;
+    flex-grow: 4;*/
     /* width: 90vw;
     height: 25px;*/
+    height: 30px;
+    width: 100%;
+    text-align: center;
+    padding-top: 8px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    background-color: #00000045;
+    border: outset;
+    border-color: #00000045;
     text-align: center;
 }
-/* Main container for other chat parts */
-/*.chat {
- width: 90vw;
- 
- display: flex;
- flex-direction: row;
- flex: 1;
-    }/**/
+
+
 
 /* Users displaying window */
 #users {
@@ -60,33 +76,41 @@
     align-items: center;
     /*position: relative;*/
     width: 100%;
-    height:100%;
+    height: 100%;
     /*padding: 10px 1rem;*/
     /*cursor: pointer;*/
     /*border-bottom: 1px solid #f0f4f8;*/
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    background-color: rgb(72 186 245 / 0.47);
+    /*border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;*/
+    /*background-color: rgb(72 186 245 / 0.47);*/
+    Background-color: #00000045;
+    border: outset;
+    border-color: #00000045;
 }
 
 .online-user-panel {
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: relative;
+    /*position: relative;*/
     width: 25%;
-    flex-grow: 2;
-    margin:0px 0px 10px 0px;
+    /*min-width: 20%;*/
+    /*flex-grow: 2;*/
+    /*margin:0px 0px 10px 0px;*/
 }
 
 .online-users-header {
     height: 30px;
     width: 100%;
     text-align: center;
+    padding-top: 8px;
+    padding-bottom: 5px;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
-    background-color: rgb(72 186 245 / 0.47);
-} 
+    background-color: #00000045;
+    border: outset;
+    border-color: #00000045;
+}
 
 }
 
@@ -120,14 +144,17 @@
 /* Messages displaying window */
 #messages {
     overflow-y: auto;
-    height: 50vh;
-    width: 90vw;
-    padding: 5px;
-    border: 1px inset;
+    height: 70vh;
+    width: 100%;
+    /*padding: 5px;*/
+    /*border: 1px inset;*/
     display: flex;
     flex-direction: column;
-    /*align-items: center;*/
-    /*flex-grow: 3;*/
+    Background-color: #00000045;
+    border: outset;
+    border-color: #00000045;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
 }
 
 /* Message object settings*/
@@ -250,42 +277,45 @@
 }
 
 .login-event {
-    background-image: linear-gradient(to right, white, #c9f2c7, white );
+    background-image: linear-gradient(to right, #00000005, #c9f2c784, #00000005 );
 }
 
 .logout-event {
-    background-image: linear-gradient(to right, white, #fcb5b5, white );
+    background-image: linear-gradient(to right, #00000005, #fcb5b57c, #00000005 );
 }
 
 
 /*top: 30px;
-    left: 10px;*/
-}
+    left: 10px;
+}*/
 
 /* Container for sending button,
  message text field and chat switch button*/
 .inputContainer {
-    /*visibility: hidden;*/
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    /*justify-content: flex-start;*/
+    /*background-color:red;*/
+    width: 90%;
+    height: 90px;
 }
+
 
 /* Text field for writing messages */
 #input-msg {
-    padding: 10px;
     height: 50px;
-    width: 85%;
-    border-radius: 10px;
-    margin: 5px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    flex-grow: 2;
 }
 
 /* Message send button */
 #send-msg-btn {
-    width: 60px;
-    height: 50px;
+    height: 56px;
     cursor: pointer;
-    margin: 8px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    width: 50px;
 }
 
     #send-msg-btn:hover {
@@ -308,6 +338,10 @@ button img {
     height: 50px;
     cursor: pointer;
     /*background-color: blue;*/
-    background-color: rgb(72 186 245 / 0.47);
-    border-radius: 10px;
+    /*/background-color: rgb(72 186 245 / 0.47);*/
+    background-color: #00000045;
+    border: outset;
+    border-color: #00000045;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
 }
