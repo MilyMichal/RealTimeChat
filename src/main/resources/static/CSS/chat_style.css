@@ -1,9 +1,4 @@
-/* Welcome screen with */
-/*.loginScreen {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    }*/
+
 
 body {
     background-image: linear-gradient(to right, #2196f3, #5eb1bf );
@@ -77,6 +72,7 @@ body {
     /*position: relative;*/
     width: 100%;
     height: 100%;
+    padding-top: 10px;
     /*padding: 10px 1rem;*/
     /*cursor: pointer;*/
     /*border-bottom: 1px solid #f0f4f8;*/
@@ -86,6 +82,8 @@ body {
     Background-color: #00000045;
     border: outset;
     border-color: #00000045;
+    gap:10px;
+    
 }
 
 .online-user-panel {
@@ -128,6 +126,22 @@ body {
     cursor: pointer;
 }
 
+.new-user-container {
+    display: flex;
+    flex-direction: row;
+    background-color: #00000000;
+    height: 55px;
+    width: 100%;
+    border: none;
+    gap: 15px;
+    /*display:flex;*/
+
+
+
+    cursor: pointer;
+}
+
+
 .new-message-counter {
     /* visibility: hidden;*/
     color: red;
@@ -135,6 +149,13 @@ body {
     width: 15px;
     height: 15px;
     align-self: center;
+}
+.new-user {
+    align-self: baseline;
+    text-align: center;
+    flex: 3;
+    font-size: 16px;
+    color: white;
 }
 
 .user {
@@ -247,6 +268,13 @@ body {
     height: 80px;
 }
 
+.profile-img-online {
+    border-radius: 40px;
+    width: 50px;
+    height: 50px;
+    border: 1px solid white;
+}
+
 
 .message-container {
     /*flex-grow: 4;*/
@@ -298,6 +326,7 @@ body {
     /*background-color:red;*/
     width: 90%;
     height: 90px;
+    
 }
 
 
@@ -306,6 +335,7 @@ body {
     height: 50px;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
+    background-color: #00000075;
     flex-grow: 2;
 }
 
@@ -315,6 +345,7 @@ body {
     cursor: pointer;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
+    background-color: #00000075;
     width: 50px;
 }
 

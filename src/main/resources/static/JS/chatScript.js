@@ -190,7 +190,7 @@ function onMessageReceived(payload) {
                         message.forEach(onlineUser => {
                             console.log("DEBUG TRIGGER 1 EACH USER: " + onlineUser.nickname);
                             if (onlineUser.nickname !== userName) {
-                                let user = "<button class='user-container " + onlineUser.nickname + "' type='button'><div class='user'>" + onlineUser.nickname + "</div></button>"
+                                let user = "<button class='new-user-container " + onlineUser.nickname + "' type='button'><div class='new-user'>" + onlineUser.nickname + "</div></button>"
 
                                 usersContainer.insertAdjacentHTML("beforeend", user);
                                 let userBtn = document.querySelector("." + onlineUser.nickname);
@@ -209,7 +209,7 @@ function onMessageReceived(payload) {
                     .then(message => {
                         let newestUser = message[message.length - 1].nickname;
                         console.log("DEBUG NER USER: " + newestUser);
-                        let user = "<button class='user-container " + newestUser + "' type='button'><div class='user'>" + newestUser + "</div></button>"
+                        let user = "<button class='new-user-container " + newestUser + "' type='button'><div class='new-user'>" + newestUser + "</div></button>"
                         usersContainer.insertAdjacentHTML("beforeend", user);
 
                         let userBtn = document.querySelector("." + newestUser);
@@ -245,11 +245,13 @@ function switchToPublic() {
         let activeBtn = document.querySelector("." + privateChatWith);
         chatWithElement.innerHTML = "Public chat";
         messages.innerHTML = "";
-        publicBtn.style.setProperty("background-color", "blue");
+        /*publicBtn.style.setProperty("background-color", "blue");*/
+        
         if (activeBtn) {
-            activeBtn.style.setProperty("Background-color", "Azure");
+            activeBtn.style.setProperty("Background-color", "#00000000");
         }
         getHistory();
+        publicBtn.disabled = true;
     }
 }
 // getting message history form server
@@ -290,10 +292,23 @@ function getHistory() {
             .then(response => response.json())
             .then(message => {
                 message.forEach((msg) => {
-                    let history = "<div class='message-container'><div class='sender'>"
+                    /*let history = "<div class='message-container'><div class='sender'>"
                         + msg.sender + "</div>"
                         + "<div class='message'>" + msg.content + "</div><div class='date'>"
-                        + msg.date + "</div></div>";
+                        + msg.date + "</div></div>";*/
+                    let history;
+                    if (msg.sender === userName) {
+                        history =
+                            "<div class='new-message-container revert'><div class='new-sender'>"
+                            + msg.sender + "</div>"
+                            + "<div class='new-message right-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+
+                    } else {
+                        history =
+                            "<div class='new-message-container'><div class='new-sender'>"
+                            + msg.sender + "</div>"
+                            + "<div class='new-message left-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+                    }
                     messageContainer.insertAdjacentHTML("beforeend", history);
 
                 });
@@ -306,10 +321,14 @@ function getHistory() {
 function setUpOnlineUserBtn(btn, newUser) {
     btn.addEventListener("click", () => {
         if (chatWithElement.innerHTML !== "Public chat") {
-            document.querySelector("." + privateChatWith).style.setProperty("Background-color", "Azure");
+           /* btn.style.setProperty("disabled", true);*/
+            document.querySelector("." + privateChatWith).style.setProperty("Background-color", "#00000000");
         }
-        btn.style.setProperty("Background-color", "blue");
-        publicBtn.style.setProperty("Background-color", "grey")
+        btn.style.setProperty("Background-color", "#00000045");
+
+        /*publicBtn.style.setProperty("Background-color", "#00000045") */
+        publicBtn.disabled = false;
+
         messageContainer.innerHTML = "";
         if (btn.querySelector(".new-message-counter") !== null) {
             btn.querySelector(".new-message-counter").remove();
