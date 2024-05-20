@@ -123,20 +123,23 @@ function onMessageReceived(payload) {
 
         // displaying newest message
         if (message.type === 'message') {
+            let html;
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === "public") {
                 if (message.sender === userName) {
-                    let html = "<div class='new-message-container revert'><div class='new-sender'>" + message.sender + "</div>"
+                    html = "<div class='new-message-container revert'><div class='new-sender'>" + message.sender + "</div>"
                         + "<div class='new-message right-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div></div>";
-                    messageContainer.insertAdjacentHTML("beforeend", html);
-                    msgInputWindow.value = "";
+                    /*messageContainer.insertAdjacentHTML("beforeend", html);
+                    msgInputWindow.value = "";*/
 
                 } else {
-                    let html = "<div class='new-message-container'><div class='new-sender'>" + message.sender + "</div>"
+                    html = "<div class='new-message-container'><div class='new-sender'>" + message.sender + "</div>"
                         + "<div class='new-message left-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div></div>";
-                    messageContainer.insertAdjacentHTML("beforeend", html);
-                    msgInputWindow.value = "";
+                    /*messageContainer.insertAdjacentHTML("beforeend", html);
+                    msgInputWindow.value = "";*/
 
                 }
+                messageContainer.insertAdjacentHTML("beforeend", html);
+                msgInputWindow.value = "";
             }
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === userName) {
 
@@ -156,24 +159,24 @@ function onMessageReceived(payload) {
             if ((userName == message.sendTo && message.sender == privateChatWith) ||
                 (message.sendTo == privateChatWith && message.sender == userName)) {
                 if (message.sender === userName) {
-                    let html = "<div class='new-message-container revert'><div class='new-sender'>" + message.sender + "</div>"
+                    html = "<div class='new-message-container revert'><div class='new-sender'>" + message.sender + "</div>"
                         + "<div class='new-message right-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div>";
-                    messageContainer.insertAdjacentHTML("beforeend", html);
-                    msgInputWindow.value = "";
+                   /* messageContainer.insertAdjacentHTML("beforeend", html);
+                    msgInputWindow.value = "";*/
 
                 } else {
-                    let html = "<div class='new-message-container'><div class='new-sender'>" + message.sender + "</div>"
+                    html = "<div class='new-message-container'><div class='new-sender'>" + message.sender + "</div>"
                         + "<div class='new-message left-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div>";
-                    messageContainer.insertAdjacentHTML("beforeend", html);
-                    msgInputWindow.value = "";
+                   /* messageContainer.insertAdjacentHTML("beforeend", html);
+                    msgInputWindow.value = "";*/
 
 
                 }
-                /*let html = "<div class='message-container'><div class='sender'>" + message.sender + "</div>"
-                    + "<div class='message'>" + message.content + "</div><div class='date'>" + message.date + "</div></div>";
                 messageContainer.insertAdjacentHTML("beforeend", html);
-                msgInputWindow.value = "";*/
+                msgInputWindow.value = "";
+               
             }
+                
         }
 
         // displaying new user in chat and online user panel
