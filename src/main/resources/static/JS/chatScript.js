@@ -128,59 +128,58 @@ function onMessageReceived(payload) {
                 if (message.sender === userName) {
                     html = "<div class='new-message-container revert'><div class='new-sender'>" + message.sender + "</div>"
                         + "<div class='new-message right-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div></div>";
-                    /*messageContainer.insertAdjacentHTML("beforeend", html);
-                    msgInputWindow.value = "";*/
+                  
 
                 } else {
                     html = "<div class='new-message-container'><div class='new-sender'>" + message.sender + "</div>"
                         + "<div class='new-message left-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div></div>";
-                    /*messageContainer.insertAdjacentHTML("beforeend", html);
-                    msgInputWindow.value = "";*/
+                  
 
                 }
                 messageContainer.insertAdjacentHTML("beforeend", html);
                 msgInputWindow.value = "";
             }
-            if (chatWithElement.innerHTML === "Public chat" && message.sendTo === userName) {
 
-                if (usersContainer.querySelector("." + message.sender).querySelector(".new-message-counter") == null) {
-                    usersContainer.querySelector("." + message.sender).insertAdjacentHTML("beforeend", "<div class='new-message-counter'><b>0</b></div>");
-                }
+            if (chatWithElement.innerHTML === "Public chat" && message.sendTo === userName) {
                 let incomingMsgUser = document.querySelector("." + message.sender);
                 let msgCounter = incomingMsgUser.querySelector(".new-message-counter");
-
+               
+                         
                 usersContainer.insertBefore(incomingMsgUser, usersContainer.firstChild);
-                msgCounter.style.setProperty("visibility", "visible");
 
-                let count = parseInt(msgCounter.innerText) + 1;
+
+                let count = parseInt(msgCounter.innerHTML) + 1;
                 msgCounter.innerText = count;
+                msgCounter.style.setProperty("visibility", "visible");
+                console.log("type: " + count.type);
+                console.log(count);
             }
+
 
             if ((userName == message.sendTo && message.sender == privateChatWith) ||
                 (message.sendTo == privateChatWith && message.sender == userName)) {
                 if (message.sender === userName) {
                     html = "<div class='new-message-container revert'><div class='new-sender'>" + message.sender + "</div>"
                         + "<div class='new-message right-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div>";
-                   /* messageContainer.insertAdjacentHTML("beforeend", html);
-                    msgInputWindow.value = "";*/
+                  
 
                 } else {
                     html = "<div class='new-message-container'><div class='new-sender'>" + message.sender + "</div>"
                         + "<div class='new-message left-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div>";
-                   /* messageContainer.insertAdjacentHTML("beforeend", html);
-                    msgInputWindow.value = "";*/
+                   
 
 
                 }
                 messageContainer.insertAdjacentHTML("beforeend", html);
                 msgInputWindow.value = "";
-               
+
             }
-                
+
         }
 
         // displaying new user in chat and online user panel
         if (message.type === 'newUser') {
+            let imgUrl;
             let welcomeMsg = "<div class='event-message-container'> <div class='event-message login-event'>" + message.content + "</div></div>";
             messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
 
@@ -191,9 +190,17 @@ function onMessageReceived(payload) {
                     .then(message => {
 
                         message.forEach(onlineUser => {
+
                             console.log("DEBUG TRIGGER 1 EACH USER: " + onlineUser.nickname);
                             if (onlineUser.nickname !== userName) {
-                                let user = "<button class='new-user-container " + onlineUser.nickname + "' type='button'><div class='new-user'>" + onlineUser.nickname + "</div></button>"
+
+                                let user = `<button class='user-container ${onlineUser.nickname}' type='button'>
+                                    <img class='profile-img-online' src='/Images/ProfilePictures/defaultPic.jpg' alt='Profile Picture'>
+                                    <span class='new-user'>${onlineUser.nickname}</span>
+                                    <span class='new-message-counter'>0</span>
+                                    </button >`;
+
+                                                                 
 
                                 usersContainer.insertAdjacentHTML("beforeend", user);
                                 let userBtn = document.querySelector("." + onlineUser.nickname);
@@ -212,7 +219,12 @@ function onMessageReceived(payload) {
                     .then(message => {
                         let newestUser = message[message.length - 1].nickname;
                         console.log("DEBUG NER USER: " + newestUser);
-                        let user = "<button class='new-user-container " + newestUser + "' type='button'><div class='new-user'>" + newestUser + "</div></button>"
+                        let user = `<button class='user-container ${newestUser}' type='button'>
+                                    <img class='profile-img-online' src='/Images/ProfilePictures/defaultPic.jpg' alt='Profile Picture'>
+                                    <span class='new-user'>${newestUser}</span>
+                                    <span class='new-message-counter'>0</span>
+                                    </button >`;
+
                         usersContainer.insertAdjacentHTML("beforeend", user);
 
                         let userBtn = document.querySelector("." + newestUser);
@@ -248,13 +260,15 @@ function switchToPublic() {
         let activeBtn = document.querySelector("." + privateChatWith);
         chatWithElement.innerHTML = "Public chat";
         messages.innerHTML = "";
-        /*publicBtn.style.setProperty("background-color", "blue");*/
-        
+       
+
         if (activeBtn) {
             activeBtn.style.setProperty("Background-color", "#00000000");
         }
         getHistory();
+        privateChatWith = "";
         publicBtn.disabled = true;
+        publicBtn.style.setProperty("color", "darkgrey");
     }
 }
 // getting message history form server
@@ -324,17 +338,18 @@ function getHistory() {
 function setUpOnlineUserBtn(btn, newUser) {
     btn.addEventListener("click", () => {
         if (chatWithElement.innerHTML !== "Public chat") {
-           /* btn.style.setProperty("disabled", true);*/
+            /* btn.style.setProperty("disabled", true);*/
             document.querySelector("." + privateChatWith).style.setProperty("Background-color", "#00000000");
         }
         btn.style.setProperty("Background-color", "#00000045");
 
         /*publicBtn.style.setProperty("Background-color", "#00000045") */
         publicBtn.disabled = false;
-
+        publicBtn.style.setProperty("color", "#C6AC8E");
         messageContainer.innerHTML = "";
-        if (btn.querySelector(".new-message-counter") !== null) {
-            btn.querySelector(".new-message-counter").remove();
+        if (btn.querySelector(".new-message-counter").innerHTML !== "0") {
+            btn.querySelector(".new-message-counter").style.setProperty("visibility", "hidden");
+            btn.querySelector(".new-message-counter").innerHTML = "0";
         }
         chatWithElement.innerHTML = "Private chat with: " + newUser;
         privateChatWith = newUser;
@@ -371,7 +386,5 @@ function logOutUser() {
     }
     stompClient.disconnect();
 }
-
-
 
 

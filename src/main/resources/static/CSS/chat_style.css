@@ -110,9 +110,9 @@ body {
     background-color: #00000000;
     width: 100%;
     /*display:flex;*/
-
+    padding: 5px 0px 5px 0px;
     border: none;
-    justify-content: space-between;
+    justify-content: space-around;
     margin:5px 0px;
     cursor: pointer;
 }
@@ -122,7 +122,8 @@ body {
     }
 
 .new-message-counter {
-    /* visibility: hidden;*/
+   visibility: hidden;
+   font:bold;
     color: red;
     border-radius: 6px;
     width: 15px;
@@ -264,6 +265,7 @@ body {
     border-radius: 30px;
     width: 40px;
     height: 40px;
+    margin: 5px;
 }
 
 
@@ -357,6 +359,7 @@ button img {
     width: 50%;
     height: 100%;
     position: relative;
+   
 }
 
 /* Public to USer chat switching button*/
@@ -371,5 +374,6 @@ button img {
     font-family: "Poetsen One", sans-serif;
     font-weight: 400;
     font-size: 14px;
-    color: #C6AC8E;
+    /*color: #C6AC8E;*/
+    color: darkgrey;
 }

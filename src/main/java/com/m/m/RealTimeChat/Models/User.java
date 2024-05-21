@@ -32,6 +32,10 @@ public class User implements Serializable {
     @Column
     String roles;
 
+
+    @Column(name = "pictureURL")
+    String profilePic;
+
     boolean isNonBanned = true;
 
     LocalDateTime banExpiration;
