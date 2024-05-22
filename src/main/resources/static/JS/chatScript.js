@@ -128,12 +128,12 @@ function onMessageReceived(payload) {
                 if (message.sender === userName) {
                     html = "<div class='new-message-container revert'><div class='new-sender'>" + message.sender + "</div>"
                         + "<div class='new-message right-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div></div>";
-                  
+
 
                 } else {
                     html = "<div class='new-message-container'><div class='new-sender'>" + message.sender + "</div>"
                         + "<div class='new-message left-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div></div>";
-                  
+
 
                 }
                 messageContainer.insertAdjacentHTML("beforeend", html);
@@ -143,8 +143,8 @@ function onMessageReceived(payload) {
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === userName) {
                 let incomingMsgUser = document.querySelector("." + message.sender);
                 let msgCounter = incomingMsgUser.querySelector(".new-message-counter");
-               
-                         
+
+
                 usersContainer.insertBefore(incomingMsgUser, usersContainer.firstChild);
 
 
@@ -161,12 +161,12 @@ function onMessageReceived(payload) {
                 if (message.sender === userName) {
                     html = "<div class='new-message-container revert'><div class='new-sender'>" + message.sender + "</div>"
                         + "<div class='new-message right-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div>";
-                  
+
 
                 } else {
                     html = "<div class='new-message-container'><div class='new-sender'>" + message.sender + "</div>"
                         + "<div class='new-message left-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div>";
-                   
+
 
 
                 }
@@ -200,7 +200,7 @@ function onMessageReceived(payload) {
                                     <span class='new-message-counter'>0</span>
                                     </button >`;
 
-                                                                 
+
 
                                 usersContainer.insertAdjacentHTML("beforeend", user);
                                 let userBtn = document.querySelector("." + onlineUser.nickname);
@@ -260,7 +260,7 @@ function switchToPublic() {
         let activeBtn = document.querySelector("." + privateChatWith);
         chatWithElement.innerHTML = "Public chat";
         messages.innerHTML = "";
-       
+
 
         if (activeBtn) {
             activeBtn.style.setProperty("Background-color", "#00000000");
@@ -387,4 +387,20 @@ function logOutUser() {
     stompClient.disconnect();
 }
 
+/* When the user clicks on the button,
+toggle between hiding and showing the dropdown content */
+function show() {
+    document.getElementById("dropupMenu").classList.toggle("show");
+}
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function (event) {
+    if (!event.target.matches('.dropbtn')) {
+        var dropupMenu = document.getElementById("dropupMenu");
+
+        if (dropupMenu.classList.contains('show')) {
+            dropupMenu.classList.remove('show');
+        }
+    }
+}
 
