@@ -19,12 +19,12 @@ var userName = userNameElement.getAttribute("data-user");
 
 
 //event listener for logout user from list after closing chat page
-window.addEventListener('unload', function (event) {
+/*window.addEventListener('unload', function (event) {
     if (!loggedOutByButton) {
         logOutUser();
     }
 
-});
+});*/
 
 
 
@@ -404,3 +404,61 @@ window.onclick = function (event) {
     }
 }
 
+function openProfileSettings() {
+    document.querySelector(".modal").style.display = "block";
+
+}
+
+/*drag and drop area setup*/
+
+let dragAndDrop = document.getElementById("drop");
+
+dragAndDrop.addEventListener("dragenter", setPreventDefaults, false);
+dragAndDrop.addEventListener("dragleave", setPreventDefaults, false);
+dragAndDrop.addEventListener("dragover", setPreventDefaults, false);
+dragAndDrop.addEventListener("drop", setPreventDefaults, false);
+dragAndDrop.addEventListener("drop", handleDrop, false);
+
+
+
+function setPreventDefaults(ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
+
+}
+
+function handleDrop(ev) {
+    let dataTrans = ev.dataTransfer;
+
+    let files = dataTrans.files;
+
+    handleFiles(files);
+}
+
+function handleFiles(files) {
+    let file = files[0];
+    let reader = new FileReader();
+    document.getElementById("fileData").files = files;
+    /*dragAndDrop.textContent = `Selected file: ${file.name}`;*/
+    reader.onload = function (e) {
+        let img = document.createElement("img");
+        img.src = e.target.result;
+        img.style.maxWidth = "100%";
+        img.style.maxHeight = "100%";
+        dragAndDrop.innerHTML = "";
+        dragAndDrop.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+
+}
+
+/*function sendUpdate() {
+    fetch('http://localhost:28852/profileUpdate', {
+        method: 'POST'
+    }).then(response => {
+        if (response.ok) {
+            window.location.href = 'http://localhost:28852/';
+            alert("updatet profile");
+        }
+    });
+} */

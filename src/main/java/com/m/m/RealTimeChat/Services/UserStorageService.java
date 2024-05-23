@@ -83,6 +83,27 @@ public class UserStorageService {
     }
 
 
+    public void updateUserInfo(String name, String profilePicPath,String newPassword, String newUserName) {
+        User user = getUser(name);
+        if(!profilePicPath.isEmpty()) {
+            user.setProfilePic(profilePicPath);
+        }
+        if(!newPassword.isEmpty()) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+        }
+        if(!newUserName.isEmpty()) {
+            user.setUserName(newUserName);
+        }
+        userRepository.save(user);
+
+    }
+
+    public boolean confirmPassword(String user,String password) {
+       /* System.out.println("PASSWORD DEBUG: DBPASS- " + getUser(user).getPassword());
+        System.out.println("PASSWORD DEBUG:  REQPASS- " +passwordEncoder.encode(password));
+        System.out.println("PASSWORD DEBUG: RAWPASS- " + password);*/
+        return passwordEncoder.matches(password,getUser(user).getPassword());
+    }
    /* public String getProfilePic(String name) {
         return userRepository.findProfilePictureByName(name);
     }*/
