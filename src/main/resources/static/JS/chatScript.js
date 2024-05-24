@@ -19,12 +19,12 @@ var userName = userNameElement.getAttribute("data-user");
 
 
 //event listener for logout user from list after closing chat page
-/*window.addEventListener('unload', function (event) {
+window.addEventListener('unload', function (event) {
     if (!loggedOutByButton) {
         logOutUser();
     }
 
-});*/
+});
 
 
 
@@ -179,7 +179,6 @@ function onMessageReceived(payload) {
 
         // displaying new user in chat and online user panel
         if (message.type === 'newUser') {
-            let imgUrl;
             let welcomeMsg = "<div class='event-message-container'> <div class='event-message login-event'>" + message.content + "</div></div>";
             messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
 
@@ -187,51 +186,93 @@ function onMessageReceived(payload) {
                 console.log(" var 1 triggered num of users " + usersContainer.querySelectorAll("*").length)
                 fetch("http://localhost:28852/users")
                     .then(response => response.json())
-                    .then(message => {
+                    .then(data => {
 
-                        message.forEach(onlineUser => {
+                        data.forEach(map => {
 
-                            console.log("DEBUG TRIGGER 1 EACH USER: " + onlineUser.nickname);
-                            if (onlineUser.nickname !== userName) {
+                            if (map["nickname"] !== userName) {
 
-                                let user = `<button class='user-container ${onlineUser.nickname}' type='button'>
-                                    <img class='profile-img-online' src='/Images/ProfilePictures/defaultPic.jpg' alt='Profile Picture'>
-                                    <span class='new-user'>${onlineUser.nickname}</span>
+                                let user = `<button class='user-container ${map["nickname"]}' type='button'>
+                                    <img class='profile-img-online' th:src='@{${map["pictureurl"]}}' alt='Profile Picture'>
+                                    <span class='new-user'>${map["nickname"]}</span>
                                     <span class='new-message-counter'>0</span>
                                     </button >`;
 
 
-
                                 usersContainer.insertAdjacentHTML("beforeend", user);
-                                let userBtn = document.querySelector("." + onlineUser.nickname);
+                                let userBtn = document.querySelector("." + map["nickname"]);
 
-                                setUpOnlineUserBtn(userBtn, onlineUser.nickname);
-
+                                setUpOnlineUserBtn(userBtn, map["nickname"]);
                             }
                         });
+
                     });
+
+                /*.then(message => {
+
+                    message.forEach(onlineUser => {
+
+                        console.log("DEBUG TRIGGER 1 EACH USER: " + onlineUser.nickname);
+                        if (onlineUser.nickname !== userName) {
+
+                            let user = `<button class='user-container ${onlineUser.nickname}' type='button'>
+                                <img class='profile-img-online' src='/Images/ProfilePictures/defaultPic.jpg' alt='Profile Picture'>
+                                <span class='new-user'>${onlineUser.nickname}</span>
+                                <span class='new-message-counter'>0</span>
+                                </button >`;
+
+
+
+                            usersContainer.insertAdjacentHTML("beforeend", user);
+                            let userBtn = document.querySelector("." + onlineUser.nickname);
+
+                            setUpOnlineUserBtn(userBtn, onlineUser.nickname);
+
+                        }
+                    });
+                });*/
 
 
             } else {
                 console.log(" var 2 triggered num of users " + usersContainer.querySelectorAll("*").length)
                 fetch("http://localhost:28852/users")
                     .then(response => response.json())
-                    .then(message => {
-                        let newestUser = message[message.length - 1].nickname;
-                        console.log("DEBUG NER USER: " + newestUser);
-                        let user = `<button class='user-container ${newestUser}' type='button'>
-                                    <img class='profile-img-online' src='/Images/ProfilePictures/defaultPic.jpg' alt='Profile Picture'>
-                                    <span class='new-user'>${newestUser}</span>
+                    .then(data => {
+                        let lastUser = data[data.length - 1];
+                        /*for (let key in lastUser) {*/
+                        /*if (lastUser["nickname"].hasOwnProperty(key)) {*/
+                        if (lastUser["nickname"] !== userName) {
+                            let user = `<button class='user-container ${lastUser["nickname"]}' type='button'>
+                                    <img class='profile-img-online' th:src='@{${lastUser["pictureurl"]}}' alt='Profile Picture'>
+                                    <span class='new-user'>${lastUser["nickname"]}</span>
                                     <span class='new-message-counter'>0</span>
                                     </button >`;
 
-                        usersContainer.insertAdjacentHTML("beforeend", user);
+                            usersContainer.insertAdjacentHTML("beforeend", user);
 
-                        let userBtn = document.querySelector("." + newestUser);
+                            let userBtn = document.querySelector("." + lastUser["nickname"]);
 
-                        setUpOnlineUserBtn(userBtn, newestUser);
+                            setUpOnlineUserBtn(userBtn, lastUser["nickname"]);
+                        }
 
                     });
+
+                /*.then(message => {
+                    let newestUser = message[message.length - 1].nickname;
+                    console.log("DEBUG NER USER: " + newestUser);
+                    let user = `<button class='user-container ${newestUser}' type='button'>
+                                <img class='profile-img-online' src='/Images/ProfilePictures/defaultPic.jpg' alt='Profile Picture'>
+                                <span class='new-user'>${newestUser}</span>
+                                <span class='new-message-counter'>0</span>
+                                </button >`;
+
+                    usersContainer.insertAdjacentHTML("beforeend", user);
+
+                    let userBtn = document.querySelector("." + newestUser);
+
+                    setUpOnlineUserBtn(userBtn, newestUser);
+
+                });*/
             }
         }
 
@@ -462,3 +503,26 @@ function handleFiles(files) {
         }
     });
 } */
+
+document.getElementById("profile-update-form").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+
+    fetch("http://localhost:28852/profileUpdate", {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            //console.log("DEBUG: " + data();
+            let updateMessage = `<div class="response">${data["message"]}</div>`;
+            document.querySelector(".modal-content").insertAdjacentHTML("beforeend", updateMessage);
+        });
+});
+
+let closeSpan = document.getElementById("closeBtn");
+let modal = document.getElementsByClassName("modal")[0];
+closeSpan.onclick = function () {
+    modal.style.display = "none";
+}

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -36,11 +37,18 @@ public class webSocketMessageController {
         return messageHistoryService.getPrivateHistory(sendTo, sender);
     }
 
-    @GetMapping("/users")
+    /*@GetMapping("/users")
     @ResponseBody
     public List<OnlineUser> getUsers() {
 
         return onlineUserService.getAllOnlineUsers();
-    }
+    }*/
 
+
+    @GetMapping("/users")
+    @ResponseBody
+    public List<Map<String,String >> getUsers() {
+        onlineUserService.getAllOlineUsersWithRUL().forEach(System.out::println);
+        return onlineUserService.getAllOlineUsersWithRUL();
+    }
 }

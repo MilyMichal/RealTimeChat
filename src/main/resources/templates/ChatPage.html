@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <!-- <meta charset="utf-8">-->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
     <link rel="stylesheet" type="text/css" th:href="@{CSS/chat_style.css}">
     <!--<link rel="stylesheet" type="text/css" href="/static/CSS/chat_style.css">-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
@@ -23,9 +23,11 @@
 </head>
 <body>
 <div class="chat-body">
-    <div th:class="'modal ' + ${uploadMessage != null ? 'modal-on' : 'modal-off'}">
+    <div class="modal">
+
         <!--<div class="modal-content">-->
-            <form class="modal-content" method="POST" th:action="@{/profileUpdate}" enctype="multipart/form-data">
+            <form id="profile-update-form" class="modal-content"  enctype="multipart/form-data"> <!--method="POST" th:action="@{/profileUpdate}"-->
+                <span id="closeBtn" class="close">&times;</span>
                 <label for="name-input">New user name<br></label>
                 <input id="name-input" type="text" name="userName" placeholder="new user name">
                 <input type="password" name="actualPass" placeholder="Actual password">

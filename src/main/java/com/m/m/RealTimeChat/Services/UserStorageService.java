@@ -34,7 +34,7 @@ public class UserStorageService {
     public void saveUserToStorage(User user) {
         System.out.println("SAVE USER TO STORAGE DEBUG");
         if (user != null) {
-            user.setProfilePic("resources/static/Images/ProfilePictures/defaultPic.jpg");
+            user.setProfilePic("/Images/ProfilePictures/defaultPic.jpg");
             user.setPassword(passwordEncoder.encode(user.getPassword()));
 
             if (user.getUserName().equals("Admin")) {

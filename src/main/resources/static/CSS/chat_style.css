@@ -450,6 +450,7 @@ button img {
 
 /*modal settup*/
 .modal {
+    display:none;
     z-index: 1;
     position:fixed;
     top:0%;
@@ -487,6 +488,18 @@ button img {
     align-self: center;
 
 }
+.close {
+    align-self: flex-end;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
 
 .drop-area {
     width: 170px;

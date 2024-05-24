@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -18,6 +19,16 @@ public class OnlineUserService {
         this.onlineUserRepository = onlineUserRepository;
 
     }
+/*
+* get online users with profile pic url
+* */
+public List<Map<String,String>> getAllOlineUsersWithRUL() {
+    return onlineUserRepository.getOnlineUsers();
+}
+
+
+
+    //
 
 
     public List<OnlineUser> getAllOnlineUsers() {
