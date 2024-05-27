@@ -151,8 +151,7 @@ function onMessageReceived(payload) {
                 let count = parseInt(msgCounter.innerHTML) + 1;
                 msgCounter.innerText = count;
                 msgCounter.style.setProperty("visibility", "visible");
-                console.log("type: " + count.type);
-                console.log(count);
+
             }
 
 
@@ -170,11 +169,13 @@ function onMessageReceived(payload) {
 
 
                 }
+
+
                 messageContainer.insertAdjacentHTML("beforeend", html);
                 msgInputWindow.value = "";
 
             }
-
+            clearOldMsg();
         }
 
         // displaying new user in chat and online user panel
@@ -183,7 +184,7 @@ function onMessageReceived(payload) {
             messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
 
             if (usersContainer.querySelectorAll("*").length === 0) {
-                console.log(" var 1 triggered num of users " + usersContainer.querySelectorAll("*").length)
+                console.log(" var 1 triggered num of users " + usersContainer.querySelectorAll("*").length);
                 fetch("http://localhost:28852/users")
                     .then(response => response.json())
                     .then(data => {
@@ -192,45 +193,29 @@ function onMessageReceived(payload) {
 
                             if (map["nickname"] !== userName) {
 
-                                let user = `<button class='user-container ${map["nickname"]}' type='button'>
-                                    <img class='profile-img-online' th:src='@{${map["pictureurl"]}}' alt='Profile Picture'>
+                                fetch("http://localhost:28852/profile/get/" + map["nickname"])
+                                    .then(response => response.text())
+                                    .then(imgData => {
+                                        let user = `<button class='user-container ${map["nickname"]}' type='button'>
+                                    <img class='profile-img-online' src= 'data:image/jpeg;base64,${imgData}' alt='Profile Picture'>
                                     <span class='new-user'>${map["nickname"]}</span>
                                     <span class='new-message-counter'>0</span>
                                     </button >`;
 
+                                        usersContainer.insertAdjacentHTML("beforeend", user);
+                                        let userBtn = document.querySelector("." + map["nickname"]);
 
-                                usersContainer.insertAdjacentHTML("beforeend", user);
-                                let userBtn = document.querySelector("." + map["nickname"]);
+                                        setUpOnlineUserBtn(userBtn, map["nickname"]);
 
-                                setUpOnlineUserBtn(userBtn, map["nickname"]);
+                                    });
+
                             }
                         });
 
                     });
 
-                /*.then(message => {
-
-                    message.forEach(onlineUser => {
-
-                        console.log("DEBUG TRIGGER 1 EACH USER: " + onlineUser.nickname);
-                        if (onlineUser.nickname !== userName) {
-
-                            let user = `<button class='user-container ${onlineUser.nickname}' type='button'>
-                                <img class='profile-img-online' src='/Images/ProfilePictures/defaultPic.jpg' alt='Profile Picture'>
-                                <span class='new-user'>${onlineUser.nickname}</span>
-                                <span class='new-message-counter'>0</span>
-                                </button >`;
 
 
-
-                            usersContainer.insertAdjacentHTML("beforeend", user);
-                            let userBtn = document.querySelector("." + onlineUser.nickname);
-
-                            setUpOnlineUserBtn(userBtn, onlineUser.nickname);
-
-                        }
-                    });
-                });*/
 
 
             } else {
@@ -239,40 +224,30 @@ function onMessageReceived(payload) {
                     .then(response => response.json())
                     .then(data => {
                         let lastUser = data[data.length - 1];
-                        /*for (let key in lastUser) {*/
-                        /*if (lastUser["nickname"].hasOwnProperty(key)) {*/
+
                         if (lastUser["nickname"] !== userName) {
-                            let user = `<button class='user-container ${lastUser["nickname"]}' type='button'>
-                                    <img class='profile-img-online' th:src='@{${lastUser["pictureurl"]}}' alt='Profile Picture'>
+
+
+                            fetch("http://localhost:28852/profile/get/" + lastUser["nickname"])
+                                .then(response => response.text())
+                                .then(imgData => {
+                                    let user = `<button class='user-container ${lastUser["nickname"]}' type='button'>
+                                    <img class='profile-img-online' src= 'data:image/jpeg;base64,${imgData}' alt='Profile Picture'>
                                     <span class='new-user'>${lastUser["nickname"]}</span>
                                     <span class='new-message-counter'>0</span>
                                     </button >`;
 
-                            usersContainer.insertAdjacentHTML("beforeend", user);
+                                    usersContainer.insertAdjacentHTML("beforeend", user);
+                                    let userBtn = document.querySelector("." + lastUser["nickname"]);
 
-                            let userBtn = document.querySelector("." + lastUser["nickname"]);
+                                    setUpOnlineUserBtn(userBtn, lastUser["nickname"]);
 
-                            setUpOnlineUserBtn(userBtn, lastUser["nickname"]);
+                                });
                         }
 
                     });
 
-                /*.then(message => {
-                    let newestUser = message[message.length - 1].nickname;
-                    console.log("DEBUG NER USER: " + newestUser);
-                    let user = `<button class='user-container ${newestUser}' type='button'>
-                                <img class='profile-img-online' src='/Images/ProfilePictures/defaultPic.jpg' alt='Profile Picture'>
-                                <span class='new-user'>${newestUser}</span>
-                                <span class='new-message-counter'>0</span>
-                                </button >`;
 
-                    usersContainer.insertAdjacentHTML("beforeend", user);
-
-                    let userBtn = document.querySelector("." + newestUser);
-
-                    setUpOnlineUserBtn(userBtn, newestUser);
-
-                });*/
             }
         }
 
@@ -350,10 +325,7 @@ function getHistory() {
             .then(response => response.json())
             .then(message => {
                 message.forEach((msg) => {
-                    /*let history = "<div class='message-container'><div class='sender'>"
-                        + msg.sender + "</div>"
-                        + "<div class='message'>" + msg.content + "</div><div class='date'>"
-                        + msg.date + "</div></div>";*/
+
                     let history;
                     if (msg.sender === userName) {
                         history =
@@ -379,12 +351,11 @@ function getHistory() {
 function setUpOnlineUserBtn(btn, newUser) {
     btn.addEventListener("click", () => {
         if (chatWithElement.innerHTML !== "Public chat") {
-            /* btn.style.setProperty("disabled", true);*/
+
             document.querySelector("." + privateChatWith).style.setProperty("Background-color", "#00000000");
         }
         btn.style.setProperty("Background-color", "#00000045");
 
-        /*publicBtn.style.setProperty("Background-color", "#00000045") */
         publicBtn.disabled = false;
         publicBtn.style.setProperty("color", "#C6AC8E");
         messageContainer.innerHTML = "";
@@ -493,23 +464,14 @@ function handleFiles(files) {
 
 }
 
-/*function sendUpdate() {
-    fetch('http://localhost:28852/profileUpdate', {
-        method: 'POST'
-    }).then(response => {
-        if (response.ok) {
-            window.location.href = 'http://localhost:28852/';
-            alert("updatet profile");
-        }
-    });
-} */
+
 
 document.getElementById("profile-update-form").addEventListener("submit", function (event) {
     event.preventDefault();
 
     const formData = new FormData(this);
 
-    fetch("http://localhost:28852/profileUpdate", {
+    fetch("http://localhost:28852/profile/update", {
         method: 'POST',
         body: formData
     })
@@ -525,4 +487,12 @@ let closeSpan = document.getElementById("closeBtn");
 let modal = document.getElementsByClassName("modal")[0];
 closeSpan.onclick = function () {
     modal.style.display = "none";
+}
+
+function clearOldMsg() {
+    console.log("nume of messages in window: " + messageContainer.querySelectorAll(".new-message-container").length);
+    if (messageContainer.querySelectorAll(".new-message-container").length + messageContainer.querySelectorAll(".event-message-container").length > 10) {
+        messageContainer.removeChild(messageContainer.firstElementChild);
+    }
+
 }
