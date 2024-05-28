@@ -26,24 +26,28 @@
     <div class="modal">
 
         <!--<div class="modal-content">-->
-            <form id="profile-update-form" class="modal-content"  enctype="multipart/form-data"> <!--method="POST" th:action="@{/profileUpdate}"-->
-                <span id="closeBtn" class="close">&times;</span>
-                <label for="name-input">New user name<br></label>
-                <input id="name-input" type="text" name="userName" placeholder="new user name">
-                <input type="password" name="actualPass" placeholder="Actual password">
-                <input type="password" name="newPass" placeholder="new password">
-                <div class="drag-and-drop">
-                    <div id="drop" class="drop-area">
-                        Drag your profile picture HERE
-                    </div>
+        <form id="profile-update-form" class="modal-content" enctype="multipart/form-data">
+            <!--method="POST" th:action="@{/profileUpdate}"-->
+            <span id="closeBtn" class="close">&times;</span>
+            <label for="name-input">New username<br></label>
+            <input id="name-input" type="text" name="userName" placeholder="new user name">
+            <label for="act-pass-input">Confirm actual password<br></label>
+            <input id="act-pass-input" type="password" name="actualPass" placeholder="Actual password" required>
+            <label for="new-pass-input">Select new password<br></label>
+            <input id="new-pass-input" type="password" name="newPass" placeholder="new password">
+            <div class="drag-and-drop">
+                <div id="drop" class="drop-area">
+                    Drag your profile picture HERE
                 </div>
-                <input id="fileData" type="file" name="file" style="visibility:hidden">
-                <button type="submit">Update profile</button>
-                <div th:if="${uploadMessage}">
+            </div>
+            <input id="fileData" type="file" name="file" style="visibility:hidden">
+            <button type="submit">Update profile</button>
+           <!-- <div th:if="${uploadMessage}">
                 <div class="update-msg" th:text="${uploadMessage}"></div>
-                </div>
+            </div>-->
+            <div class="response"></div>
 
-            </form>
+        </form>
         <!--</div>-->
     </div>
     <div class="chat-main-windows">

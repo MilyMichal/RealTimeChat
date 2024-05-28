@@ -478,9 +478,16 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
         .then(response => response.json())
         .then(data => {
             //console.log("DEBUG: " + data();
-            let updateMessage = `<div class="response">${data["message"]}</div>`;
-            document.querySelector(".modal-content").insertAdjacentHTML("beforeend", updateMessage);
+            //let updateMessage = `<div class="response">${data["message"]}</div>`;
+            document.querySelector(".response").innerHTML = `${data["message"]}`;
+            //document.querySelector(".modal-content").insertAdjacentHTML("beforeend", updateMessage);
         });
+    document.getElementById("act-pass-input").value = "";
+    document.getElementById("new-pass-input").value = "";
+    document.getElementById("name-input").value = "";
+    document.getElementById("fileData").value = null;
+    document.getElementById("drop").innerHTML = "Drag your profile picture HERE";
+
 });
 
 let closeSpan = document.getElementById("closeBtn");
