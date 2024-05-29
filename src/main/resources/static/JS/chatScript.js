@@ -120,6 +120,17 @@ function onMessageReceived(payload) {
             }
         }
 
+        /////
+        if (message.type === "Update") {
+            if (userName === message.sendTo) {
+
+            }
+
+        }
+
+
+        ////
+
 
         // displaying newest message
         if (message.type === 'message') {
@@ -166,8 +177,6 @@ function onMessageReceived(payload) {
                     html = "<div class='new-message-container'><div class='new-sender'>" + message.sender + "</div>"
                         + "<div class='new-message left-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div>";
 
-
-
                 }
 
 
@@ -189,26 +198,68 @@ function onMessageReceived(payload) {
                     .then(response => response.json())
                     .then(data => {
 
-                        data.forEach(map => {
+                        data.forEach(onlineUser => {
 
-                            if (map["nickname"] !== userName) {
+                            if (onlineUser.nickname !== userName) {
 
-                                fetch("http://localhost:28852/profile/get/" + map["nickname"])
-                                    .then(response => response.text())
-                                    .then(imgData => {
-                                        let user = `<button class='user-container ${map["nickname"]}' type='button'>
-                                    <img class='profile-img-online' src= 'data:image/jpeg;base64,${imgData}' alt='Profile Picture'>
-                                    <span class='new-user'>${map["nickname"]}</span>
+
+                                let user = `<button class='user-container ${onlineUser.nickname}' type='button'>
+                                    <img class='profile-img-online' src= '' alt='Profile Picture'>
+                                    <span class='new-user'>${onlineUser.nickname}</span>
                                     <span class='new-message-counter'>0</span>
                                     </button >`;
 
-                                        usersContainer.insertAdjacentHTML("beforeend", user);
-                                        let userBtn = document.querySelector("." + map["nickname"]);
+                                usersContainer.insertAdjacentHTML("beforeend", user);
+                                let userBtn = document.querySelector("." + onlineUser.nickname);
 
-                                        setUpOnlineUserBtn(userBtn, map["nickname"]);
+                                setUpOnlineUserBtn(userBtn, onlineUser.nickname);
 
+                                fetch("http://localhost:28852/profile/get/" + onlineUser.nickname)
+                                    .then(response => {
+                                        if (response.ok) {
+                                            return response.blob();
+                                        } else {
+                                            throw new Error('Image not found');
+                                        }
+                                    })
+                                    .then(blob => {
+                                        const imageUrl = URL.createObjectURL(blob);
+                                        const imgElement = userBtn.querySelector('.profile-img-online');
+                                        imgElement.src = imageUrl;
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching image:', error);
                                     });
 
+
+                                /* fetch("http://localhost:28852/profile/get/" + map["nickname"])
+                                     .then(response => response.text())
+                                     .then(imgData => {
+                                         let user = `<button class='user-container ${map["nickname"]}' type='button'>
+                                     <img class='profile-img-online' src= '${imgData}' alt='Profile Picture'>
+                                     <span class='new-user'>${map["nickname"]}</span>
+                                     <span class='new-message-counter'>0</span>
+                                     </button >`;
+ 
+                                         usersContainer.insertAdjacentHTML("beforeend", user);
+                                         let userBtn = document.querySelector("." + map["nickname"]);
+ 
+                                         setUpOnlineUserBtn(userBtn, map["nickname"]);
+ 
+                                     });*/
+                                /*.then(imgData => {
+                                    let user = `<button class='user-container ${map["nickname"]}' type='button'>
+                                <img class='profile-img-online' src= 'data:image/jpeg;base64,${imgData}' alt='Profile Picture'>
+                                <span class='new-user'>${map["nickname"]}</span>
+                                <span class='new-message-counter'>0</span>
+                                </button >`;
+
+                                    usersContainer.insertAdjacentHTML("beforeend", user);
+                                    let userBtn = document.querySelector("." + map["nickname"]);
+
+                                    setUpOnlineUserBtn(userBtn, map["nickname"]);
+
+                                }); */
                             }
                         });
 
@@ -225,24 +276,93 @@ function onMessageReceived(payload) {
                     .then(data => {
                         let lastUser = data[data.length - 1];
 
+                        if (lastUser.nickname !== userName) {
+
+                            let user = `<button class='user-container ${lastUser.nickname}' type='button'>
+                                    <img class='profile-img-online' src= '' alt='Profile Picture'>
+                                    <span class='new-user'>${lastUser.nickname}</span>
+                                    <span class='new-message-counter'>0</span>
+                                    </button >`;
+
+                            usersContainer.insertAdjacentHTML("beforeend", user);
+                            let userBtn = document.querySelector("." + lastUser.nickname);
+
+                            setUpOnlineUserBtn(userBtn, lastUser.nickname);
+
+                            fetch("http://localhost:28852/profile/get/" + lastUser.nickname)
+                                .then(response => {
+                                    if (response.ok) {
+                                        return response.blob();
+                                    } else {
+                                        throw new Error('Image not found');
+                                    }
+                                })
+                                .then(blob => {
+                                    const imageUrl = URL.createObjectURL(blob);
+                                    const imgElement = userBtn.querySelector('.profile-img-online');
+                                    imgElement.src = imageUrl;
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching image:', error);
+                                });
+                            ///workig version
+                            /*fetch("http://localhost:28852/users")
+                    .then(response => response.json())
+                    .then(data => {
+                        let lastUser = data[data.length - 1];
+
                         if (lastUser["nickname"] !== userName) {
 
-
-                            fetch("http://localhost:28852/profile/get/" + lastUser["nickname"])
-                                .then(response => response.text())
-                                .then(imgData => {
-                                    let user = `<button class='user-container ${lastUser["nickname"]}' type='button'>
-                                    <img class='profile-img-online' src= 'data:image/jpeg;base64,${imgData}' alt='Profile Picture'>
+                            let user = `<button class='user-container ${lastUser["nickname"]}' type='button'>
+                                    <img class='profile-img-online' src= '' alt='Profile Picture'>
                                     <span class='new-user'>${lastUser["nickname"]}</span>
                                     <span class='new-message-counter'>0</span>
                                     </button >`;
 
-                                    usersContainer.insertAdjacentHTML("beforeend", user);
-                                    let userBtn = document.querySelector("." + lastUser["nickname"]);
+                            usersContainer.insertAdjacentHTML("beforeend", user);
+                            let userBtn = document.querySelector("." + lastUser["nickname"]);
 
-                                    setUpOnlineUserBtn(userBtn, lastUser["nickname"]);
+                            setUpOnlineUserBtn(userBtn, lastUser["nickname"]);
 
-                                });
+                            fetch("http://localhost:28852/profile/get/" + lastUser["nickname"])
+                                .then(response => {
+                                    if (response.ok) {
+                                        return response.blob();
+                                    } else {
+                                        throw new Error('Image not found');
+                                    }
+                                })
+                                .then(blob => {
+                                    const imageUrl = URL.createObjectURL(blob);
+                                    const imgElement = userBtn.querySelector('.profile-img-online');
+                                    imgElement.src = imageUrl;
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching image:', error);
+                                }); */
+                            ////
+
+                            /* fetch("http://localhost:28852/profile/get/" + lastUser["nickname"])
+                                 .then(response => response.text())
+                                 .then(imgData => {
+                                     console.log("IMG DATA DEBUG: " + imgData);
+                                     let user = `<button class='user-container ${lastUser["nickname"]}' type='button'>
+                                     <img class='profile-img-online' src= '${imgData}' alt='Profile Picture'>
+                                     <span class='new-user'>${lastUser["nickname"]}</span>
+                                     <span class='new-message-counter'>0</span>
+                                     </button >`;
+                
+                                     usersContainer.insertAdjacentHTML("beforeend", user);
+                                     let userBtn = document.querySelector("." + lastUser["nickname"]);
+                
+                                     setUpOnlineUserBtn(userBtn, lastUser["nickname"]);
+                
+                                 });*/
+                            /*let user = `<button class='user-container ${lastUser["nickname"]}' type='button'>
+                                <img class='profile-img-online' src= 'data:image/jpeg;base64,${imgData}' alt='Profile Picture'>
+                                <span class='new-user'>${lastUser["nickname"]}</span>
+                                <span class='new-message-counter'>0</span>
+                                </button >`;*/
                         }
 
                     });

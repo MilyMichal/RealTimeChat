@@ -34,7 +34,7 @@ public class UserStorageService {
     public void saveUserToStorage(User user) {
         System.out.println("SAVE USER TO STORAGE DEBUG");
         if (user != null) {
-            user.setProfilePic("src/main/resources/static/Images/ProfilePictures/defaultPic.jpg");
+            user.setProfilePic("ProfilePic/defaultPic.jpg");
             user.setPassword(passwordEncoder.encode(user.getPassword()));
 
             if (user.getUserName().equals("Admin")) {
@@ -99,13 +99,8 @@ public class UserStorageService {
     }
 
     public boolean confirmPassword(String user,String password) {
-       /* System.out.println("PASSWORD DEBUG: DBPASS- " + getUser(user).getPassword());
-        System.out.println("PASSWORD DEBUG:  REQPASS- " +passwordEncoder.encode(password));
-        System.out.println("PASSWORD DEBUG: RAWPASS- " + password);*/
-        return passwordEncoder.matches(password,getUser(user).getPassword());
+                return passwordEncoder.matches(password,getUser(user).getPassword());
     }
-   /* public String getProfilePic(String name) {
-        return userRepository.findProfilePictureByName(name);
-    }*/
+
 }
 
