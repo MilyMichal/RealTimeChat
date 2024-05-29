@@ -21,12 +21,19 @@ public class MessageHistoryService {
         }
     }
 
-    public List<Message> getPublicHistory() {
-      return   messageRepository.findAllPublicMessages();
+    public List<Message> getFullPublicHistory() {
+        return messageRepository.findAllPublicMessages();
     }
 
+    public List<Message> getLatestPublicHistory() {
+        return messageRepository.findLatestPublicMessages();
+    }
 
-    public List<Message> getPrivateHistory(String sendTo, String sender) {
-        return messageRepository.findAllPrivateMessages(sendTo,sender);
+    public List<Message> getFullPrivateHistory(String sendTo, String sender) {
+        return messageRepository.findAllPrivateMessages(sendTo, sender);
+    }
+
+    public List<Message> getLatestPrivateHistory(String sendTo, String sender) {
+        return messageRepository.findLatestPrivateMessages(sendTo, sender);
     }
 }

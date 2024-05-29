@@ -12,12 +12,12 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/profile")
-public class profileSettingsController {
+public class ProfileSettingsController {
 
     private final ProfileSettingsService profileSettingsService;
 
 
-    public profileSettingsController(ProfileSettingsService profileSettingsService) {
+    public ProfileSettingsController(ProfileSettingsService profileSettingsService) {
         this.profileSettingsService = profileSettingsService;
 
 

@@ -7,7 +7,7 @@ let usersContainer = document.getElementById("users");
 let publicBtn = document.getElementById("public-chat-btn");
 let privateChatWith;
 var loggedOutByButton = false;
-
+let isScrolledToBottom = true;
 
 let stompClient = null;
 
@@ -35,6 +35,10 @@ msgInputWindow.addEventListener("keypress", (event) => {
     }
 });
 
+messageContainer.addEventListener('scroll', () => {
+    isScrolledToBottom = messageContainer.scrollHeight - messageContainer.clientHeight <= messageContainer.scrollTop + 1;
+
+})
 
 function register() {
 
@@ -185,6 +189,9 @@ function onMessageReceived(payload) {
 
             }
             clearOldMsg();
+            if (isScrolledToBottom) {
+                messageContainer.scrollTop = messageContainer.scrollHeight - messageContainer.clientHeight;
+            }
         }
 
         // displaying new user in chat and online user panel
@@ -410,7 +417,7 @@ function switchToPublic() {
 // getting message history form server
 function getHistory() {
     if (chatWithElement.innerHTML === "Public chat") {
-        fetch("http://localhost:28852/history/public")
+        fetch("http://localhost:28852/history/public-latest")
             .then(response => response.json())
             .then(message => {
                 message.forEach((msg) => {
@@ -434,14 +441,15 @@ function getHistory() {
                             history =
                                 "<div class='new-message-container'><div class='new-sender'>"
                                 + msg.sender + "</div>"
-                                + "<div class='new-message left-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+                                + "<div class='new-message left-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
                         }
                         messageContainer.insertAdjacentHTML("beforeend", history);
                     }
                 });
             });
+
     } else {
-        fetch("http://localhost:28852/history/" + privateChatWith + "-" + userName)
+        fetch("http://localhost:28852/history/" + privateChatWith + "-" + userName + "/latest")
             .then(response => response.json())
             .then(message => {
                 message.forEach((msg) => {
@@ -457,13 +465,15 @@ function getHistory() {
                         history =
                             "<div class='new-message-container'><div class='new-sender'>"
                             + msg.sender + "</div>"
-                            + "<div class='new-message left-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+                            + "<div class='new-message left-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
                     }
                     messageContainer.insertAdjacentHTML("beforeend", history);
 
                 });
             });
+
     }
+
 
 
 }
@@ -618,7 +628,7 @@ closeSpan.onclick = function () {
 
 function clearOldMsg() {
     console.log("nume of messages in window: " + messageContainer.querySelectorAll(".new-message-container").length);
-    if (messageContainer.querySelectorAll(".new-message-container").length + messageContainer.querySelectorAll(".event-message-container").length > 10) {
+    if (messageContainer.querySelectorAll(".new-message-container").length + messageContainer.querySelectorAll(".event-message-container").length > 15) {
         messageContainer.removeChild(messageContainer.firstElementChild);
     }
 
