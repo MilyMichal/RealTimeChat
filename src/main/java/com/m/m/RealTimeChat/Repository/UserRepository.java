@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.mapping.model.SpELContext;
 import org.springframework.data.repository.query.Param;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,9 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     @Query(value ="SELECT * FROM USERS WHERE is_non_banned = false",nativeQuery = true)
     List<User> findAllBannedUsers();
+
+    @Query(value = "SELECT user_name FROM users WHERE user_name != :name",nativeQuery = true)
+    List<String> findRawUsernameList(@Param("name") String user);
 
     /*@Query(value = "SELECT us.profilePic AS pic, ous.nickname FROM onlineUsers ous JOIN users us ON ous.nickname = us.userName",nativeQuery = true)
     List<Map<String,Object>> getProfilePic();*/

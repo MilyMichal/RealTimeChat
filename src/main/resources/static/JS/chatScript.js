@@ -5,6 +5,7 @@ let messageContainer = document.getElementById("messages");
 let chatWithElement = document.getElementById("chat-with");
 let usersContainer = document.getElementById("users");
 let publicBtn = document.getElementById("public-chat-btn");
+let historyContainer = document.querySelector(".history-window");
 let privateChatWith;
 var loggedOutByButton = false;
 let isScrolledToBottom = true;
@@ -50,7 +51,7 @@ function register() {
     });
 
     // loading chat history for new user
-    getHistory();
+    getLastestHistory();
 }
 
 //function for sending msg to server
@@ -408,13 +409,314 @@ function switchToPublic() {
         if (activeBtn) {
             activeBtn.style.setProperty("Background-color", "#00000000");
         }
-        getHistory();
+        getLastestHistory();
         privateChatWith = "";
         publicBtn.disabled = true;
         publicBtn.style.setProperty("color", "darkgrey");
     }
 }
 // getting message history form server
+function getLastestHistory() {
+    if (chatWithElement.innerHTML === "Public chat") {
+        fetch("http://localhost:28852/history/public-latest")
+            .then(response => response.json())
+            .then(message => {
+                message.forEach((msg) => {
+                    if (msg.type === "newUser") {
+                        let welcomeMsg = "<div class='event-message-container'><div class='event-message  login-event'> " + msg.content + "</div></div>";
+                        messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
+                    }
+                    if (msg.type === "Leave" || msg.type === "kick") {
+                        let disconnectedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + msg.content + "</div></div>";
+                        messageContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
+                    }
+                    if (msg.type === "message") {
+                        let history;
+                        if (msg.sender === userName) {
+                            history =
+                                "<div class='new-message-container revert'><div class='new-sender'>"
+                                + msg.sender + "</div>"
+                                + "<div class='new-message right-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+
+                        } else {
+                            history =
+                                "<div class='new-message-container'><div class='new-sender'>"
+                                + msg.sender + "</div>"
+                                + "<div class='new-message left-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+                        }
+                        messageContainer.insertAdjacentHTML("beforeend", history);
+                    }
+                });
+            });
+
+    } else {
+        fetch("http://localhost:28852/history/" + privateChatWith + "-" + userName + "/latest")
+            .then(response => response.json())
+            .then(message => {
+                message.forEach((msg) => {
+
+                    let history;
+                    if (msg.sender === userName) {
+                        history =
+                            "<div class='new-message-container revert'><div class='new-sender'>"
+                            + msg.sender + "</div>"
+                            + "<div class='new-message right-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+
+                    } else {
+                        history =
+                            "<div class='new-message-container'><div class='new-sender'>"
+                            + msg.sender + "</div>"
+                            + "<div class='new-message left-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+                    }
+                    messageContainer.insertAdjacentHTML("beforeend", history);
+
+                });
+            });
+
+    }
+
+}
+
+function getFullPublicHistory() {
+
+    /*let historyContainer = document.querySelector(".history-window");*/
+    historyContainer.innerHTML = "";
+    fetch("http://localhost:28852/history/public")
+        .then(response => response.json())
+        .then(message => {
+            message.forEach((msg) => {
+                if (msg.type === "newUser") {
+                    let welcomeMsg = "<div class='event-message-container'><div class='event-message  login-event'> " + msg.content + "</div></div>";
+                    historyContainer.insertAdjacentHTML("beforeend", welcomeMsg);
+                }
+                if (msg.type === "Leave" || msg.type === "kick") {
+                    let disconnectedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + msg.content + "</div></div>";
+                    historyContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
+                }
+                if (msg.type === "message") {
+                    let history;
+                    if (msg.sender === userName) {
+                        history =
+                            "<div class='new-message-container revert'><div class='new-sender'>"
+                            + msg.sender + "</div>"
+                            + "<div class='new-message right-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+
+                    } else {
+                        history =
+                            "<div class='new-message-container'><div class='new-sender'>"
+                            + msg.sender + "</div>"
+                            + "<div class='new-message left-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+                    }
+                    historyContainer.insertAdjacentHTML("beforeend", history);
+                }
+            });
+        });
+}
+
+function getFullPersonalHistory() {
+    historyContainer.innerHTML = "";
+    let selectedUser = document.getElementById("user-to-find");
+
+    fetch("http://localhost:28852/history/" + selectedUser.value + "-" + userName)
+        .then(response => response.json())
+        .then(message => {
+            message.forEach((msg) => {
+
+                let history;
+                if (msg.sender === userName) {
+                    history =
+                        "<div class='new-message-container revert'><div class='new-sender'>"
+                        + msg.sender + "</div>"
+                        + "<div class='new-message right-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+
+                } else {
+                    history =
+                        "<div class='new-message-container'><div class='new-sender'>"
+                        + msg.sender + "</div>"
+                        + "<div class='new-message left-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+                }
+                historyContainer.insertAdjacentHTML("beforeend", history);
+
+            });
+        });
+
+}
+
+
+// online user button set up
+function setUpOnlineUserBtn(btn, newUser) {
+    btn.addEventListener("click", () => {
+        if (chatWithElement.innerHTML !== "Public chat") {
+
+            document.querySelector("." + privateChatWith).style.setProperty("Background-color", "#00000000");
+        }
+        btn.style.setProperty("Background-color", "#00000045");
+
+        publicBtn.disabled = false;
+        publicBtn.style.setProperty("color", "#C6AC8E");
+        messageContainer.innerHTML = "";
+        if (btn.querySelector(".new-message-counter").innerHTML !== "0") {
+            btn.querySelector(".new-message-counter").style.setProperty("visibility", "hidden");
+            btn.querySelector(".new-message-counter").innerHTML = "0";
+        }
+        chatWithElement.innerHTML = "Private chat with: " + newUser;
+        privateChatWith = newUser;
+        getLastestHistory();
+    });
+}
+
+
+function kickUser() {
+    var select = document.getElementById("select").value;
+    let date = new Date().toLocaleString();
+    stompClient.send("/app/chat", {}, JSON.stringify(
+        {
+            sender: 'admin',
+            type: 'kick',
+            content: select + ' was kicked out by admin!',
+            sendTo: select,
+            date: date
+        }));
+}
+
+function logOutUser() {
+    loggedOutByButton = true;
+    try {
+        fetch('http://localhost:28852/logout', {
+            method: 'POST'
+        }).then(response => {
+            if (response.ok) {
+                window.location.href = 'http://localhost:28852/';
+            }
+        });
+    } catch (error) {
+        console.error('Error while logout:', error);
+    }
+    stompClient.disconnect();
+}
+
+/* When the user clicks on the button,
+toggle between hiding and showing the dropdown content */
+function show() {
+    document.getElementById("dropupMenu").classList.toggle("show");
+}
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function (event) {
+    if (!event.target.matches('.dropbtn')) {
+        var dropupMenu = document.getElementById("dropupMenu");
+        
+
+        if (dropupMenu.classList.contains('show')) {
+            dropupMenu.classList.remove('show');
+        }
+    }
+    if (event.target.matches('.modal')) {
+        var modals = document.getElementsByClassName("modal");
+        Array.prototype.forEach.call(modals, function (modal) {
+            if (modal.style.display == "block") {
+                modal.style.display = "none";
+            }
+        });
+        document.querySelector(".history-window").innerHTML = "";
+        }
+    
+}
+
+
+/*Modal display settings */
+function openSelectedModal(modal) {
+    document.querySelector(`.${modal}`).style.display = "block";
+
+}
+
+function closeModal(modal) {
+    document.querySelector(`.${modal}`).style.display = "none";
+}
+
+
+/*drag and drop area setup*/
+//#region DragAndDrop
+
+let dragAndDrop = document.getElementById("drop");
+
+dragAndDrop.addEventListener("dragenter", setPreventDefaults, false);
+dragAndDrop.addEventListener("dragleave", setPreventDefaults, false);
+dragAndDrop.addEventListener("dragover", setPreventDefaults, false);
+dragAndDrop.addEventListener("drop", setPreventDefaults, false);
+dragAndDrop.addEventListener("drop", handleDrop, false);
+
+
+
+function setPreventDefaults(ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
+
+}
+
+function handleDrop(ev) {
+    let dataTrans = ev.dataTransfer;
+
+    let files = dataTrans.files;
+
+    handleFiles(files);
+}
+
+function handleFiles(files) {
+    let file = files[0];
+    let reader = new FileReader();
+    document.getElementById("fileData").files = files;
+    /*dragAndDrop.textContent = `Selected file: ${file.name}`;*/
+    reader.onload = function (e) {
+        let img = document.createElement("img");
+        img.src = e.target.result;
+        img.style.maxWidth = "100%";
+        img.style.maxHeight = "100%";
+        dragAndDrop.innerHTML = "";
+        dragAndDrop.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+
+}
+//#endregion
+
+
+document.getElementById("profile-update-form").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+
+    fetch("http://localhost:28852/profile/update", {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            //console.log("DEBUG: " + data();
+            //let updateMessage = `<div class="response">${data["message"]}</div>`;
+            document.querySelector(".response").innerHTML = `${data["message"]}`;
+            //document.querySelector(".modal-content").insertAdjacentHTML("beforeend", updateMessage);
+        });
+    document.getElementById("act-pass-input").value = "";
+    document.getElementById("new-pass-input").value = "";
+    document.getElementById("name-input").value = "";
+    document.getElementById("fileData").value = null;
+    document.getElementById("drop").innerHTML = "Drag your profile picture HERE";
+
+});
+
+
+
+function clearOldMsg() {
+    console.log("nume of messages in window: " + messageContainer.querySelectorAll(".new-message-container").length);
+    if (messageContainer.querySelectorAll(".new-message-container").length + messageContainer.querySelectorAll(".event-message-container").length > 15) {
+        messageContainer.removeChild(messageContainer.firstElementChild);
+    }
+
+}
+
+
+/*
 function getHistory() {
     if (chatWithElement.innerHTML === "Public chat") {
         fetch("http://localhost:28852/history/public-latest")
@@ -477,159 +779,5 @@ function getHistory() {
 
 
 }
-// online user button set up
-function setUpOnlineUserBtn(btn, newUser) {
-    btn.addEventListener("click", () => {
-        if (chatWithElement.innerHTML !== "Public chat") {
 
-            document.querySelector("." + privateChatWith).style.setProperty("Background-color", "#00000000");
-        }
-        btn.style.setProperty("Background-color", "#00000045");
-
-        publicBtn.disabled = false;
-        publicBtn.style.setProperty("color", "#C6AC8E");
-        messageContainer.innerHTML = "";
-        if (btn.querySelector(".new-message-counter").innerHTML !== "0") {
-            btn.querySelector(".new-message-counter").style.setProperty("visibility", "hidden");
-            btn.querySelector(".new-message-counter").innerHTML = "0";
-        }
-        chatWithElement.innerHTML = "Private chat with: " + newUser;
-        privateChatWith = newUser;
-        getHistory();
-    });
-}
-
-
-function kickUser() {
-    var select = document.getElementById("select").value;
-    let date = new Date().toLocaleString();
-    stompClient.send("/app/chat", {}, JSON.stringify(
-        {
-            sender: 'admin',
-            type: 'kick',
-            content: select + ' was kicked out by admin!',
-            sendTo: select,
-            date: date
-        }));
-}
-
-function logOutUser() {
-    loggedOutByButton = true;
-    try {
-        fetch('http://localhost:28852/logout', {
-            method: 'POST'
-        }).then(response => {
-            if (response.ok) {
-                window.location.href = 'http://localhost:28852/';
-            }
-        });
-    } catch (error) {
-        console.error('Error while logout:', error);
-    }
-    stompClient.disconnect();
-}
-
-/* When the user clicks on the button,
-toggle between hiding and showing the dropdown content */
-function show() {
-    document.getElementById("dropupMenu").classList.toggle("show");
-}
-
-// Close the dropdown menu if the user clicks outside of it
-window.onclick = function (event) {
-    if (!event.target.matches('.dropbtn')) {
-        var dropupMenu = document.getElementById("dropupMenu");
-
-        if (dropupMenu.classList.contains('show')) {
-            dropupMenu.classList.remove('show');
-        }
-    }
-}
-
-function openProfileSettings() {
-    document.querySelector(".modal").style.display = "block";
-
-}
-
-/*drag and drop area setup*/
-
-let dragAndDrop = document.getElementById("drop");
-
-dragAndDrop.addEventListener("dragenter", setPreventDefaults, false);
-dragAndDrop.addEventListener("dragleave", setPreventDefaults, false);
-dragAndDrop.addEventListener("dragover", setPreventDefaults, false);
-dragAndDrop.addEventListener("drop", setPreventDefaults, false);
-dragAndDrop.addEventListener("drop", handleDrop, false);
-
-
-
-function setPreventDefaults(ev) {
-    ev.preventDefault();
-    ev.stopPropagation();
-
-}
-
-function handleDrop(ev) {
-    let dataTrans = ev.dataTransfer;
-
-    let files = dataTrans.files;
-
-    handleFiles(files);
-}
-
-function handleFiles(files) {
-    let file = files[0];
-    let reader = new FileReader();
-    document.getElementById("fileData").files = files;
-    /*dragAndDrop.textContent = `Selected file: ${file.name}`;*/
-    reader.onload = function (e) {
-        let img = document.createElement("img");
-        img.src = e.target.result;
-        img.style.maxWidth = "100%";
-        img.style.maxHeight = "100%";
-        dragAndDrop.innerHTML = "";
-        dragAndDrop.appendChild(img);
-    };
-    reader.readAsDataURL(file);
-
-}
-
-
-
-document.getElementById("profile-update-form").addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    const formData = new FormData(this);
-
-    fetch("http://localhost:28852/profile/update", {
-        method: 'POST',
-        body: formData
-    })
-        .then(response => response.json())
-        .then(data => {
-            //console.log("DEBUG: " + data();
-            //let updateMessage = `<div class="response">${data["message"]}</div>`;
-            document.querySelector(".response").innerHTML = `${data["message"]}`;
-            //document.querySelector(".modal-content").insertAdjacentHTML("beforeend", updateMessage);
-        });
-    document.getElementById("act-pass-input").value = "";
-    document.getElementById("new-pass-input").value = "";
-    document.getElementById("name-input").value = "";
-    document.getElementById("fileData").value = null;
-    document.getElementById("drop").innerHTML = "Drag your profile picture HERE";
-
-});
-
-let closeSpan = document.getElementById("closeBtn");
-let modal = document.getElementsByClassName("modal")[0];
-closeSpan.onclick = function () {
-    modal.style.display = "none";
-}
-
-function clearOldMsg() {
-    console.log("nume of messages in window: " + messageContainer.querySelectorAll(".new-message-container").length);
-    if (messageContainer.querySelectorAll(".new-message-container").length + messageContainer.querySelectorAll(".event-message-container").length > 15) {
-        messageContainer.removeChild(messageContainer.firstElementChild);
-    }
-
-}
+*/

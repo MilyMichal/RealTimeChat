@@ -23,12 +23,11 @@
 </head>
 <body>
 <div class="chat-body">
-    <div class="modal">
+    <div class="modal profile-mod" style="display:none">
 
-        <!--<div class="modal-content">-->
         <form id="profile-update-form" class="modal-content" enctype="multipart/form-data">
-            <!--method="POST" th:action="@{/profileUpdate}"-->
-            <span id="closeBtn" class="close">&times;</span>
+
+            <!--<span id="closeBtn" class="close" onclick="closeModal('profile-mod')">&times;</span>-->
             <label for="name-input">New username<br></label>
             <input id="name-input" type="text" name="userName" placeholder="new user name">
             <label for="act-pass-input">Confirm actual password<br></label>
@@ -42,13 +41,27 @@
             </div>
             <input id="fileData" type="file" name="file" style="visibility:hidden">
             <button type="submit">Update profile</button>
-           <!-- <div th:if="${uploadMessage}">
-                <div class="update-msg" th:text="${uploadMessage}"></div>
-            </div>-->
+
             <div class="response"></div>
 
         </form>
-        <!--</div>-->
+
+    </div>
+    <div class="modal history-mod" style="display:block">
+        <form class="history-modal-content" id="history-modal-form">
+            <div class="modal-header">
+                <span class="title">History search</span>
+                <select name="history-select" id="user-to-find">
+                    <option value="Select user">Select user</option>
+                    <option th:each="user : ${usersList}" th:value="${user}" th:text="${user}">
+                </select>
+                <!--<span class="close" onclick="closeModal('history-mod')">&times;</span>-->
+                <button type="button" onclick="getFullPersonalHistory()"> Search history</button>
+            </div>
+            <div class="history-window"></div>
+            <button type="button" onclick="getFullPublicHistory()"> Full history</button>
+        </form>
+
     </div>
     <div class="chat-main-windows">
 
@@ -134,8 +147,8 @@
                         </svg>
                     </button>
                     <div id="dropupMenu" class="dropup-content">
-                        <input type="button" value="Get full history" onclick="showFullChatHistory">
-                        <input type="button" value="Manage profile" onclick="openProfileSettings()">
+                        <input type="button" value="Get full history" onclick="openSelectedModal('history-mod')">
+                        <input type="button" value="Manage profile" onclick="openSelectedModal('profile-mod')">
                         <input type="button" value="Logout" onclick="logOutUser()">
                     </div>
                 </div>

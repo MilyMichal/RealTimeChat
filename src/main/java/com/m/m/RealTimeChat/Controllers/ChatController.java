@@ -31,6 +31,7 @@ public class ChatController {
             model.addAttribute("bannedUsers",userStorageService.getBannedUsers());
             return "chat-admin";
         }
+        model.addAttribute("usersList",userStorageService.getUsersList(authentication.getName()));
         return "ChatPage";
     }
 
