@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/profile")
@@ -28,8 +30,9 @@ public class ProfileSettingsController {
                                                @RequestParam(required = false) String userName,
                                                @RequestParam(required = false) String newPass,
                                                @RequestParam String actualPass) {
-        return new ResponseEntity<>(profileSettingsService.saveNewImageToProfile(auth, file, userName, newPass, actualPass), HttpStatus.OK);
-    }
+
+            return new ResponseEntity<>(profileSettingsService.updateUserProfile(auth, file, userName, newPass, actualPass), HttpStatus.OK);
+           }
 
     @GetMapping("get/{username}")
     public ResponseEntity<Resource> getProfilePic(@PathVariable String username) throws IOException {

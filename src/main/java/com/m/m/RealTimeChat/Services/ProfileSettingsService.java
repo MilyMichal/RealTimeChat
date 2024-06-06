@@ -1,8 +1,14 @@
 package com.m.m.RealTimeChat.Services;
 
+import com.m.m.RealTimeChat.Models.SecuredUser;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,45 +23,71 @@ import java.util.Map;
 public class ProfileSettingsService {
 
     private final UserStorageService userStorageService;
+    private final PasswordEncoder passwordEncoder;
 
-
-    public ProfileSettingsService(UserStorageService userStorageService) {
+    public ProfileSettingsService(UserStorageService userStorageService, PasswordEncoder passwordEncoder) {
         this.userStorageService = userStorageService;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
-    public Map<String, String> saveNewImageToProfile(Authentication auth,
-                                                     MultipartFile file,
-                                                     String userName,
-                                                     String newPass,
-                                                     String actualPass) {
+    public Map<String, String> updateUserProfile(Authentication auth,
+                                                 MultipartFile file,
+                                                 String userName,
+                                                 String newPass,
+                                                 String actualPass) {
+
+
         Map<String, String> message = new HashMap<>();
         String IMAGE_FOLDER = "ProfilePic";
         if (userStorageService.confirmPassword(auth.getName(), actualPass)) {
             if (file.isEmpty() && userName.isEmpty() && newPass.isEmpty()) {
                 message.put("message", "There is nothing to update");
+
             } else {
                 String pathForDatabase = "";
-                if (!file.isEmpty()) {
-                    try {
-                        byte[] bytes = file.getBytes();
-                        Path path = Paths.get(IMAGE_FOLDER, auth.getName(),file.getOriginalFilename());
-                        Files.createDirectories(path.getParent());
-                        System.out.println("PATH DEBUG: " + path);
-                        Files.write(path, bytes);
-                        pathForDatabase = path.toString();
+                // if (!userName.isEmpty()) {
+                if (auth.isAuthenticated()) {
+                    System.out.println("DEBUG AUTH BEFORE CHANGE: " + SecurityContextHolder.getContext().getAuthentication().getName());
+                    UserDetails currentUserDetails = (UserDetails) auth.getPrincipal();
+                    UserDetails updatedUserDetails =  User.builder()
+                            .username(userName.isEmpty() ? auth.getName() : userName)
+                            .password(newPass.isEmpty() ? currentUserDetails.getPassword() : passwordEncoder.encode(newPass))
+                            .authorities(currentUserDetails.getAuthorities())
+                            .build();
 
-                    } catch (IOException e) {
-                        message.put("message", e.getMessage());
-
+                    if (!userName.isEmpty()) {
+                        message.put("newUserName", userName);
+                    } else if (!newPass.isEmpty()) {
+                        // }
+                        message.put("pass", "changed");
                     }
+                    if (!file.isEmpty()) {
+                        try {
+                            byte[] bytes = file.getBytes();
+                            Path path = Paths.get(IMAGE_FOLDER, auth.getName(), file.getOriginalFilename());
+                            Files.createDirectories(path.getParent());
+                            System.out.println("PATH DEBUG: " + path);
+                            Files.write(path, bytes);
+                            pathForDatabase = path.toString();
 
+                        } catch (IOException e) {
+                            message.put("message", e.getMessage());
+
+                        }
+                    }
+                    message.put("message", "Profile was successfully updated!");
+                    message.forEach((k, v) -> System.out.println("DEBUG MAP: \n Key: " + k + "\n" + "value: " + v));
+                    userStorageService.updateUserInfo(auth.getName(), pathForDatabase, newPass, userName);
+
+                    Authentication newAuthentication = new UsernamePasswordAuthenticationToken(updatedUserDetails, auth.getCredentials(), updatedUserDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(newAuthentication);
+
+                    System.out.println("DEBUG AUTH AFTER CHANGE " + SecurityContextHolder.getContext().getAuthentication().getName() );
                 }
-                message.put("message", "Profile was successfully updated!");
-                userStorageService.updateUserInfo(auth.getName(), pathForDatabase, newPass, userName);
             }
-        }
 
+        }
         return message;
     }
 

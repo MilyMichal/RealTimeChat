@@ -5,12 +5,10 @@ import com.m.m.RealTimeChat.Models.Message;
 import com.m.m.RealTimeChat.Models.OnlineUser;
 import com.m.m.RealTimeChat.Services.MessageHistoryService;
 import com.m.m.RealTimeChat.Services.OnlineUserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -48,6 +46,11 @@ public class MessageHistoryController {
         return messageHistoryService.getLatestPrivateHistory(sendTo, sender);
     }
 
+    @PutMapping("history/update")
+    @ResponseBody
+    public void updateMessageHistory(@RequestBody Map<String, String> request) {
+        messageHistoryService.updateHistory(request.get("prevName"), request.get("actName"));
+    }
 
 
 }

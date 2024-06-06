@@ -36,4 +36,9 @@ public class MessageHistoryService {
     public List<Message> getLatestPrivateHistory(String sendTo, String sender) {
         return messageRepository.findLatestPrivateMessages(sendTo, sender);
     }
+
+    public void updateHistory(String oldName, String newName) {
+        System.out.println("HISTORY UPDATE RUN");
+        messageRepository.updateHistory(oldName,newName);
+    }
 }

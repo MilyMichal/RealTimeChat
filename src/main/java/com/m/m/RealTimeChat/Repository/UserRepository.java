@@ -19,7 +19,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     List<User> findAllBannedUsers();
 
     @Query(value = "SELECT user_name FROM users WHERE user_name != :name",nativeQuery = true)
-    List<String> findRawUsernameList(@Param("name") String user);
+    List<String>        findRawUsernameList(@Param("name") String user);
 
     /*@Query(value = "SELECT us.profilePic AS pic, ous.nickname FROM onlineUsers ous JOIN users us ON ous.nickname = us.userName",nativeQuery = true)
     List<Map<String,Object>> getProfilePic();*/

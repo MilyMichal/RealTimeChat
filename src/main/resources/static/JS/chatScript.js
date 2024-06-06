@@ -126,13 +126,28 @@ function onMessageReceived(payload) {
         }
 
         /////
-        if (message.type === "Update") {
-            if (userName === message.sendTo) {
+        if (message.type === "update") {
+            console.log("userName before updatemsg: " + userName);
+            if (userName === message.sender) {
+                userName = message.content;
+                console.log("userName after updatemsg: " + userName)
+            } else {
+            
+            Array.from(document.getElementById("user-to-find").options).forEach(option => {
 
+                if (option.value === message.sender) {
+                    option.value = message.content;
+                    option.text = message.content;
+
+                }
+            });
+            console.log("CLEARING MESSAGE WINDOW");
             }
 
-        }
+            messageContainer.innerHTML = "";
+            getLastestHistory();
 
+        }
 
         ////
 
@@ -248,12 +263,12 @@ function onMessageReceived(payload) {
                                      <span class='new-user'>${map["nickname"]}</span>
                                      <span class='new-message-counter'>0</span>
                                      </button >`;
- 
+     
                                          usersContainer.insertAdjacentHTML("beforeend", user);
                                          let userBtn = document.querySelector("." + map["nickname"]);
- 
+     
                                          setUpOnlineUserBtn(userBtn, map["nickname"]);
- 
+     
                                      });*/
                                 /*.then(imgData => {
                                     let user = `<button class='user-container ${map["nickname"]}' type='button'>
@@ -261,12 +276,12 @@ function onMessageReceived(payload) {
                                 <span class='new-user'>${map["nickname"]}</span>
                                 <span class='new-message-counter'>0</span>
                                 </button >`;
-
+    
                                     usersContainer.insertAdjacentHTML("beforeend", user);
                                     let userBtn = document.querySelector("." + map["nickname"]);
-
+    
                                     setUpOnlineUserBtn(userBtn, map["nickname"]);
-
+    
                                 }); */
                             }
                         });
@@ -318,20 +333,20 @@ function onMessageReceived(payload) {
                     .then(response => response.json())
                     .then(data => {
                         let lastUser = data[data.length - 1];
-
+    
                         if (lastUser["nickname"] !== userName) {
-
+    
                             let user = `<button class='user-container ${lastUser["nickname"]}' type='button'>
                                     <img class='profile-img-online' src= '' alt='Profile Picture'>
                                     <span class='new-user'>${lastUser["nickname"]}</span>
                                     <span class='new-message-counter'>0</span>
                                     </button >`;
-
+    
                             usersContainer.insertAdjacentHTML("beforeend", user);
                             let userBtn = document.querySelector("." + lastUser["nickname"]);
-
+    
                             setUpOnlineUserBtn(userBtn, lastUser["nickname"]);
-
+    
                             fetch("http://localhost:28852/profile/get/" + lastUser["nickname"])
                                 .then(response => {
                                     if (response.ok) {
@@ -380,8 +395,8 @@ function onMessageReceived(payload) {
         }
 
     }
-}
 
+}
 //connecting new user
 function onConnectedSuccessfully() {
 
@@ -430,6 +445,14 @@ function getLastestHistory() {
                         let disconnectedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + msg.content + "</div></div>";
                         messageContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
                     }
+
+                    ///
+                    if (msg.type === "update") {
+                        let updateMsg = "<div class='event-message-container'> <div class='event-message  login-event'>" + msg.sender + " changed his name to: " + msg.content + "</div></div>";
+                        messageContainer.insertAdjacentHTML("beforeend", updateMsg);
+                    }
+
+                    ///
                     if (msg.type === "message") {
                         let history;
                         if (msg.sender === userName) {
@@ -493,6 +516,12 @@ function getFullPublicHistory() {
                     let disconnectedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + msg.content + "</div></div>";
                     historyContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
                 }
+                ///
+                if (msg.type === "update") {
+                    let updateMsg = "<div class='event-message-container'> <div class='event-message  login-event'>" + msg.sender + " changed his name to: " + msg.content + "</div></div>";
+                    messageContainer.insertAdjacentHTML("beforeend", updateMsg);
+                }
+                ///
                 if (msg.type === "message") {
                     let history;
                     if (msg.sender === userName) {
@@ -605,7 +634,7 @@ function show() {
 window.onclick = function (event) {
     if (!event.target.matches('.dropbtn')) {
         var dropupMenu = document.getElementById("dropupMenu");
-        
+
 
         if (dropupMenu.classList.contains('show')) {
             dropupMenu.classList.remove('show');
@@ -619,8 +648,8 @@ window.onclick = function (event) {
             }
         });
         document.querySelector(".history-window").innerHTML = "";
-        }
-    
+    }
+
 }
 
 
@@ -692,6 +721,39 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
     })
         .then(response => response.json())
         .then(data => {
+            if (data.hasOwnProperty("newUserName")) {
+                console.log("SEND UPDATE MSG");
+                let date = new Date().toLocaleString();
+                let updateMsg =
+                {
+                    "content": data["newUserName"],
+                    "sender": userName,
+                    "date": date,
+                    "type": 'update',
+                    "sendTo": "public"
+
+                }
+                fetch('http://localhost:28852/history/update', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        'prevName': userName,
+                        'actName': data["newUserName"]
+                    })
+                })
+                    .then(() => {
+
+                        console.log("Update is succesfull");
+                       
+                        stompClient.send("/app/chat", {}, JSON.stringify(updateMsg));
+                                               
+                    });
+
+
+
+            }
             //console.log("DEBUG: " + data();
             //let updateMessage = `<div class="response">${data["message"]}</div>`;
             document.querySelector(".response").innerHTML = `${data["message"]}`;
@@ -738,7 +800,7 @@ function getHistory() {
                                 "<div class='new-message-container revert'><div class='new-sender'>"
                                 + msg.sender + "</div>"
                                 + "<div class='new-message right-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
-
+ 
                         } else {
                             history =
                                 "<div class='new-message-container'><div class='new-sender'>"
@@ -749,20 +811,20 @@ function getHistory() {
                     }
                 });
             });
-
+ 
     } else {
         fetch("http://localhost:28852/history/" + privateChatWith + "-" + userName + "/latest")
             .then(response => response.json())
             .then(message => {
                 message.forEach((msg) => {
-
+ 
                     let history;
                     if (msg.sender === userName) {
                         history =
                             "<div class='new-message-container revert'><div class='new-sender'>"
                             + msg.sender + "</div>"
                             + "<div class='new-message right-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
-
+ 
                     } else {
                         history =
                             "<div class='new-message-container'><div class='new-sender'>"
@@ -770,14 +832,14 @@ function getHistory() {
                             + "<div class='new-message left-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
                     }
                     messageContainer.insertAdjacentHTML("beforeend", history);
-
+ 
                 });
             });
-
+ 
     }
-
-
-
+ 
+ 
+ 
 }
-
+ 
 */

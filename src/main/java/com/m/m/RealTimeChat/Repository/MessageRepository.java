@@ -1,7 +1,9 @@
 package com.m.m.RealTimeChat.Repository;
 
 import com.m.m.RealTimeChat.Models.Message;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -21,4 +23,12 @@ public interface MessageRepository extends JpaRepository<Message,Long> {
 
     @Query(value = "SELECT * FROM (SELECT * FROM messages WHERE send_to = :to AND sender = :from OR send_to = :from AND sender = :to ORDER BY date DESC LIMIT 15) subquery ORDER BY date ASC ",nativeQuery = true)
     List<Message> findLatestPrivateMessages(@Param("to") String sendTo, @Param("from") String sender);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE messages SET sender = CASE WHEN sender = :oldName THEN :newName ELSE sender END, send_to = CASE WHEN send_to = :oldName THEN :newName ELSE send_to END WHERE sender = :oldName OR send_to = :oldName " +
+            ";UPDATE online_users SET nickname = :newName WHERE nickname = :oldName",nativeQuery = true)
+    void updateHistory (@Param("oldName") String oldName, @Param("newName") String newName);
+
+
 }
