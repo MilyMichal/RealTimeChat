@@ -125,23 +125,29 @@ function onMessageReceived(payload) {
             }
         }
 
-        /////
         if (message.type === "update") {
             console.log("userName before updatemsg: " + userName);
             if (userName === message.sender) {
                 userName = message.content;
                 console.log("userName after updatemsg: " + userName)
             } else {
-            
-            Array.from(document.getElementById("user-to-find").options).forEach(option => {
 
-                if (option.value === message.sender) {
-                    option.value = message.content;
-                    option.text = message.content;
+                Array.from(document.getElementById("user-to-find").options).forEach(option => {
 
-                }
-            });
-            console.log("CLEARING MESSAGE WINDOW");
+                    if (option.value === message.sender) {
+                        option.value = message.content;
+                        option.text = message.content;
+
+                    }
+                });
+                let onUserbtn = document.querySelector(`.${message.sender}`);
+                onUserbtn.classList.replace(`${message.sender}`, `${message.content}`);
+                let name = onUserbtn.querySelector(`.new-user`);
+                name.innerHTML = `${message.content}`;
+                name.classList.replace(`${message.sender}`, `${message.content}`);
+
+
+                console.log("CLEARING MESSAGE WINDOW");
             }
 
             messageContainer.innerHTML = "";
@@ -149,7 +155,6 @@ function onMessageReceived(payload) {
 
         }
 
-        ////
 
 
         // displaying newest message
@@ -254,35 +259,6 @@ function onMessageReceived(payload) {
                                         console.error('Error fetching image:', error);
                                     });
 
-
-                                /* fetch("http://localhost:28852/profile/get/" + map["nickname"])
-                                     .then(response => response.text())
-                                     .then(imgData => {
-                                         let user = `<button class='user-container ${map["nickname"]}' type='button'>
-                                     <img class='profile-img-online' src= '${imgData}' alt='Profile Picture'>
-                                     <span class='new-user'>${map["nickname"]}</span>
-                                     <span class='new-message-counter'>0</span>
-                                     </button >`;
-     
-                                         usersContainer.insertAdjacentHTML("beforeend", user);
-                                         let userBtn = document.querySelector("." + map["nickname"]);
-     
-                                         setUpOnlineUserBtn(userBtn, map["nickname"]);
-     
-                                     });*/
-                                /*.then(imgData => {
-                                    let user = `<button class='user-container ${map["nickname"]}' type='button'>
-                                <img class='profile-img-online' src= 'data:image/jpeg;base64,${imgData}' alt='Profile Picture'>
-                                <span class='new-user'>${map["nickname"]}</span>
-                                <span class='new-message-counter'>0</span>
-                                </button >`;
-    
-                                    usersContainer.insertAdjacentHTML("beforeend", user);
-                                    let userBtn = document.querySelector("." + map["nickname"]);
-    
-                                    setUpOnlineUserBtn(userBtn, map["nickname"]);
-    
-                                }); */
                             }
                         });
 
@@ -328,64 +304,7 @@ function onMessageReceived(payload) {
                                 .catch(error => {
                                     console.error('Error fetching image:', error);
                                 });
-                            ///workig version
-                            /*fetch("http://localhost:28852/users")
-                    .then(response => response.json())
-                    .then(data => {
-                        let lastUser = data[data.length - 1];
-    
-                        if (lastUser["nickname"] !== userName) {
-    
-                            let user = `<button class='user-container ${lastUser["nickname"]}' type='button'>
-                                    <img class='profile-img-online' src= '' alt='Profile Picture'>
-                                    <span class='new-user'>${lastUser["nickname"]}</span>
-                                    <span class='new-message-counter'>0</span>
-                                    </button >`;
-    
-                            usersContainer.insertAdjacentHTML("beforeend", user);
-                            let userBtn = document.querySelector("." + lastUser["nickname"]);
-    
-                            setUpOnlineUserBtn(userBtn, lastUser["nickname"]);
-    
-                            fetch("http://localhost:28852/profile/get/" + lastUser["nickname"])
-                                .then(response => {
-                                    if (response.ok) {
-                                        return response.blob();
-                                    } else {
-                                        throw new Error('Image not found');
-                                    }
-                                })
-                                .then(blob => {
-                                    const imageUrl = URL.createObjectURL(blob);
-                                    const imgElement = userBtn.querySelector('.profile-img-online');
-                                    imgElement.src = imageUrl;
-                                })
-                                .catch(error => {
-                                    console.error('Error fetching image:', error);
-                                }); */
-                            ////
 
-                            /* fetch("http://localhost:28852/profile/get/" + lastUser["nickname"])
-                                 .then(response => response.text())
-                                 .then(imgData => {
-                                     console.log("IMG DATA DEBUG: " + imgData);
-                                     let user = `<button class='user-container ${lastUser["nickname"]}' type='button'>
-                                     <img class='profile-img-online' src= '${imgData}' alt='Profile Picture'>
-                                     <span class='new-user'>${lastUser["nickname"]}</span>
-                                     <span class='new-message-counter'>0</span>
-                                     </button >`;
-                
-                                     usersContainer.insertAdjacentHTML("beforeend", user);
-                                     let userBtn = document.querySelector("." + lastUser["nickname"]);
-                
-                                     setUpOnlineUserBtn(userBtn, lastUser["nickname"]);
-                
-                                 });*/
-                            /*let user = `<button class='user-container ${lastUser["nickname"]}' type='button'>
-                                <img class='profile-img-online' src= 'data:image/jpeg;base64,${imgData}' alt='Profile Picture'>
-                                <span class='new-user'>${lastUser["nickname"]}</span>
-                                <span class='new-message-counter'>0</span>
-                                </button >`;*/
                         }
 
                     });
@@ -709,7 +628,7 @@ function handleFiles(files) {
 }
 //#endregion
 
-
+//#region SubmitProfileUpdate
 document.getElementById("profile-update-form").addEventListener("submit", function (event) {
     event.preventDefault();
 
@@ -746,18 +665,17 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                     .then(() => {
 
                         console.log("Update is succesfull");
-                       
+
                         stompClient.send("/app/chat", {}, JSON.stringify(updateMsg));
-                                               
+
                     });
 
 
 
             }
-            //console.log("DEBUG: " + data();
-            //let updateMessage = `<div class="response">${data["message"]}</div>`;
+          
             document.querySelector(".response").innerHTML = `${data["message"]}`;
-            //document.querySelector(".modal-content").insertAdjacentHTML("beforeend", updateMessage);
+            
         });
     document.getElementById("act-pass-input").value = "";
     document.getElementById("new-pass-input").value = "";
@@ -766,6 +684,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
     document.getElementById("drop").innerHTML = "Drag your profile picture HERE";
 
 });
+//#endregion
 
 
 
@@ -778,68 +697,3 @@ function clearOldMsg() {
 }
 
 
-/*
-function getHistory() {
-    if (chatWithElement.innerHTML === "Public chat") {
-        fetch("http://localhost:28852/history/public-latest")
-            .then(response => response.json())
-            .then(message => {
-                message.forEach((msg) => {
-                    if (msg.type === "newUser") {
-                        let welcomeMsg = "<div class='event-message-container'><div class='event-message  login-event'> " + msg.content + "</div></div>";
-                        messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
-                    }
-                    if (msg.type === "Leave" || msg.type === "kick") {
-                        let disconnectedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + msg.content + "</div></div>";
-                        messageContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
-                    }
-                    if (msg.type === "message") {
-                        let history;
-                        if (msg.sender === userName) {
-                            history =
-                                "<div class='new-message-container revert'><div class='new-sender'>"
-                                + msg.sender + "</div>"
-                                + "<div class='new-message right-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
- 
-                        } else {
-                            history =
-                                "<div class='new-message-container'><div class='new-sender'>"
-                                + msg.sender + "</div>"
-                                + "<div class='new-message left-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
-                        }
-                        messageContainer.insertAdjacentHTML("beforeend", history);
-                    }
-                });
-            });
- 
-    } else {
-        fetch("http://localhost:28852/history/" + privateChatWith + "-" + userName + "/latest")
-            .then(response => response.json())
-            .then(message => {
-                message.forEach((msg) => {
- 
-                    let history;
-                    if (msg.sender === userName) {
-                        history =
-                            "<div class='new-message-container revert'><div class='new-sender'>"
-                            + msg.sender + "</div>"
-                            + "<div class='new-message right-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
- 
-                    } else {
-                        history =
-                            "<div class='new-message-container'><div class='new-sender'>"
-                            + msg.sender + "</div>"
-                            + "<div class='new-message left-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
-                    }
-                    messageContainer.insertAdjacentHTML("beforeend", history);
- 
-                });
-            });
- 
-    }
- 
- 
- 
-}
- 
-*/

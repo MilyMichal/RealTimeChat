@@ -83,23 +83,28 @@ public class UserStorageService {
     }
 
 
-    public void updateUserInfo(String name, String profilePicPath,String newPassword, String newUserName) {
+    public void updateUserInfo(String name, String profilePicPath, String newPassword, String newUserName) {
         User user = getUser(name);
-        if(!profilePicPath.isEmpty()) {
+        if (!profilePicPath.isEmpty()) {
             user.setProfilePic(profilePicPath);
         }
-        if(!newPassword.isEmpty()) {
+        if (!newPassword.isEmpty()) {
             user.setPassword(passwordEncoder.encode(newPassword));
         }
-        if(!newUserName.isEmpty()) {
+        if (!newUserName.isEmpty()) {
             user.setUserName(newUserName);
         }
         userRepository.save(user);
 
     }
 
-    public boolean confirmPassword(String user,String password) {
-                return passwordEncoder.matches(password,getUser(user).getPassword());
+    public boolean confirmPassword(String user, String password, String newPassword) {
+        String actualPassword = getUser(user).getPassword();
+
+        if (passwordEncoder.matches(password, getUser(user).getPassword())) {
+            return !passwordEncoder.matches(newPassword, actualPassword);
+        }
+        return false;
     }
 
 }

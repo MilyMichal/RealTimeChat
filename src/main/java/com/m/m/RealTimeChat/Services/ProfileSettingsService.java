@@ -40,53 +40,59 @@ public class ProfileSettingsService {
 
         Map<String, String> message = new HashMap<>();
         String IMAGE_FOLDER = "ProfilePic";
-        if (userStorageService.confirmPassword(auth.getName(), actualPass)) {
+        if (userStorageService.confirmPassword(auth.getName(), actualPass, newPass)) {
+
             if (file.isEmpty() && userName.isEmpty() && newPass.isEmpty()) {
                 message.put("message", "There is nothing to update");
 
             } else {
                 String pathForDatabase = "";
-                // if (!userName.isEmpty()) {
-                if (auth.isAuthenticated()) {
-                    System.out.println("DEBUG AUTH BEFORE CHANGE: " + SecurityContextHolder.getContext().getAuthentication().getName());
-                    UserDetails currentUserDetails = (UserDetails) auth.getPrincipal();
-                    UserDetails updatedUserDetails =  User.builder()
-                            .username(userName.isEmpty() ? auth.getName() : userName)
-                            .password(newPass.isEmpty() ? currentUserDetails.getPassword() : passwordEncoder.encode(newPass))
-                            .authorities(currentUserDetails.getAuthorities())
-                            .build();
+                if (!userName.equals(auth.getName())) {
+                    if (auth.isAuthenticated()) {
+                        System.out.println("DEBUG AUTH BEFORE CHANGE: " + SecurityContextHolder.getContext().getAuthentication().getName());
+                        UserDetails currentUserDetails = (UserDetails) auth.getPrincipal();
+                        UserDetails updatedUserDetails = User.builder()
+                                .username(userName.isEmpty() ? auth.getName() : userName)
+                                .password(newPass.isEmpty() ? currentUserDetails.getPassword() : passwordEncoder.encode(newPass))
+                                .authorities(currentUserDetails.getAuthorities())
+                                .build();
 
-                    if (!userName.isEmpty()) {
-                        message.put("newUserName", userName);
-                    } else if (!newPass.isEmpty()) {
-                        // }
-                        message.put("pass", "changed");
-                    }
-                    if (!file.isEmpty()) {
-                        try {
-                            byte[] bytes = file.getBytes();
-                            Path path = Paths.get(IMAGE_FOLDER, auth.getName(), file.getOriginalFilename());
-                            Files.createDirectories(path.getParent());
-                            System.out.println("PATH DEBUG: " + path);
-                            Files.write(path, bytes);
-                            pathForDatabase = path.toString();
+                        if (!userName.isEmpty()) {
+                            message.put("newUserName", userName);
+                        } else if (!newPass.isEmpty()) {
 
-                        } catch (IOException e) {
-                            message.put("message", e.getMessage());
-
+                            message.put("pass", "changed");
                         }
+                        if (!file.isEmpty()) {
+                            try {
+                                byte[] bytes = file.getBytes();
+                                Path path = Paths.get(IMAGE_FOLDER, auth.getName(), file.getOriginalFilename());
+                                Files.createDirectories(path.getParent());
+                                System.out.println("PATH DEBUG: " + path);
+                                Files.write(path, bytes);
+                                pathForDatabase = path.toString();
+
+                            } catch (IOException e) {
+                                message.put("message", e.getMessage());
+
+                            }
+                        }
+                        message.put("message", "Profile was successfully updated!");
+                        message.forEach((k, v) -> System.out.println("DEBUG MAP: \n Key: " + k + "\n" + "value: " + v));
+                        userStorageService.updateUserInfo(auth.getName(), pathForDatabase, newPass, userName);
+
+                        Authentication newAuthentication = new UsernamePasswordAuthenticationToken(updatedUserDetails, auth.getCredentials(), updatedUserDetails.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(newAuthentication);
+
+                        System.out.println("DEBUG AUTH AFTER CHANGE " + SecurityContextHolder.getContext().getAuthentication().getName());
                     }
-                    message.put("message", "Profile was successfully updated!");
-                    message.forEach((k, v) -> System.out.println("DEBUG MAP: \n Key: " + k + "\n" + "value: " + v));
-                    userStorageService.updateUserInfo(auth.getName(), pathForDatabase, newPass, userName);
-
-                    Authentication newAuthentication = new UsernamePasswordAuthenticationToken(updatedUserDetails, auth.getCredentials(), updatedUserDetails.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(newAuthentication);
-
-                    System.out.println("DEBUG AUTH AFTER CHANGE " + SecurityContextHolder.getContext().getAuthentication().getName() );
+                } else {
+                    message.put("message", "username is not different");
                 }
             }
 
+        } else {
+            message.put("message", "New password must be different from the current one");
         }
         return message;
     }
