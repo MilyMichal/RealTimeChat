@@ -145,11 +145,17 @@ function onMessageReceived(payload) {
                 let name = onUserbtn.querySelector(`.new-user`);
                 name.innerHTML = `${message.content}`;
                 name.classList.replace(`${message.sender}`, `${message.content}`);
-
-
+                ///
+                setProfilePicture(onUserbtn, message.content);
+                ///
                 console.log("CLEARING MESSAGE WINDOW");
             }
-
+            ///
+            if (chatWithElement.innerHTML !== "Public chat") {
+                privateChatWith = message.content;
+                chatWithElement.innerHTML = "Private chat with: " + message.content;
+                        }
+            ///
             messageContainer.innerHTML = "";
             getLastestHistory();
 
@@ -240,9 +246,9 @@ function onMessageReceived(payload) {
                                 usersContainer.insertAdjacentHTML("beforeend", user);
                                 let userBtn = document.querySelector("." + onlineUser.nickname);
 
-                                setUpOnlineUserBtn(userBtn, onlineUser.nickname);
-
-                                fetch("http://localhost:28852/profile/get/" + onlineUser.nickname)
+                                setUpOnlineUserBtn(userBtn);
+                                setProfilePicture(userBtn, onlineUser.nickname);
+                                /*fetch("http://localhost:28852/profile/get/" + onlineUser.nickname)
                                     .then(response => {
                                         if (response.ok) {
                                             return response.blob();
@@ -258,7 +264,7 @@ function onMessageReceived(payload) {
                                     .catch(error => {
                                         console.error('Error fetching image:', error);
                                     });
-
+                                    */
                             }
                         });
 
@@ -286,24 +292,25 @@ function onMessageReceived(payload) {
                             usersContainer.insertAdjacentHTML("beforeend", user);
                             let userBtn = document.querySelector("." + lastUser.nickname);
 
-                            setUpOnlineUserBtn(userBtn, lastUser.nickname);
+                            setUpOnlineUserBtn(userBtn);
+                            setProfilePicture(userBtn, lastUser.nickname);
 
-                            fetch("http://localhost:28852/profile/get/" + lastUser.nickname)
-                                .then(response => {
-                                    if (response.ok) {
-                                        return response.blob();
-                                    } else {
-                                        throw new Error('Image not found');
-                                    }
-                                })
-                                .then(blob => {
-                                    const imageUrl = URL.createObjectURL(blob);
-                                    const imgElement = userBtn.querySelector('.profile-img-online');
-                                    imgElement.src = imageUrl;
-                                })
-                                .catch(error => {
-                                    console.error('Error fetching image:', error);
-                                });
+                            /* fetch("http://localhost:28852/profile/get/" + lastUser.nickname)
+                                 .then(response => {
+                                     if (response.ok) {
+                                         return response.blob();
+                                     } else {
+                                         throw new Error('Image not found');
+                                     }
+                                 })
+                                 .then(blob => {
+                                     const imageUrl = URL.createObjectURL(blob);
+                                     const imgElement = userBtn.querySelector('.profile-img-online');
+                                     imgElement.src = imageUrl;
+                                 })
+                                 .catch(error => {
+                                     console.error('Error fetching image:', error);
+                                 });*/
 
                         }
 
@@ -492,7 +499,7 @@ function getFullPersonalHistory() {
 
 
 // online user button set up
-function setUpOnlineUserBtn(btn, newUser) {
+function setUpOnlineUserBtn(btn) {
     btn.addEventListener("click", () => {
         if (chatWithElement.innerHTML !== "Public chat") {
 
@@ -507,8 +514,12 @@ function setUpOnlineUserBtn(btn, newUser) {
             btn.querySelector(".new-message-counter").style.setProperty("visibility", "hidden");
             btn.querySelector(".new-message-counter").innerHTML = "0";
         }
-        chatWithElement.innerHTML = "Private chat with: " + newUser;
-        privateChatWith = newUser;
+        /* chatWithElement.innerHTML = "Private chat with: " + newUser;*/
+        ///
+        var btnUserName = btn.querySelector(".new-user").innerHTML;
+        chatWithElement.innerHTML = "Private chat with: " + btnUserName;
+        ///
+        privateChatWith = btnUserName;
         getLastestHistory();
     });
 }
@@ -673,9 +684,9 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
 
 
             }
-          
+
             document.querySelector(".response").innerHTML = `${data["message"]}`;
-            
+
         });
     document.getElementById("act-pass-input").value = "";
     document.getElementById("new-pass-input").value = "";
@@ -696,4 +707,23 @@ function clearOldMsg() {
 
 }
 
+function setProfilePicture(button, nickname) {
+
+    fetch("http://localhost:28852/profile/get/" + nickname)
+        .then(response => {
+            if (response.ok) {
+                return response.blob();
+            } else {
+                throw new Error('Image not found');
+            }
+        })
+        .then(blob => {
+            const imageUrl = URL.createObjectURL(blob);
+            const imgElement = button.querySelector('.profile-img-online');
+            imgElement.src = imageUrl;
+        })
+        .catch(error => {
+            console.error('Error fetching image:', error);
+        });
+}
 
