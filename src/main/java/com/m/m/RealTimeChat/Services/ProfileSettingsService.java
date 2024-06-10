@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,6 +41,7 @@ public class ProfileSettingsService {
 
         Map<String, String> message = new HashMap<>();
         String IMAGE_FOLDER = "ProfilePic";
+        boolean renamed = false;
         if (userStorageService.confirmPassword(auth.getName(), actualPass, newPass)) {
 
             if (file.isEmpty() && userName.isEmpty() && newPass.isEmpty()) {
@@ -58,6 +60,13 @@ public class ProfileSettingsService {
                                 .build();
 
                         if (!userName.isEmpty()) {
+                            File currentFolder = new File(IMAGE_FOLDER + "/" + auth.getName());
+                            File newFolder = new File(currentFolder.getParent(),userName);
+                            if(currentFolder.exists()) {
+                                renamed = currentFolder.renameTo(newFolder);
+                                System.out.println("DEBUG - WAS FOLDER RENAMED: " + renamed );
+                            }
+
                             message.put("newUserName", userName);
                         } else if (!newPass.isEmpty()) {
 
@@ -65,8 +74,9 @@ public class ProfileSettingsService {
                         }
                         if (!file.isEmpty()) {
                             try {
+
                                 byte[] bytes = file.getBytes();
-                                Path path = Paths.get(IMAGE_FOLDER, auth.getName(), file.getOriginalFilename());
+                                Path path = Paths.get(IMAGE_FOLDER, renamed ? userName : auth.getName(), file.getOriginalFilename());
                                 Files.createDirectories(path.getParent());
                                 System.out.println("PATH DEBUG: " + path);
                                 Files.write(path, bytes);
@@ -76,6 +86,7 @@ public class ProfileSettingsService {
                                 message.put("message", e.getMessage());
 
                             }
+                            message.put("profPic","changed");
                         }
                         message.put("message", "Profile was successfully updated!");
                         message.forEach((k, v) -> System.out.println("DEBUG MAP: \n Key: " + k + "\n" + "value: " + v));
@@ -87,7 +98,7 @@ public class ProfileSettingsService {
                         System.out.println("DEBUG AUTH AFTER CHANGE " + SecurityContextHolder.getContext().getAuthentication().getName());
                     }
                 } else {
-                    message.put("message", "username is not different");
+                    message.put("message", "New username must be different from the current one");
                 }
             }
 

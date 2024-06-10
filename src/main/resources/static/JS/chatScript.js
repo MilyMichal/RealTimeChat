@@ -1,3 +1,4 @@
+
 let inputContainer = document.querySelector(".inputContainer");
 let chatScreen = document.querySelector(".chat");
 let msgInputWindow = document.getElementById("input-msg");
@@ -127,34 +128,44 @@ function onMessageReceived(payload) {
 
         if (message.type === "update") {
             console.log("userName before updatemsg: " + userName);
-            if (userName === message.sender) {
+            if (userName === message.sender && message.sender !== message.content) {
                 userName = message.content;
                 console.log("userName after updatemsg: " + userName)
             } else {
-
-                Array.from(document.getElementById("user-to-find").options).forEach(option => {
-
-                    if (option.value === message.sender) {
-                        option.value = message.content;
-                        option.text = message.content;
-
-                    }
-                });
                 let onUserbtn = document.querySelector(`.${message.sender}`);
-                onUserbtn.classList.replace(`${message.sender}`, `${message.content}`);
                 let name = onUserbtn.querySelector(`.new-user`);
-                name.innerHTML = `${message.content}`;
-                name.classList.replace(`${message.sender}`, `${message.content}`);
+                if (message.sender !== message.content) {
+
+                    Array.from(document.getElementById("user-to-find").options).forEach(option => {
+
+                        if (option.value === message.sender) {
+                            option.value = message.content;
+                            option.text = message.content;
+
+                        }
+                    });
+
+                    onUserbtn.classList.replace(`${message.sender}`, `${message.content}`);
+
+                    name.innerHTML = `${message.content}`;
+                    name.classList.replace(`${message.sender}`, `${message.content}`);
+                    setProfilePicture(onUserbtn, message.content);
+
+                    if (chatWithElement.innerHTML !== "Public chat") {
+                        privateChatWith = message.content;
+                        chatWithElement.innerHTML = "Private chat with: " + message.content;
+                    }
+                } else {
+                    setProfilePicture(onUserbtn, message.sender);
+                }
+
                 ///
-                setProfilePicture(onUserbtn, message.content);
+
                 ///
                 console.log("CLEARING MESSAGE WINDOW");
             }
             ///
-            if (chatWithElement.innerHTML !== "Public chat") {
-                privateChatWith = message.content;
-                chatWithElement.innerHTML = "Private chat with: " + message.content;
-                        }
+
             ///
             messageContainer.innerHTML = "";
             getLastestHistory();
@@ -651,13 +662,14 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
     })
         .then(response => response.json())
         .then(data => {
-            if (data.hasOwnProperty("newUserName")) {
+            let updateMsg;
+             if (data.hasOwnProperty("newUserName")) {
                 console.log("SEND UPDATE MSG");
                 let date = new Date().toLocaleString();
-                let updateMsg =
+                updateMsg =
                 {
-                    "content": data["newUserName"],
                     "sender": userName,
+                    "content": data["newUserName"],
                     "date": date,
                     "type": 'update',
                     "sendTo": "public"
@@ -681,8 +693,18 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
 
                     });
 
+            } else {
+                let date = new Date().toLocaleString();
+                updateMsg =
+                {
+                    "sender": userName,
+                    "content": userName,
+                    "date": date,
+                    "type": 'update',
+                    "sendTo": "public"
 
-
+                }
+                stompClient.send("/app/chat", {}, JSON.stringify(updateMsg));
             }
 
             document.querySelector(".response").innerHTML = `${data["message"]}`;
