@@ -2,19 +2,12 @@ package com.m.m.RealTimeChat.Services;
 
 import com.m.m.RealTimeChat.Repository.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.boot.autoconfigure.ssl.SslProperties;
 import org.springframework.data.domain.Example;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.m.m.RealTimeChat.Models.User;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -98,14 +91,13 @@ public class UserStorageService {
 
     }
 
-    public boolean confirmPassword(String user, String password, String newPassword) {
-        String actualPassword = getUser(user).getPassword();
-
-        if (passwordEncoder.matches(password, getUser(user).getPassword())) {
-            return !passwordEncoder.matches(newPassword, actualPassword);
-        }
-        return false;
+    public boolean confirmActualPassword(String user, String password) {
+        return passwordEncoder.matches(password, getUser(user).getPassword());
     }
 
+    public boolean isNewPassNotDifferent(String newPassword, String actualPassword) {
+        return newPassword.equals(actualPassword);
+    }
 }
+
 

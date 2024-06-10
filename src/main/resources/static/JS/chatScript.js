@@ -128,9 +128,12 @@ function onMessageReceived(payload) {
 
         if (message.type === "update") {
             console.log("userName before updatemsg: " + userName);
-            if (userName === message.sender && message.sender !== message.content) {
-                userName = message.content;
-                console.log("userName after updatemsg: " + userName)
+            if (userName === message.sender) {
+
+                if (message.sender !== message.content) {
+                    userName = message.content;
+                    console.log("userName after updatemsg: " + userName);
+                }
             } else {
                 let onUserbtn = document.querySelector(`.${message.sender}`);
                 let name = onUserbtn.querySelector(`.new-user`);
@@ -384,7 +387,7 @@ function getLastestHistory() {
                     }
 
                     ///
-                    if (msg.type === "update") {
+                    if (msg.type === "update" && msg.sender != msg.content) {
                         let updateMsg = "<div class='event-message-container'> <div class='event-message  login-event'>" + msg.sender + " changed his name to: " + msg.content + "</div></div>";
                         messageContainer.insertAdjacentHTML("beforeend", updateMsg);
                     }
@@ -663,48 +666,55 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
         .then(response => response.json())
         .then(data => {
             let updateMsg;
-             if (data.hasOwnProperty("newUserName")) {
-                console.log("SEND UPDATE MSG");
-                let date = new Date().toLocaleString();
-                updateMsg =
-                {
-                    "sender": userName,
-                    "content": data["newUserName"],
-                    "date": date,
-                    "type": 'update',
-                    "sendTo": "public"
-
-                }
-                fetch('http://localhost:28852/history/update', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        'prevName': userName,
-                        'actName': data["newUserName"]
-                    })
-                })
-                    .then(() => {
-
-                        console.log("Update is succesfull");
-
-                        stompClient.send("/app/chat", {}, JSON.stringify(updateMsg));
-
-                    });
-
+            
+            if (Object.keys(data).length == 2 && data.hasOwnProperty("pass")) {
+                console.log("JUST PASS UDPATED");
             } else {
-                let date = new Date().toLocaleString();
-                updateMsg =
-                {
-                    "sender": userName,
-                    "content": userName,
-                    "date": date,
-                    "type": 'update',
-                    "sendTo": "public"
+                if (data.hasOwnProperty("newUserName")) {
+                    console.log("SEND UPDATE MSG");
+                    let date = new Date().toLocaleString();
+                    updateMsg =
+                    {
+                        "sender": userName,
+                        "content": data["newUserName"],
+                        "date": date,
+                        "type": 'update',
+                        "sendTo": "public"
+                    }
 
+                    fetch('http://localhost:28852/history/update', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            'prevName': userName,
+                            'actName': data["newUserName"]
+                        })
+                    })
+                        .then(() => {
+
+                            console.log("HISTORY NAME Update is succesfull");
+
+                            stompClient.send("/app/chat", {}, JSON.stringify(updateMsg));
+
+                        });
+
+                } else {
+                    let date = new Date().toLocaleString();
+                    updateMsg =
+                    {
+                        "sender": userName,
+                        "content": userName,
+                        "date": date,
+                        "type": 'update',
+                        "sendTo": "public"
+
+                    }
+
+                    console.log("PROFILE PIC UPDATE SUCCESFUL")
+                    stompClient.send("/app/chat", {}, JSON.stringify(updateMsg));
                 }
-                stompClient.send("/app/chat", {}, JSON.stringify(updateMsg));
             }
 
             document.querySelector(".response").innerHTML = `${data["message"]}`;
