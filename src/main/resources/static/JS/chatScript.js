@@ -13,6 +13,7 @@ let isScrolledToBottom = true;
 
 let stompClient = null;
 
+
 register();
 
 var userNameElement = document.getElementById("user-data");
@@ -28,6 +29,20 @@ window.addEventListener('unload', function (event) {
 
 });
 
+//event listener for UNDO step from chat page
+
+window.addEventListener('popstate', function (event) {
+            if (!event.state) {
+            logOutUser();
+
+            }
+        });
+
+
+     if (!sessionStorage.getItem('chatVisited')) {
+            sessionStorage.setItem('chatVisited', 'true');
+            history.pushState({ chat: true }, '', '');
+     }
 
 
 //event listener for sending msg by pressing Enter
