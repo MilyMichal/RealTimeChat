@@ -1,70 +1,203 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8">
+    <!-- <meta charset="utf-8">-->
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
     <link rel="stylesheet" type="text/css" th:href="@{CSS/chat_style.css}">
+    <!--<link rel="stylesheet" type="text/css" href="/static/CSS/chat_style.css">-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Caveat">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+          rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Poetsen+One&display=swap"
+          rel="stylesheet">
+
     <title>Chat</title>
 
 </head>
 <body>
+<div class="chat-body">
+    <div class="modal profile-mod" style="display:none">
 
-<div id="chat-with">Public chat</div>
+        <form id="profile-update-form" class="modal-content" enctype="multipart/form-data">
 
-<div class="chat">
-    <div id="users">
+            <!--<span id="closeBtn" class="close" onclick="closeModal('profile-mod')">&times;</span>-->
+            <label for="name-input">New username<br></label>
+            <input id="name-input" type="text" name="userName" placeholder="new user name">
+            <label for="act-pass-input">Confirm actual password<br></label>
+            <input id="act-pass-input" type="password" name="actualPass" placeholder="Actual password" required>
+            <label for="new-pass-input">Select new password<br></label>
+            <input id="new-pass-input" type="password" name="newPass" placeholder="new password">
+            <div class="drag-and-drop">
+                <div id="drop" class="drop-area">
+                    Drag your profile picture HERE
+                </div>
+            </div>
+            <input id="fileData" type="file" name="file" style="visibility:hidden">
+            <button type="submit">Update profile</button>
+
+            <div class="response"></div>
+
+        </form>
+
     </div>
-    <div id="messages">
+    <div class="modal history-mod" >
+        <form class="history-modal-content" id="history-modal-form">
+            <div class="modal-header">
+                <span class="title">History search</span>
+                <select name="history-select" id="user-to-find">
+                    <option value="Select user">Select user</option>
+                    <option th:each="user : ${usersList}" th:value="${user}" th:text="${user}">
+                </select>
+                <!--<span class="close" onclick="closeModal('history-mod')">&times;</span>-->
+                <button type="button" onclick="getFullPersonalHistory()"> Search history</button>
+            </div>
+            <div class="history-window"></div>
+            <button type="button" onclick="getFullPublicHistory()"> Full history</button>
+        </form>
+
+    </div>
+    <div class="chat-main-windows">
+
+        <!--<div class="chat">-->
+        <div class="online-user-panel">
+            <div class="online-users-header">
+                Online users
+            </div>
+            <div id="users">
+
+                <!--<button class="user-container" type="button" >
+                    <img class="profile-img-online" src="file:///C:/Users/michal.mily/IdeaProjects/RealTimeChat/Profiles/Azrael/profileImg.jpg" alt="">
+                    <span class="new-user"> Azrael </span>
+                    <span class="new-message-counter"></span>
+
+                </button>
+                <button class="user-container" type="button" >
+                    <img class="profile-img-online" src="/static/Images/profileImg.jpg" alt="">
+                    <span class="new-user"> Azrael </span>
+                    <span class="new-message-counter"></span>
+
+                </button>
+                <button class="user-container" type="button" >
+                    <img class="profile-img-online" src="/static/Images/profileImg.jpg" alt="">
+                    <span class="new-user"> Azrael </span>
+                    <span class="new-message-counter"></span>
+
+                </button>-->
+
+            </div>
+            <button id="public-chat-btn" type="button" onclick="switchToPublic()" disabled>Public chat</button>
+        </div>
+        <div class="chat-window">
+            <div id="chat-with">Public chat</div>
+            <div id="messages">
+                <!-- <div class="new-message-container revert ">
+                     <div class="new-sender"> Askir
+                         <img class="profile-img" src="/static/Images/profileImg.jpg" alt="avatar">
+                     </div>
+                     <div class="new-message right-msg">
+                         <div class="new-date" onmouseup="showDate()">22.1.2024</div>
+                         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
+                         laboriosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
+                         in
+                         molestias officia sed sint ullam.
+
+                     </div>
+                 </div>
+
+                 <div class="new-message-container">
+                     <div class="new-sender"> Askir
+                         <img class="profile-img" src="/static/Images/profileImg.jpg" alt="avatar">
+                         &lt;!&ndash;<div class="new-date">22.1.2024</div>&ndash;&gt;</div>
+                     <div class="new-message left-msg">
+                         <div class="new-date">22.1.2024</div>
+                         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
+                         laboriosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
+                         in
+                         molestias officia sed sint ullam.
+
+                     </div>
+                 </div>
+                 &lt;!&ndash;<div class="event-message-container">&ndash;&gt;
+                 <div class='event-message logout-event'>
+                     Skaman just logged out.
+                 </div>
+                 &lt;!&ndash;            </div>&ndash;&gt;
+                 &lt;!&ndash;<div class="event-message-container">&ndash;&gt;
+                 <div class='event-message login-event'>
+                     Skaman just enter the chat.
+                 </div>-->
+
+            </div>
+            <div class="inputContainer">
+
+                <div class="dropup ">
+                    <button type="button" class="dropup dropbtn " onclick="show()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-gear" viewBox="0 0 16 16" style="pointer-events: none;">
+                            <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0"/>
+                            <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z"/>
+                        </svg>
+                    </button>
+                    <div id="dropupMenu" class="dropup-content">
+                        <input type="button" value="Get full history" onclick="openSelectedModal('history-mod')">
+                        <input type="button" value="Manage profile" onclick="openSelectedModal('profile-mod')">
+                        <input type="button" value="Logout" onclick="logOutUser()">
+                    </div>
+                </div>
+
+                <!-- <button type="button" class="settings-btn" onclick="send()" name="settings_btn" >
+
+             </button>-->
+                <textarea id="input-msg" placeholder="Write a message here"></textarea>
+                <button type="submit" class="send-msg-btn" onclick="send()" name="send_msg_btn" value="Send message">
+                    <img src="https://icons.getbootstrap.com/assets/icons/send.svg" alt="Exit button"/>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!--</div>-->
+    <div class="admin-feat" id="kick-option">
+        <select id="online-users" class="form-select" aria-label="Default select example">
+            <option value="0">select user</option>
+            <option th:each="user : ${users}"
+                    th:value="${user.nickname}"
+                    th:text="${user.nickname}">
+            </option>
+
+        </select>
+        <button id="kick-btn" type="button" onclick="kickUser()">Kick user</button>
+    </div>
+    <div class="admin-feat" id="ban-option">
+        <button id="BAN-btn" type="button" onclick="banUser()">BAN user</button>
+
     </div>
 
+    <div class="admin-feat" id="unBan-option">
+        <select id="banned-users" class="form-select" aria-label="Default select example">
+            <option value="0">select user</option>
+            <option th:each="bannedUser : ${bannedUsers}"
+                    th:value="${bannedUser.userName}"
+                    th:text="${bannedUser.userName}">
+            </option>
+        </select>
+        <button id="unBan-Btn" type="button" onclick="unBanUser()">Unban user</button>
 
-</div>
-<div class="inputContainer">
-    <button id="public-chat-btn" type="button" onclick="switchToPublic()">Public chat</button>
-    <input id="input-msg" placeholder="Write a message here">
-    <button type="submit" id="send-msg-btn" onclick="send()" name="send_msg_btn" value="Send message">
-        <img src="https://icons.getbootstrap.com/assets/icons/send.svg" alt="Chybí obrázek"/>
-    </button>
-</div>
+    </div>
 
+    <!--<input type="button" value="Logout" onclick="logOutUser()">-->
+</div>
 <!---->
 <div id="user-data" th:data-user="${user}"></div>
 <!---->
-<form th:action="@{/logout}" method="post">
-    <input type="submit" value="Logout">
-</form>
-
-<!-- >
-admin features
-<!-->
-<div class="admin-feat" id="kick-option">
-    <select id="online-users" class="form-select" aria-label="Default select example">
-        <option value="0">select user</option>
-        <option th:each="user : ${users}"
-                th:value="${user.nickname}"
-                th:text="${user.nickname}">
-        </option>
-
-    </select>
-    <button id="kick-btn" type="button" onclick="kickUser()">Kick user</button>
-</div>
-<div class="admin-feat" id="ban-option">
-    <button id="BAN-btn" type="button" onclick="banUser()">BAN user</button>
-
-</div>
-
-<div class="admin-feat" id="unBan-option">
-    <select id="banned-users" class="form-select" aria-label="Default select example">
-        <option value="0">select user</option>
-        <option th:each="bannedUser : ${bannedUsers}"
-                th:value="${bannedUser.userName}"
-                th:text="${bannedUser.userName}">
-        </option>
-    </select>
-     <button id="unBan-Btn" type="button" onclick="unBanUser()">Unban user</button>
-
-</div>
+<!--<form th:action="@{/logout}" method="post">-->
+<!--</form>-->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"
         integrity="sha512-aHuAnb+FZ/yM5zYvdiA8q0sxLdsBQ3PRwO8D/08qsenCLQ2gWsosB43Cn1X8esAz0IpaC7Ns5cAPyKIdJQ0hNw=="
@@ -74,6 +207,7 @@ admin features
         integrity="sha512-tL4PIUsPy+Rks1go4kQG8M8/ItpRMvKnbBjQm4d2DQnFwgcBYRRN00QdyQnWSCwNMsoY/MfJY8nHp2CzlNdtZA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+<script type="text/javascript" th:src="@{JS/chatScript.js}"></script>
 <script type="text/javascript" th:src="@{JS/adminChatScript.js}"></script>
 
 </body>

@@ -124,6 +124,8 @@ function onMessageReceived(payload) {
                     }
                 });
             }
+            let bannedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + message.content + "</div></div>";
+                        messageContainer.insertAdjacentHTML("beforeend", bannedMsg);
         }
 
         if (message.type === "update") {
@@ -539,7 +541,7 @@ function setUpOnlineUserBtn(btn) {
 }
 
 
-function kickUser() {
+/*function kickUser() {
     var select = document.getElementById("select").value;
     let date = new Date().toLocaleString();
     stompClient.send("/app/chat", {}, JSON.stringify(
@@ -550,7 +552,7 @@ function kickUser() {
             sendTo: select,
             date: date
         }));
-}
+}*/
 
 function logOutUser() {
     loggedOutByButton = true;

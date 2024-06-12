@@ -24,14 +24,14 @@ public class ChatController {
     }
 
     @GetMapping
-    public String openChat(Model model, HttpServletRequest request, Authentication authentication) {
+    public String openChat(Model model, /*HttpServletRequest request,*/ Authentication authentication) {
         model.addAttribute("user", authentication.getName());
+        model.addAttribute("usersList",userStorageService.getUsersList(authentication.getName()));
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equalsIgnoreCase("admin"))) {
             model.addAttribute("users", onlineUserService.getAllOnlineUsers());
             model.addAttribute("bannedUsers",userStorageService.getBannedUsers());
             return "chat-admin";
         }
-        model.addAttribute("usersList",userStorageService.getUsersList(authentication.getName()));
         return "ChatPage";
     }
 
