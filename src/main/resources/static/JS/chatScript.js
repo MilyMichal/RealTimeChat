@@ -40,7 +40,7 @@ var userName = userNameElement.getAttribute("data-user");
 setInterval(checkExpiredSession, 6000);
 */
 
-sock.onclose = function (event) {
+/*sock.onclose = function (event) {
     fetch('http://localhost:28852/session-expired', {
         method: 'PUT',
         headers: {
@@ -56,7 +56,7 @@ sock.onclose = function (event) {
                 window.location.href = '/';
             }
         });
-}
+}*/
 
 
 
@@ -182,11 +182,28 @@ function onMessageReceived(payload) {
             messageContainer.insertAdjacentHTML("beforeend", bannedMsg);
         }
 
-        if (message.type == "expiredSession") {
+      /*  if (message.type == "sessionExpired") {
             if (message.sender === userName) {
-                logOutUser();
+                fetch('http://localhost:28852/session-expired', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        'expiredUser': userName
+                    })
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            stompClient.disconnect();
+                            window.location.href = '/';
+                        }
+                    });
+            } else {
+            let expiredMsg = "<div class='event-message-container'> <div class='event-message  logout-event'> user " + message.sender + " was kicked due inactivity</div></div>";
+            messageContainer.insertAdjacentHTML("beforeend", expiredMsg);
             }
-        }
+        }*/
 
         if (message.type === "update") {
             console.log("userName before updatemsg: " + userName);

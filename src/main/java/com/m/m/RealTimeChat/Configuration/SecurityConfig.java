@@ -54,13 +54,13 @@ public class SecurityConfig {
 
                 .authenticationProvider(customAuthenticationProvider)
                 .userDetailsService(appUserDetailService)
-                .sessionManagement(session -> session
+               /* .sessionManagement(session -> session
                                 //.invalidSessionUrl("/session-expired")
-                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).maximumSessions(1)
+                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).maximumSessions(1)*/
 
                         /*.maximumSessions(1)
                         .maxSessionsPreventsLogin(true)
-                        .expiredUrl("/sessionError")*/)
+                        .expiredUrl("/sessionError")*/
                 .logout(logout -> logout.logoutSuccessUrl("/").permitAll()
 
                         .addLogoutHandler(customLogoutHandler())
