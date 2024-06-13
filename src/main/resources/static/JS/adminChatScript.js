@@ -21,7 +21,7 @@ function onMessageReceived(payload) {
         }
 
         if (message.type === "kick") {
-              removeUserFromSelect(message.sendTo,onlineUsers);
+            removeUserFromSelect(message.sendTo, onlineUsers);
         }
 
 
@@ -72,17 +72,13 @@ function onMessageReceived(payload) {
                 } else {
                     setProfilePicture(onUserbtn, message.sender);
                 }
-
-                ///
-
-                ///
-                console.log("CLEARING MESSAGE WINDOW");
+                                             
             }
-            ///
-
-            ///
+           
             messageContainer.innerHTML = "";
             getLastestHistory();
+            removeUserFromSelect(message.sender, onlineUsers);
+            addUserToSelect(message.content, onlineUsers);
 
         }
 
@@ -309,7 +305,7 @@ function banUser() {
                 date: date
             }));
         addUserToSelect(select, bannedUsers);
-        removeUserFromSelect(select,onlineUsers);
+        removeUserFromSelect(select, onlineUsers);
     };
 }
 

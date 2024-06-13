@@ -21,9 +21,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query(value = "SELECT user_name FROM users WHERE user_name != :name",nativeQuery = true)
     List<String>        findRawUsernameList(@Param("name") String user);
 
-    /*@Query(value = "SELECT us.profilePic AS pic, ous.nickname FROM onlineUsers ous JOIN users us ON ous.nickname = us.userName",nativeQuery = true)
-    List<Map<String,Object>> getProfilePic();*/
-
-   /* @Query(value = "SELECT pictureURL FROM users WHERE user_name = :name",nativeQuery = true)
-    String findProfilePictureByName(@Param("name")String userName);*/
+  @Query(value = "SELECT user_name FROM users",nativeQuery = true)
+    List<String> findAllUsersNames();
 }

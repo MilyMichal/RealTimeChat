@@ -31,6 +31,8 @@ public class SecurityConfig {
     @Autowired
     private SimpMessagingTemplate messagingTemplates;
 
+
+
     @Autowired
     public SecurityConfig(CustomAuthenticationProvider customAuthenticationProvider, AppUserDetailService appUserDetailService) {
         this.customAuthenticationProvider = customAuthenticationProvider;
@@ -42,7 +44,7 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/", "/CSS/**", "/register", "/sessionError", "logout", "/ProfilePic/**").permitAll()
+                        .requestMatchers("/", "/CSS/**", "/register", "/session-expired", "logout", "/ProfilePic/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.loginPage("/login")
@@ -53,15 +55,18 @@ public class SecurityConfig {
                 .authenticationProvider(customAuthenticationProvider)
                 .userDetailsService(appUserDetailService)
                 .sessionManagement(session -> session
-                                .invalidSessionUrl("/")
+                                //.invalidSessionUrl("/session-expired")
                                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).maximumSessions(1)
+
                         /*.maximumSessions(1)
                         .maxSessionsPreventsLogin(true)
                         .expiredUrl("/sessionError")*/)
                 .logout(logout -> logout.logoutSuccessUrl("/").permitAll()
+
                         .addLogoutHandler(customLogoutHandler())
                         .logoutSuccessUrl("/")
                         .deleteCookies("JSESSIONID").invalidateHttpSession(true)
+
                 )
 
                 .csrf(AbstractHttpConfigurer::disable)

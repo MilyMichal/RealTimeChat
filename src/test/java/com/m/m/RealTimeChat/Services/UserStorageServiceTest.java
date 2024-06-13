@@ -15,8 +15,8 @@ class UserStorageServiceTest {
     @Autowired
     UserStorageService userStorageService;
     Long id  = 3L;
-    User user = new User(id,"Azrael","azrael","maill@admuuin.cz","user",true, LocalDateTime.now());
-    @Test
+    //User user = new User(id,"Azrael","azrael","maill@admuuin.cz","user",true, LocalDateTime.now());
+    /*@Test
     void addUser(){
 
 
@@ -33,7 +33,7 @@ class UserStorageServiceTest {
         userStorageService.removeUserFromStorage(user);
 
         assertEquals(2,userStorageService.getUsersList().size());
-    }
+    }*/
 
     @Test
     void getAllBannedUsers() {

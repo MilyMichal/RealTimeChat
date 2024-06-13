@@ -12,12 +12,51 @@ var loggedOutByButton = false;
 let isScrolledToBottom = true;
 
 let stompClient = null;
-
+let sock = new SockJS("http://localhost:28852/chat");
 
 register();
 
 var userNameElement = document.getElementById("user-data");
 var userName = userNameElement.getAttribute("data-user");
+
+//expired session check setup
+/*function checkExpiredSession() {
+    fetch('http://localhost:28852/session-expired',
+        {
+            method: "GET",
+            credentials: "include"
+        })
+        .then(response => {
+            if (response.status === 401) {
+                window.location.href = '/';
+            }
+        })
+        .catch(error => {
+            console.error('Error checking session:', error);
+            window.location.href = '/';
+        })
+   
+}
+setInterval(checkExpiredSession, 6000);
+*/
+
+sock.onclose = function (event) {
+    fetch('http://localhost:28852/session-expired', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            'expiredUser': userName
+        })
+    })
+        .then(response => {
+            if (response.ok) {
+                stompClient.disconnect();
+                window.location.href = '/';
+            }
+        });
+}
 
 
 
@@ -32,17 +71,17 @@ window.addEventListener('unload', function (event) {
 //event listener for UNDO step from chat page
 
 window.addEventListener('popstate', function (event) {
-            if (!event.state) {
-            logOutUser();
+    if (!event.state) {
+        logOutUser();
 
-            }
-        });
+    }
+});
 
 
-     if (!sessionStorage.getItem('chatVisited')) {
-            sessionStorage.setItem('chatVisited', 'true');
-            history.pushState({ chat: true }, '', '');
-     }
+if (!sessionStorage.getItem('chatVisited')) {
+    sessionStorage.setItem('chatVisited', 'true');
+    history.pushState({ chat: true }, '', '');
+}
 
 
 //event listener for sending msg by pressing Enter
@@ -60,7 +99,7 @@ messageContainer.addEventListener('scroll', () => {
 function register() {
 
     // establishing connection
-    let sock = new SockJS("http://localhost:28852/chat");
+
     stompClient = Stomp.over(sock);
     stompClient.connect({}, onConnectedSuccessfully, (error) => {
         console.log('unable to connect' + error);
@@ -140,7 +179,13 @@ function onMessageReceived(payload) {
                 });
             }
             let bannedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + message.content + "</div></div>";
-                        messageContainer.insertAdjacentHTML("beforeend", bannedMsg);
+            messageContainer.insertAdjacentHTML("beforeend", bannedMsg);
+        }
+
+        if (message.type == "expiredSession") {
+            if (message.sender === userName) {
+                logOutUser();
+            }
         }
 
         if (message.type === "update") {
@@ -609,6 +654,7 @@ window.onclick = function (event) {
             }
         });
         document.querySelector(".history-window").innerHTML = "";
+        document.querySelector(".response").innerHTML = "";
     }
 
 }
@@ -620,9 +666,10 @@ function openSelectedModal(modal) {
 
 }
 
-function closeModal(modal) {
+/*function closeModal(modal) {
     document.querySelector(`.${modal}`).style.display = "none";
-}
+ 
+}*/
 
 
 /*drag and drop area setup*/
@@ -683,7 +730,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
         .then(response => response.json())
         .then(data => {
             let updateMsg;
-            
+
             if (Object.keys(data).length == 2 && data.hasOwnProperty("pass")) {
                 console.log("JUST PASS UDPATED");
             } else {

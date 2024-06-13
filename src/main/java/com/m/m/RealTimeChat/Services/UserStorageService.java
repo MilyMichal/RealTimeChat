@@ -42,6 +42,9 @@ public class UserStorageService {
     public List<String> getUsersList(String user) {
         return userRepository.findRawUsernameList(user);
     }
+    public List<String> getAllUsers() {
+       return userRepository.findAllUsersNames();
+    }
 
     public void removeUserFromStorage(User user) {
         if (userRepository.exists(Example.of(user))) {

@@ -2,6 +2,7 @@ package com.m.m.RealTimeChat.Services;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.repository.query.parser.Part;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -52,73 +53,77 @@ public class ProfileSettingsService {
 
                 System.out.println("UPDATE DEBUG : PATH FOR DATABASE " + pathForDatabase);
                 if (!userName.equals(auth.getName())) {
-                    if (!newPass.isEmpty() && userStorageService.isNewPassNotDifferent(newPass, actualPass)) {
-                        message.put("message", "new password must be different from actual");
+                    if(isNewUsernameTaken(userName)) {
+                        message.put("message","Username is already taken");
                     } else {
-                        if(!newPass.isEmpty()) {
-                            message.put("pass","changed");
-                        }
-                        if (auth.isAuthenticated()) {
-
-                            System.out.println("DEBUG AUTH BEFORE CHANGE: " + SecurityContextHolder.getContext().getAuthentication().getName());
-                            UserDetails currentUserDetails = (UserDetails) auth.getPrincipal();
-                            UserDetails updatedUserDetails = User.builder()
-                                    .username(userName.isEmpty() ? auth.getName() : userName)
-                                    .password(newPass.isEmpty() ? currentUserDetails.getPassword() : passwordEncoder.encode(newPass))
-                                    .authorities(currentUserDetails.getAuthorities())
-                                    .build();
-
-                            if (!userName.isEmpty()) {
-                                File currentFolder = new File(IMAGE_FOLDER + "/" + auth.getName());
-                                String currPic = Objects.requireNonNull(currentFolder.listFiles())[0].getName();
-                                File newFolder = new File(currentFolder.getParent(), userName);
-                                if (currentFolder.exists()) {
-                                    renamed = currentFolder.renameTo(newFolder);
-                                    System.out.println("DEBUG - WAS FOLDER RENAMED: " + renamed);
-                                    Path newPath = Paths.get(newFolder.getPath(), currPic);
-
-                                    pathForDatabase = newPath.toString();
-                                    System.out.println("NEW PATH FOR DB DEBUG: " + pathForDatabase);
-                                }
-
-                                message.put("newUserName", userName);
+                        if (!newPass.isEmpty() && userStorageService.isNewPassNotDifferent(newPass, actualPass)) {
+                            message.put("message", "new password must be different from actual");
+                        } else {
+                            if (!newPass.isEmpty()) {
+                                message.put("pass", "changed");
                             }
+                            if (auth.isAuthenticated()) {
 
-                            if (!file.isEmpty()) {
-                                try {
+                                System.out.println("DEBUG AUTH BEFORE CHANGE: " + SecurityContextHolder.getContext().getAuthentication().getName());
+                                UserDetails currentUserDetails = (UserDetails) auth.getPrincipal();
+                                UserDetails updatedUserDetails = User.builder()
+                                        .username(userName.isEmpty() ? auth.getName() : userName)
+                                        .password(newPass.isEmpty() ? currentUserDetails.getPassword() : passwordEncoder.encode(newPass))
+                                        .authorities(currentUserDetails.getAuthorities())
+                                        .build();
 
-                                    byte[] bytes = file.getBytes();
-                                    Path path = Paths.get(IMAGE_FOLDER, renamed ? userName : auth.getName(), file.getOriginalFilename());
-                                    Files.createDirectories(path.getParent());
-                                    System.out.println("PATH DEBUG: " + path);
-                                    File userDirectory = new File(String.valueOf(path.toFile().getParent()));
-                                    System.out.println("DIRECTORY DEBUG :" + userDirectory.getName());
-                                    if (userDirectory.exists() && userDirectory.isDirectory()) {
-                                        File[] files = userDirectory.listFiles();
-                                        if (files != null) {
-                                            for (File picture : files) {
-                                                System.out.println("Picture: " + picture.getName() + "was deleted: " + picture.delete());
-                                            }
-                                        }
+                                if (!userName.isEmpty()) {
+                                    File currentFolder = new File(IMAGE_FOLDER + "/" + auth.getName());
+                                    String currPic = Objects.requireNonNull(currentFolder.listFiles())[0].getName();
+                                    File newFolder = new File(currentFolder.getParent(), userName);
+                                    if (currentFolder.exists()) {
+                                        renamed = currentFolder.renameTo(newFolder);
+                                        System.out.println("DEBUG - WAS FOLDER RENAMED: " + renamed);
+                                        Path newPath = Paths.get(newFolder.getPath(), currPic);
+
+                                        pathForDatabase = newPath.toString();
+                                        System.out.println("NEW PATH FOR DB DEBUG: " + pathForDatabase);
                                     }
 
-                                    Files.write(path, bytes);
-                                    pathForDatabase = path.toString();
-
-                                } catch (IOException e) {
-                                    message.put("message", e.getMessage());
-
+                                    message.put("newUserName", userName);
                                 }
-                                message.put("profPic", "changed");
+
+                                if (!file.isEmpty()) {
+                                    try {
+
+                                        byte[] bytes = file.getBytes();
+                                        Path path = Paths.get(IMAGE_FOLDER, renamed ? userName : auth.getName(), file.getOriginalFilename());
+                                        Files.createDirectories(path.getParent());
+                                        System.out.println("PATH DEBUG: " + path);
+                                        File userDirectory = new File(String.valueOf(path.toFile().getParent()));
+                                        System.out.println("DIRECTORY DEBUG :" + userDirectory.getName());
+                                        if (userDirectory.exists() && userDirectory.isDirectory()) {
+                                            File[] files = userDirectory.listFiles();
+                                            if (files != null) {
+                                                for (File picture : files) {
+                                                    System.out.println("Picture: " + picture.getName() + "was deleted: " + picture.delete());
+                                                }
+                                            }
+                                        }
+
+                                        Files.write(path, bytes);
+                                        pathForDatabase = path.toString();
+
+                                    } catch (IOException e) {
+                                        message.put("message", e.getMessage());
+
+                                    }
+                                    message.put("profPic", "changed");
+                                }
+                                message.put("message", "Profile was successfully updated!");
+                                message.forEach((k, v) -> System.out.println("DEBUG MAP: \n Key: " + k + "\n" + "value: " + v));
+                                userStorageService.updateUserInfo(auth.getName(), pathForDatabase, newPass, userName);
+
+                                Authentication newAuthentication = new UsernamePasswordAuthenticationToken(updatedUserDetails, auth.getCredentials(), updatedUserDetails.getAuthorities());
+                                SecurityContextHolder.getContext().setAuthentication(newAuthentication);
+
+                                System.out.println("DEBUG AUTH AFTER CHANGE " + SecurityContextHolder.getContext().getAuthentication().getName());
                             }
-                            message.put("message", "Profile was successfully updated!");
-                            message.forEach((k, v) -> System.out.println("DEBUG MAP: \n Key: " + k + "\n" + "value: " + v));
-                            userStorageService.updateUserInfo(auth.getName(), pathForDatabase, newPass, userName);
-
-                            Authentication newAuthentication = new UsernamePasswordAuthenticationToken(updatedUserDetails, auth.getCredentials(), updatedUserDetails.getAuthorities());
-                            SecurityContextHolder.getContext().setAuthentication(newAuthentication);
-
-                            System.out.println("DEBUG AUTH AFTER CHANGE " + SecurityContextHolder.getContext().getAuthentication().getName());
                         }
                     }
                 } else {
@@ -139,6 +144,10 @@ public class ProfileSettingsService {
 
         }
         return null;
+    }
+
+    private boolean isNewUsernameTaken(String newUsername) {
+        return userStorageService.getAllUsers().stream().anyMatch(name -> name.equalsIgnoreCase(newUsername));
     }
 }
 

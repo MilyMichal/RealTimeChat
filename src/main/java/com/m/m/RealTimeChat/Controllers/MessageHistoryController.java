@@ -2,11 +2,8 @@ package com.m.m.RealTimeChat.Controllers;
 
 
 import com.m.m.RealTimeChat.Models.Message;
-import com.m.m.RealTimeChat.Models.OnlineUser;
 import com.m.m.RealTimeChat.Services.MessageHistoryService;
-import com.m.m.RealTimeChat.Services.OnlineUserService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Map;
 

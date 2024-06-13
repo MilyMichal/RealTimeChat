@@ -63,7 +63,7 @@ public class CustomLogoutHandler implements LogoutHandler {
                 if (onlineUserService.findOnlineUser(user).isPresent()) {
                     onlineUserService.removeOnlineUser(user);
                 }
-                SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
+                //SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
                 //authentication.setAuthenticated(false);
             }
 
