@@ -37,6 +37,13 @@ function onMessageReceived(payload) {
             removeUserFromSelect(message.sendTo, bannedUsers);
         }
 
+        if (message.type === "BAN") {
+            
+            let bannedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + message.content + "</div></div>";
+            messageContainer.insertAdjacentHTML("beforeend", bannedMsg);
+        }
+
+
         if (message.type === "update") {
             console.log("userName before updatemsg: " + userName);
             if (userName === message.sender) {
@@ -72,9 +79,9 @@ function onMessageReceived(payload) {
                 } else {
                     setProfilePicture(onUserbtn, message.sender);
                 }
-                                             
+
             }
-           
+
             messageContainer.innerHTML = "";
             getLastestHistory();
             removeUserFromSelect(message.sender, onlineUsers);

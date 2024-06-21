@@ -3,8 +3,8 @@
 <head>
     <!-- <meta charset="utf-8">-->
     <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
-    <link rel="stylesheet" type="text/css" th:href="@{CSS/chat_style.css}">
-    <!--<link rel="stylesheet" type="text/css" href="/static/CSS/chat_style.css">-->
+    <!--<link rel="stylesheet" type="text/css" th:href="@{CSS/chat_style.css}">-->
+    <link rel="stylesheet" type="text/css" href="/static/CSS/chat_style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Caveat">
 
@@ -26,44 +26,94 @@
     <div class="modal profile-mod" style="display:none">
 
         <form id="profile-update-form" class="modal-content" enctype="multipart/form-data">
-
-            <!--<span id="closeBtn" class="close" onclick="closeModal('profile-mod')">&times;</span>-->
-            <label for="name-input">New username<br></label>
-            <input id="name-input" type="text" name="userName" placeholder="new user name">
-            <label for="act-pass-input">Confirm actual password<br></label>
-            <input id="act-pass-input" type="password" name="actualPass" placeholder="Actual password" required>
-            <label for="new-pass-input">Select new password<br></label>
-            <input id="new-pass-input" type="password" name="newPass" placeholder="new password">
-            <div class="drag-and-drop">
-                <div id="drop" class="drop-area">
-                    Drag your profile picture HERE
-                </div>
+            <div class="modal-header"> Profile settings
             </div>
-            <input id="fileData" type="file" name="file" style="visibility:hidden">
-            <button type="submit">Update profile</button>
+            <div class="update-window ">
+                <!--<span id="closeBtn" class="close" onclick="closeModal('profile-mod')">&times;</span>-->
+                <label for="name-input">Select new username</label>
+                <input id="name-input" class="border-rnd" type="text" name="userName" placeholder="new user name">
 
-            <div class="response"></div>
+                <label for="new-pass-input">Select new password</label>
+                <input id="new-pass-input" class="border-rnd" type="password" name="newPass" placeholder="new password">
+                <label for="drop">Upload new image</label>
+                <div class="drag-and-drop">
+                    <div id="drop" class="drop-area">
+                        Drag your profile picture HERE
+                    </div>
+                </div>
 
+                <label for="act-pass-input">Confirm actual password<br></label>
+                <input id="act-pass-input" class="border-rnd " type="password" name="actualPass"
+                       placeholder="Actual password" required>
+                <input id="fileData" type="file" name="file" style="visibility:hidden; position:absolute">
+                <button class="button-basic update-profile-btn" type="submit">Update profile</button>
+                <div class="response" style="font-size: 12px"></div>
+
+            </div>
         </form>
 
     </div>
-    <div class="modal history-mod" >
+    <div class="modal history-mod" style="display:none">
         <form class="history-modal-content" id="history-modal-form">
             <div class="modal-header">
-                <span class="title">History search</span>
+                <span class="title">Message history </span><br>
+                <button class="button-basic full-history-btn" type="button" onclick="getFullPublicHistory()"> Full
+                    public history
+                </button>
+                <button class="button-basic private-history-btn" type="button" onclick="getFullPersonalHistory()">
+                    Private messages
+                    with:
+                </button>
                 <select name="history-select" id="user-to-find">
-                    <option value="Select user">Select user</option>
+                    <option value="" selected disabled>Select user</option>
                     <option th:each="user : ${usersList}" th:value="${user}" th:text="${user}">
                 </select>
                 <!--<span class="close" onclick="closeModal('history-mod')">&times;</span>-->
-                <button type="button" onclick="getFullPersonalHistory()"> Search history</button>
             </div>
             <div class="history-window"></div>
-            <button type="button" onclick="getFullPublicHistory()"> Full history</button>
+
         </form>
 
     </div>
+
+
+    <div class="admin-control-panel-header"> Admin control panel</div>
+    <div class="admin-control-panel">
+        <div class="admin-feat-onlineUsers" id="kick-option">
+
+            <select id="online-users" class="form-select select-basic" aria-label="Default select example">
+                <option value="0">select online user</option>
+                <option th:each="user : ${users}"
+                        th:value="${user.nickname}"
+                        th:text="${user.nickname}">
+                </option>
+
+            </select>
+            <button id="kick-btn" class="button-basic" type="button" onclick="kickUser()">Kick user</button>
+            <button id="BAN-btn" type="button" class="button-basic" onclick="banUser()">BAN user</button>
+
+        </div>
+        <!--<div class="admin-feat" id="ban-option">
+
+        </div>-->
+
+        <div class="admin-feat-bannedUsers" id="unBan-option">
+            <select id="banned-users" class="form-select select-basic" aria-label="Default select example">
+                <option value="0">select user from banlist</option>
+                <option th:each="bannedUser : ${bannedUsers}"
+                        th:value="${bannedUser.userName}"
+                        th:text="${bannedUser.userName}">
+                </option>
+            </select>
+            <button id="unBan-Btn" type="button" class="button-basic" onclick="unBanUser()">Remove from ban list</button>
+
+        </div>
+    </div>
+
+
+
     <div class="chat-main-windows">
+
 
         <!--<div class="chat">-->
         <div class="online-user-panel">
@@ -162,37 +212,13 @@
             </div>
         </div>
     </div>
+
+
+</div>
     <!--</div>-->
-    <div class="admin-feat" id="kick-option">
-        <select id="online-users" class="form-select" aria-label="Default select example">
-            <option value="0">select user</option>
-            <option th:each="user : ${users}"
-                    th:value="${user.nickname}"
-                    th:text="${user.nickname}">
-            </option>
-
-        </select>
-        <button id="kick-btn" type="button" onclick="kickUser()">Kick user</button>
-    </div>
-    <div class="admin-feat" id="ban-option">
-        <button id="BAN-btn" type="button" onclick="banUser()">BAN user</button>
-
-    </div>
-
-    <div class="admin-feat" id="unBan-option">
-        <select id="banned-users" class="form-select" aria-label="Default select example">
-            <option value="0">select user</option>
-            <option th:each="bannedUser : ${bannedUsers}"
-                    th:value="${bannedUser.userName}"
-                    th:text="${bannedUser.userName}">
-            </option>
-        </select>
-        <button id="unBan-Btn" type="button" onclick="unBanUser()">Unban user</button>
-
-    </div>
 
     <!--<input type="button" value="Logout" onclick="logOutUser()">-->
-</div>
+
 <!---->
 <div id="user-data" th:data-user="${user}"></div>
 <!---->

@@ -182,28 +182,28 @@ function onMessageReceived(payload) {
             messageContainer.insertAdjacentHTML("beforeend", bannedMsg);
         }
 
-      /*  if (message.type == "sessionExpired") {
-            if (message.sender === userName) {
-                fetch('http://localhost:28852/session-expired', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        'expiredUser': userName
-                    })
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            stompClient.disconnect();
-                            window.location.href = '/';
-                        }
-                    });
-            } else {
-            let expiredMsg = "<div class='event-message-container'> <div class='event-message  logout-event'> user " + message.sender + " was kicked due inactivity</div></div>";
-            messageContainer.insertAdjacentHTML("beforeend", expiredMsg);
-            }
-        }*/
+        /*  if (message.type == "sessionExpired") {
+              if (message.sender === userName) {
+                  fetch('http://localhost:28852/session-expired', {
+                      method: 'PUT',
+                      headers: {
+                          'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({
+                          'expiredUser': userName
+                      })
+                  })
+                      .then(response => {
+                          if (response.ok) {
+                              stompClient.disconnect();
+                              window.location.href = '/';
+                          }
+                      });
+              } else {
+              let expiredMsg = "<div class='event-message-container'> <div class='event-message  logout-event'> user " + message.sender + " was kicked due inactivity</div></div>";
+              messageContainer.insertAdjacentHTML("beforeend", expiredMsg);
+              }
+          }*/
 
         if (message.type === "update") {
             console.log("userName before updatemsg: " + userName);
@@ -739,7 +739,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
     event.preventDefault();
 
     const formData = new FormData(this);
-
+    let response = document.querySelector(".response");
     fetch("http://localhost:28852/profile/update", {
         method: 'POST',
         body: formData
@@ -747,59 +747,65 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
         .then(response => response.json())
         .then(data => {
             let updateMsg;
-
-            if (Object.keys(data).length == 2 && data.hasOwnProperty("pass")) {
-                console.log("JUST PASS UDPATED");
-            } else {
-                if (data.hasOwnProperty("newUserName")) {
-                    console.log("SEND UPDATE MSG");
-                    let date = new Date().toLocaleString();
-                    updateMsg =
-                    {
-                        "sender": userName,
-                        "content": data["newUserName"],
-                        "date": date,
-                        "type": 'update',
-                        "sendTo": "public"
-                    }
-
-                    fetch('http://localhost:28852/history/update', {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            'prevName': userName,
-                            'actName': data["newUserName"]
-                        })
-                    })
-                        .then(() => {
-
-                            console.log("HISTORY NAME Update is succesfull");
-
-                            stompClient.send("/app/chat", {}, JSON.stringify(updateMsg));
-
-                        });
-
+            if (Object.keys(data).length > 1) {
+                if (Object.keys(data).length == 2 && data.hasOwnProperty("pass")) {
+                    console.log("JUST PASS UDPATED");
                 } else {
-                    let date = new Date().toLocaleString();
-                    updateMsg =
-                    {
-                        "sender": userName,
-                        "content": userName,
-                        "date": date,
-                        "type": 'update',
-                        "sendTo": "public"
+                    if (data.hasOwnProperty("newUserName")) {
+                        console.log("SEND UPDATE MSG");
+                        let date = new Date().toLocaleString();
+                        updateMsg =
+                        {
+                            "sender": userName,
+                            "content": data["newUserName"],
+                            "date": date,
+                            "type": 'update',
+                            "sendTo": "public"
+                        }
 
+                        fetch('http://localhost:28852/history/update', {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                'prevName': userName,
+                                'actName': data["newUserName"]
+                            })
+                        })
+                            .then(() => {
+
+                                console.log("HISTORY NAME Update is succesfull");
+
+                                stompClient.send("/app/chat", {}, JSON.stringify(updateMsg));
+
+                            });
+
+                    } else {
+                        let date = new Date().toLocaleString();
+                        updateMsg =
+                        {
+                            "sender": userName,
+                            "content": userName,
+                            "date": date,
+                            "type": 'update',
+                            "sendTo": "public"
+
+                        }
+
+                        console.log("PROFILE PIC UPDATE SUCCESFUL")
+                        stompClient.send("/app/chat", {}, JSON.stringify(updateMsg));
                     }
-
-                    console.log("PROFILE PIC UPDATE SUCCESFUL")
-                    stompClient.send("/app/chat", {}, JSON.stringify(updateMsg));
                 }
             }
-
-            document.querySelector(".response").innerHTML = `${data["message"]}`;
-
+            console.log("PROFILE UPDATE DEBGU: " + data["message"]);
+            if (data["message"].includes("successfully")) {
+                response.style.color = "#345635";
+                
+            } else { 
+                response.style.color = "#7E102C";
+            }
+            response.innerHTML = `${data["message"]}`;
         });
     document.getElementById("act-pass-input").value = "";
     document.getElementById("new-pass-input").value = "";
