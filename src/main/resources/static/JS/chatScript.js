@@ -182,28 +182,7 @@ function onMessageReceived(payload) {
             messageContainer.insertAdjacentHTML("beforeend", bannedMsg);
         }
 
-        /*  if (message.type == "sessionExpired") {
-              if (message.sender === userName) {
-                  fetch('http://localhost:28852/session-expired', {
-                      method: 'PUT',
-                      headers: {
-                          'Content-Type': 'application/json'
-                      },
-                      body: JSON.stringify({
-                          'expiredUser': userName
-                      })
-                  })
-                      .then(response => {
-                          if (response.ok) {
-                              stompClient.disconnect();
-                              window.location.href = '/';
-                          }
-                      });
-              } else {
-              let expiredMsg = "<div class='event-message-container'> <div class='event-message  logout-event'> user " + message.sender + " was kicked due inactivity</div></div>";
-              messageContainer.insertAdjacentHTML("beforeend", expiredMsg);
-              }
-          }*/
+ 
 
         if (message.type === "update") {
             console.log("userName before updatemsg: " + userName);
@@ -215,7 +194,7 @@ function onMessageReceived(payload) {
                 }
             } else {
                 let onUserbtn = document.querySelector(`.${message.sender}`);
-                let name = onUserbtn.querySelector(`.new-user`);
+                let name = onUserbtn.querySelector(`.user`);
                 if (message.sender !== message.content) {
 
                     Array.from(document.getElementById("user-to-find").options).forEach(option => {
@@ -241,14 +220,10 @@ function onMessageReceived(payload) {
                     setProfilePicture(onUserbtn, message.sender);
                 }
 
-                ///
-
-                ///
+              
                 console.log("CLEARING MESSAGE WINDOW");
             }
-            ///
-
-            ///
+            
             messageContainer.innerHTML = "";
             getLastestHistory();
 
@@ -261,13 +236,13 @@ function onMessageReceived(payload) {
             let html;
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === "public") {
                 if (message.sender === userName) {
-                    html = "<div class='new-message-container revert'><div class='new-sender'>" + message.sender + "</div>"
-                        + "<div class='new-message right-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div></div>";
+                    html = "<div class='message-container revert'><div class='sender'>" + message.sender + "</div>"
+                        + "<div class='message right-msg'><div class='date'>" + message.date + "</div>" + message.content + "</div></div></div>";
 
 
                 } else {
-                    html = "<div class='new-message-container'><div class='new-sender'>" + message.sender + "</div>"
-                        + "<div class='new-message left-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div></div>";
+                    html = "<div class='message-container'><div class='sender'>" + message.sender + "</div>"
+                        + "<div class='message left-msg'><div class='date'>" + message.date + "</div>" + message.content + "</div></div></div>";
 
 
                 }
@@ -277,7 +252,7 @@ function onMessageReceived(payload) {
 
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === userName) {
                 let incomingMsgUser = document.querySelector("." + message.sender);
-                let msgCounter = incomingMsgUser.querySelector(".new-message-counter");
+                let msgCounter = incomingMsgUser.querySelector(".message-counter");
 
 
                 usersContainer.insertBefore(incomingMsgUser, usersContainer.firstChild);
@@ -293,13 +268,13 @@ function onMessageReceived(payload) {
             if ((userName == message.sendTo && message.sender == privateChatWith) ||
                 (message.sendTo == privateChatWith && message.sender == userName)) {
                 if (message.sender === userName) {
-                    html = "<div class='new-message-container revert'><div class='new-sender'>" + message.sender + "</div>"
-                        + "<div class='new-message right-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div>";
+                    html = "<div class='message-container revert'><div class='sender'>" + message.sender + "</div>"
+                        + "<div class='message right-msg'><div class='date'>" + message.date + "</div>" + message.content + "</div></div>";
 
 
                 } else {
-                    html = "<div class='new-message-container'><div class='new-sender'>" + message.sender + "</div>"
-                        + "<div class='new-message left-msg'><div class='new-date'>" + message.date + "</div>" + message.content + "</div></div>";
+                    html = "<div class='message-container'><div class='sender'>" + message.sender + "</div>"
+                        + "<div class='message left-msg'><div class='date'>" + message.date + "</div>" + message.content + "</div></div>";
 
                 }
 
@@ -332,8 +307,8 @@ function onMessageReceived(payload) {
 
                                 let user = `<button class='user-container ${onlineUser.nickname}' type='button'>
                                     <img class='profile-img-online' src= '' alt='Profile Picture'>
-                                    <span class='new-user'>${onlineUser.nickname}</span>
-                                    <span class='new-message-counter'>0</span>
+                                    <span class='user'>${onlineUser.nickname}</span>
+                                    <span class='message-counter'>0</span>
                                     </button >`;
 
                                 usersContainer.insertAdjacentHTML("beforeend", user);
@@ -378,8 +353,8 @@ function onMessageReceived(payload) {
 
                             let user = `<button class='user-container ${lastUser.nickname}' type='button'>
                                     <img class='profile-img-online' src= '' alt='Profile Picture'>
-                                    <span class='new-user'>${lastUser.nickname}</span>
-                                    <span class='new-message-counter'>0</span>
+                                    <span class='user'>${lastUser.nickname}</span>
+                                    <span class='message-counter'>0</span>
                                     </button >`;
 
                             usersContainer.insertAdjacentHTML("beforeend", user);
@@ -476,15 +451,15 @@ function getLastestHistory() {
                         let history;
                         if (msg.sender === userName) {
                             history =
-                                "<div class='new-message-container revert'><div class='new-sender'>"
+                                "<div class='message-container revert'><div class='sender'>"
                                 + msg.sender + "</div>"
-                                + "<div class='new-message right-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+                                + "<div class='message right-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
 
                         } else {
                             history =
-                                "<div class='new-message-container'><div class='new-sender'>"
+                                "<div class='message-container'><div class='sender'>"
                                 + msg.sender + "</div>"
-                                + "<div class='new-message left-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+                                + "<div class='message left-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
                         }
                         messageContainer.insertAdjacentHTML("beforeend", history);
                     }
@@ -500,15 +475,15 @@ function getLastestHistory() {
                     let history;
                     if (msg.sender === userName) {
                         history =
-                            "<div class='new-message-container revert'><div class='new-sender'>"
+                            "<div class='message-container revert'><div class='sender'>"
                             + msg.sender + "</div>"
-                            + "<div class='new-message right-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+                            + "<div class='message right-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
 
                     } else {
                         history =
-                            "<div class='new-message-container'><div class='new-sender'>"
+                            "<div class='message-container'><div class='sender'>"
                             + msg.sender + "</div>"
-                            + "<div class='new-message left-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+                            + "<div class='message left-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
                     }
                     messageContainer.insertAdjacentHTML("beforeend", history);
 
@@ -545,15 +520,15 @@ function getFullPublicHistory() {
                     let history;
                     if (msg.sender === userName) {
                         history =
-                            "<div class='new-message-container revert'><div class='new-sender'>"
+                            "<div class='message-container revert'><div class='sender'>"
                             + msg.sender + "</div>"
-                            + "<div class='new-message right-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+                            + "<div class='message right-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
 
                     } else {
                         history =
-                            "<div class='new-message-container'><div class='new-sender'>"
+                            "<div class='message-container'><div class='sender'>"
                             + msg.sender + "</div>"
-                            + "<div class='new-message left-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+                            + "<div class='message left-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
                     }
                     historyContainer.insertAdjacentHTML("beforeend", history);
                 }
@@ -573,15 +548,15 @@ function getFullPersonalHistory() {
                 let history;
                 if (msg.sender === userName) {
                     history =
-                        "<div class='new-message-container revert'><div class='new-sender'>"
+                        "<div class='message-container revert'><div class='sender'>"
                         + msg.sender + "</div>"
-                        + "<div class='new-message right-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+                        + "<div class='message right-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
 
                 } else {
                     history =
-                        "<div class='new-message-container'><div class='new-sender'>"
+                        "<div class='message-container'><div class='sender'>"
                         + msg.sender + "</div>"
-                        + "<div class='new-message left-msg'><div class='new-date'>" + msg.date + "</div>" + msg.content + "</div></div>";
+                        + "<div class='message left-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
                 }
                 historyContainer.insertAdjacentHTML("beforeend", history);
 
@@ -603,13 +578,13 @@ function setUpOnlineUserBtn(btn) {
         publicBtn.disabled = false;
         publicBtn.style.setProperty("color", "#C6AC8E");
         messageContainer.innerHTML = "";
-        if (btn.querySelector(".new-message-counter").innerHTML !== "0") {
-            btn.querySelector(".new-message-counter").style.setProperty("visibility", "hidden");
-            btn.querySelector(".new-message-counter").innerHTML = "0";
+        if (btn.querySelector(".message-counter").innerHTML !== "0") {
+            btn.querySelector(".message-counter").style.setProperty("visibility", "hidden");
+            btn.querySelector(".message-counter").innerHTML = "0";
         }
         /* chatWithElement.innerHTML = "Private chat with: " + newUser;*/
         ///
-        var btnUserName = btn.querySelector(".new-user").innerHTML;
+        var btnUserName = btn.querySelector(".user").innerHTML;
         chatWithElement.innerHTML = "Private chat with: " + btnUserName;
         ///
         privateChatWith = btnUserName;
@@ -653,7 +628,7 @@ function show() {
     document.getElementById("dropupMenu").classList.toggle("show");
 }
 
-// Close the dropdown menu if the user clicks outside of it
+// Close the dropdown menu if the user clicks outside of it or close modal if clics outside
 window.onclick = function (event) {
     if (!event.target.matches('.dropbtn')) {
         var dropupMenu = document.getElementById("dropupMenu");
@@ -819,8 +794,8 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
 
 
 function clearOldMsg() {
-    console.log("nume of messages in window: " + messageContainer.querySelectorAll(".new-message-container").length);
-    if (messageContainer.querySelectorAll(".new-message-container").length + messageContainer.querySelectorAll(".event-message-container").length > 15) {
+    console.log("nume of messages in window: " + messageContainer.querySelectorAll(".message-container").length);
+    if (messageContainer.querySelectorAll(".message-container").length + messageContainer.querySelectorAll(".event-message-container").length > 15) {
         messageContainer.removeChild(messageContainer.firstElementChild);
     }
 

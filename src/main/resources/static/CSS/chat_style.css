@@ -179,7 +179,7 @@ body {
         background-color: #00000025;
     }
 
-.new-message-counter {
+.message-counter {
     visibility: hidden;
     font: bold;
     color: red;
@@ -189,7 +189,7 @@ body {
     align-self: center;
 }
 
-.new-user {
+.user {
     font-family: "Poetsen One", sans-serif;
     font-weight: 100;
     color: #EAE0D5;
@@ -207,33 +207,11 @@ body {
 }
 
 /* Message object settings*/
-/*.date {
-    color: grey;
-    font: Courier New;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}*/
 
-/*.message {
-    font-family: "Caveat", sans-serif;
-    font-size: 18px;
-    font: Arial;
-    position: absolute;
-    top: 30px;
-    left: 10px;
-}*/
-
-.sender {
-    font-family: "Audiowide", sans-serif;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-}
 
 /* Window for message displaying */
-.new-message-container {
-    /*background-color: red;*/
+.message-container {
+    
     display: flex;
     flex-direction: row;
     position: relative;
@@ -249,7 +227,7 @@ body {
     align-self: flex-end;
 }
 
-.new-message {
+.message {
     background-color: /* rgb(165, 159, 159, 0.59);*/ #A6A6A6;
     padding: 15px 15px 30px 15px;
     border-radius: 10px;
@@ -265,7 +243,7 @@ body {
     font-size: 14px;
 }
 
-    .new-message:hover .new-date {
+    .message:hover .date {
         visibility: visible;
         transition-delay: 1s;
     }
@@ -278,23 +256,20 @@ body {
     border-top-right-radius: 0;
 }
 
-.new-sender {
+.sender {
     text-align: center;
     padding: 0px 15px 0px 15px;
-    /*position:relative;*/
     top: 10px;
     left: 10px;
-    /*flex-grow: 1;*/
     font-family: "Poetsen One", sans-serif;
     font-weight: 100;
     color: #EAE0D5;
 }
 
-.new-date {
+.date {
     visibility: hidden;
     color: #D0D0D0;
     font: Courier New;
-    /*text-align:left;*/
     font-family: 'Noto Sans', sans-serif;
     font-size: 10px;
 }
@@ -314,30 +289,11 @@ body {
 }
 
 
-.message-container {
-    /*flex-grow: 4;*/
-    position: relative;
-    width: 95%;
-    height: 8vh;
-    border-color: black;
-    border-radius: 10px;
-    border: 1px inset;
-    text-align: left;
-    padding: 10px;
-    /*flex-shrink: 0;*/
-    margin: 2px;
-    /*flex-wrap: wrap;*/
-}
-
-
-
 .event-message {
-    /* border-top: 1px inset;*/
     font-family: "Caveat", sans-serif;
     font: 100;
     font-size: 18px;
     padding: 3px;
-    /*font: Arial;*/
     text-align: center;
     position: relative;
     margin: 8px;
@@ -352,8 +308,7 @@ body {
 }
 
 
-/* Container for sending button,
- message text field and chat switch button*/
+/* Container for sending button, message text field and chat switch button*/
 .inputContainer {
     display: flex;
     align-items: flex-end;
@@ -411,7 +366,6 @@ button img {
     cursor: pointer;
     margin: 0px 0px 10px 10px;
     border-bottom-left-radius: 15px;
-    /* border-bottom-left-radius: 15px;*/
     width: 50px;
     background-color: #00000025;
     border: none;
@@ -435,6 +389,7 @@ button img {
     border: none;
     padding: 0px 0px;
 }
+
     .dropbtn:hover, .send-msg-btn:hover {
         background-color: #00000045;
     }
@@ -459,7 +414,6 @@ button img {
         display: block;
         border: none;
         background-color: #00000005;
-       
         font-family: "Poetsen One", sans-serif;
         font-weight: 200;
         font-size: 12px;
@@ -483,13 +437,14 @@ button img {
     flex-direction: column;
 }
 
-.modal-off {
+/*.modal-off {
     display: none;
 }
 
 .modal-on {
     display: block;
 }
+*/
 
 /*modal settup*/
 .modal {
