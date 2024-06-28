@@ -1,11 +1,14 @@
 
 
+
 body {
     background-image: linear-gradient(to right, #22333B, #2a414b );
     min-width: 650px;
+    
 }
 
 .admin-control-panel {
+    margin-top: 5px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -27,8 +30,6 @@ body {
     }
 
 .form-select {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
     flex-grow: 2;
     text-align: center;
 }
@@ -52,27 +53,24 @@ body {
 
 #BAN-btn {
     flex-grow: 1;
-    border-bottom-right-radius: 10px;
-    border-top-right-radius: 10px;
+    
 }
 
 
 #unBan-Btn {
     flex-grow: 2;
-    border-bottom-right-radius: 10px;
-    border-top-right-radius: 10px;
-}
+  }
 
 
 
-
-.admin-control-panel-header {
+/*.admin-control-panel-header {
     align-self: center;
     font-family: "Poetsen One", sans-serif;
     font-weight: 400;
     font-style: normal;
     color: #C6AC8E;
-}
+}*/
+
 /* Main container for other chat parts */
 .chat-body {
     display: flex;
@@ -112,10 +110,12 @@ body {
     text-align: center;
     padding-top: 8px;
     border-bottom: 1px solid;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
     background-color: #00000045;
     border-color: #00000045;
+    
+}
+
+.head-font {
     text-align: center;
     font-family: "Poetsen One", sans-serif;
     font-weight: 400;
@@ -142,22 +142,18 @@ body {
     flex-direction: column;
     align-items: center;
     width: 25%;
+    min-width: 150px;
+    max-width: 250px;
 }
 
 .online-users-header {
     height: 30px;
     width: 100%;
-    text-align: center;
     padding-top: 8px;
     border-bottom: 1px solid black;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
     background-color: #00000045;
     border-color: #00000045;
-    font-family: "Poetsen One", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-    color: #C6AC8E;
+
 }
 
 
@@ -177,6 +173,10 @@ body {
 
     .user-container:hover {
         background-color: #00000025;
+    }
+
+    .user-container.active {
+        background-color: #00000045;
     }
 
 .message-counter {
@@ -228,19 +228,18 @@ body {
 }
 
 .message {
-    background-color: /* rgb(165, 159, 159, 0.59);*/ #A6A6A6;
+    background-color: #a6a6a699;
     padding: 15px 15px 30px 15px;
     border-radius: 10px;
-    /*border-top-left-radius: 0;*/
     height: auto;
     overflow-y: auto;
     flex-grow: 4;
     order: 1;
     text-align: left;
-    /*font-family: 'Comic Sans MS';
-    font: 100;*/
     font-family: 'Noto Sans', sans-serif;
     font-size: 14px;
+
+    
 }
 
     .message:hover .date {
@@ -250,10 +249,14 @@ body {
 
 .left-msg {
     border-top-left-radius: 0;
+    
+    box-shadow: -10px 15px 15px -5px black;
 }
 
 .right-msg {
     border-top-right-radius: 0;
+    box-shadow: 10px 15px 15px -5px black;
+}
 }
 
 .sender {
@@ -314,8 +317,6 @@ body {
     align-items: flex-end;
     width: 100%;
     height: 56px;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
     background-color: #00000045;
 }
 
@@ -340,7 +341,6 @@ body {
     cursor: pointer;
     margin: 0px 10px 10px 0px;
     border-bottom-right-radius: 15px;
-    /* border-bottom-left-radius: 15px;*/
     width: 50px;
     background-color: #00000025;
     border: none;
@@ -399,11 +399,9 @@ button img {
     position: absolute;
     bottom: 56px;
     left: 10px;
-    background-color: #00000065;
+    background-color: #00000095;
     min-width: 160px;
     z-index: 1;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
 }
 
     /* Links inside the dropup */
@@ -423,7 +421,7 @@ button img {
 
         /* Change color of dropup links on hover */
         .dropup-content > *:hover {
-            background-color: #00000085;
+            background-color: #00000095;
         }
 
         .dropup-content > *:first-child {
@@ -437,14 +435,6 @@ button img {
     flex-direction: column;
 }
 
-/*.modal-off {
-    display: none;
-}
-
-.modal-on {
-    display: block;
-}
-*/
 
 /*modal settup*/
 .modal {
@@ -486,6 +476,7 @@ button img {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    max-width: 900px;
     width: 90%;
     height: 60%;
     border-radius: 15px;
@@ -496,16 +487,12 @@ button img {
 
 
 .modal-header {
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
+ 
     text-align: center;
     background-color: rgb(0,0,0,0.2);
     border-bottom: 1px solid black;
+    border-color: #00000045;
     padding: 10px;
-    font-family: "Poetsen One", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-    color: #C6AC8E;
     font-size: 16px;
 }
 
@@ -516,8 +503,6 @@ button img {
     height: 85%;
     width: 100%;
     background-color: rgb(0,0,0,0.2);
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
     overflow-y: auto;
 }
 
@@ -529,30 +514,18 @@ button img {
     height: 90%;
     width: 100%;
     background-color: rgb(0,0,0,0.2);
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
     padding: 5px 0px;
 }
 
 
-.private-history-btn {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-}
 
-
-.full-history-btn {
-    border-radius: 10px;
-}
 
 #user-to-find {
     position: relative;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
     border: none;
-    font-family: "Poetsen One", sans-serif;
+    /*font-family: "Poetsen One", sans-serif;
     font-weight: 400;
-    font-size: 12px;
+    font-size: 12px;*/
     padding: 3px 8px;
     text-decoration: none;
     text-shadow: 0px 0px 0px #0e7566;
@@ -580,15 +553,7 @@ button img {
     }
 
 
-/* Show the dropup menu on hover */
-/*.dropup:hover .dropup-content {
-    display: block;
-}*/
 
-/* Change the background color of the dropup button when the dropup content is shown */
-/*.dropup:hover .dropbtn {
-    background-color: #2980B9;
-}*/
 @keyframes dropDown {
     0% {
         top: 310px
@@ -629,8 +594,6 @@ button img {
     cursor: pointer;
     background-color: #00000045;
     border-color: #00000045;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
     font-family: "Poetsen One", sans-serif;
     font-weight: 400;
     font-size: 14px;
@@ -638,22 +601,18 @@ button img {
     color: darkgrey;
 }
 
-.update-profile-btn {
-    border-radius: 10px;
-}
 
 .button-basic {
     box-shadow: 7px 8px 10px -3px #000000;
     background: linear-gradient(to bottom, #2c7373 5%, #102929 100%);
     background-color: #2c7373;
-    /*border-radius: 15px;*/
     border: none;
     display: inline-block;
     cursor: pointer;
     color: darkgrey;
-    font-family: "Poetsen One", sans-serif;
+   /* font-family: "Poetsen One", sans-serif;
     font-weight: 400;
-    font-size: 12px;
+    font-size: 12px;*/
     padding: 3px 8px;
     text-decoration: none;
     text-shadow: 0px 0px 0px #0e7566;
@@ -667,11 +626,12 @@ select:focus {
     outline: none;
 }
 
+
 option {
     background-color: #2c7373;
-    font-family: "Poetsen One", sans-serif;
+  /* font-family: "Poetsen One", sans-serif;
     font-weight: 400;
-    font-size: 12px;
+    font-size: 12px;*/
     padding: 3px 8px;
     text-decoration: none;
 }
@@ -698,10 +658,6 @@ option {
     border: none;
 }
 
-.border-rnd {
-    border-radius: 10px;
-}
-
 label {
     font-size: 13px;
 }
@@ -711,23 +667,54 @@ input:focus {
 }
 
 
-.text-basic {
+.fnt-bsc-12 {
     font-family: "Poetsen One", sans-serif;
     font-weight: 200;
     font-size: 12px;
-    /*color: #C6AC8E;*/
     color: darkgrey;
 }
 
 .select-basic {
     border: none;
-    font-family: "Poetsen One", sans-serif;
+    /*font-family: "Poetsen One", sans-serif;
     font-weight: 400;
-    font-size: 12px;
+    font-size: 12px;*/
     padding: 3px 8px;
     text-decoration: none;
     text-shadow: 0px 0px 0px #0e7566;
     background: linear-gradient(to bottom, #2c7373 5%, #102929 100%);
     color: darkgray;
     box-shadow: 7px 8px 10px -3px #000000;
+}
+
+/*borders setup*/
+
+.rnd-brd-10l {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.rnd-brd-10r {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.rnd-brd-10 {
+    border-radius: 10px;
+}
+
+.rnd-brd-15b {
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.rnd-brd-15t {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.PO-ss-400 {
+    font-family: "Poetsen One", sans-serif;
+    font-weight: 400;
+    font-size: 12px;
 }

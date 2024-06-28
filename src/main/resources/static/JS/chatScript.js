@@ -19,46 +19,6 @@ register();
 var userNameElement = document.getElementById("user-data");
 var userName = userNameElement.getAttribute("data-user");
 
-//expired session check setup
-/*function checkExpiredSession() {
-    fetch('http://localhost:28852/session-expired',
-        {
-            method: "GET",
-            credentials: "include"
-        })
-        .then(response => {
-            if (response.status === 401) {
-                window.location.href = '/';
-            }
-        })
-        .catch(error => {
-            console.error('Error checking session:', error);
-            window.location.href = '/';
-        })
-   
-}
-setInterval(checkExpiredSession, 6000);
-*/
-
-/*sock.onclose = function (event) {
-    fetch('http://localhost:28852/session-expired', {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            'expiredUser': userName
-        })
-    })
-        .then(response => {
-            if (response.ok) {
-                stompClient.disconnect();
-                window.location.href = '/';
-            }
-        });
-}*/
-
-
 
 //event listener for logout user from list after closing chat page
 window.addEventListener('unload', function (event) {
@@ -139,9 +99,9 @@ function send() {
 
 //function for getting messages and online users from server
 function onMessageReceived(payload) {
-    // console.log("! DEBUG ! ON MESSAGE RECEIVED PAYLOAD : \n" + payload) ;
+
     var message = JSON.parse(payload.body);
-    //console.log("\n\n ! DEBUG ! PAYLOAD BODY:\n" + message);
+
     console.log("\n\n ! DEBUG ! MESSAGE TYPE:\n" + message.type);
     if (message.type) {
         if (message.type === "Leave") {
@@ -182,7 +142,7 @@ function onMessageReceived(payload) {
             messageContainer.insertAdjacentHTML("beforeend", bannedMsg);
         }
 
- 
+
 
         if (message.type === "update") {
             console.log("userName before updatemsg: " + userName);
@@ -220,10 +180,10 @@ function onMessageReceived(payload) {
                     setProfilePicture(onUserbtn, message.sender);
                 }
 
-              
+
                 console.log("CLEARING MESSAGE WINDOW");
             }
-            
+
             messageContainer.innerHTML = "";
             getLastestHistory();
 
@@ -316,30 +276,11 @@ function onMessageReceived(payload) {
 
                                 setUpOnlineUserBtn(userBtn);
                                 setProfilePicture(userBtn, onlineUser.nickname);
-                                /*fetch("http://localhost:28852/profile/get/" + onlineUser.nickname)
-                                    .then(response => {
-                                        if (response.ok) {
-                                            return response.blob();
-                                        } else {
-                                            throw new Error('Image not found');
-                                        }
-                                    })
-                                    .then(blob => {
-                                        const imageUrl = URL.createObjectURL(blob);
-                                        const imgElement = userBtn.querySelector('.profile-img-online');
-                                        imgElement.src = imageUrl;
-                                    })
-                                    .catch(error => {
-                                        console.error('Error fetching image:', error);
-                                    });
-                                    */
+
                             }
                         });
 
                     });
-
-
-
 
 
             } else {
@@ -362,23 +303,6 @@ function onMessageReceived(payload) {
 
                             setUpOnlineUserBtn(userBtn);
                             setProfilePicture(userBtn, lastUser.nickname);
-
-                            /* fetch("http://localhost:28852/profile/get/" + lastUser.nickname)
-                                 .then(response => {
-                                     if (response.ok) {
-                                         return response.blob();
-                                     } else {
-                                         throw new Error('Image not found');
-                                     }
-                                 })
-                                 .then(blob => {
-                                     const imageUrl = URL.createObjectURL(blob);
-                                     const imgElement = userBtn.querySelector('.profile-img-online');
-                                     imgElement.src = imageUrl;
-                                 })
-                                 .catch(error => {
-                                     console.error('Error fetching image:', error);
-                                 });*/
 
                         }
 
@@ -410,13 +334,13 @@ function onConnectedSuccessfully() {
 function switchToPublic() {
 
     if (chatWithElement.innerHTML !== "Public chat") {
-        let activeBtn = document.querySelector("." + privateChatWith);
+        let activeBtn = document.querySelector(".user-container.active");
         chatWithElement.innerHTML = "Public chat";
         messages.innerHTML = "";
 
 
         if (activeBtn) {
-            activeBtn.style.setProperty("Background-color", "#00000000");
+            activeBtn.classList.remove("active");
         }
         getLastestHistory();
         privateChatWith = "";
@@ -496,7 +420,7 @@ function getLastestHistory() {
 
 function getFullPublicHistory() {
 
-    /*let historyContainer = document.querySelector(".history-window");*/
+
     historyContainer.innerHTML = "";
     fetch("http://localhost:28852/history/public")
         .then(response => response.json())
@@ -510,12 +434,12 @@ function getFullPublicHistory() {
                     let disconnectedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + msg.content + "</div></div>";
                     historyContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
                 }
-                ///
+
                 if (msg.type === "update") {
                     let updateMsg = "<div class='event-message-container'> <div class='event-message  login-event'>" + msg.sender + " changed his name to: " + msg.content + "</div></div>";
                     messageContainer.insertAdjacentHTML("beforeend", updateMsg);
                 }
-                ///
+
                 if (msg.type === "message") {
                     let history;
                     if (msg.sender === userName) {
@@ -568,7 +492,7 @@ function getFullPersonalHistory() {
 
 // online user button set up
 function setUpOnlineUserBtn(btn) {
-    btn.addEventListener("click", () => {
+    /*btn.addEventListener("click", () => {
         if (chatWithElement.innerHTML !== "Public chat") {
 
             document.querySelector("." + privateChatWith).style.setProperty("Background-color", "#00000000");
@@ -582,29 +506,36 @@ function setUpOnlineUserBtn(btn) {
             btn.querySelector(".message-counter").style.setProperty("visibility", "hidden");
             btn.querySelector(".message-counter").innerHTML = "0";
         }
-        /* chatWithElement.innerHTML = "Private chat with: " + newUser;*/
-        ///
+               
         var btnUserName = btn.querySelector(".user").innerHTML;
         chatWithElement.innerHTML = "Private chat with: " + btnUserName;
-        ///
+        
+        privateChatWith = btnUserName;
+        getLastestHistory();
+    });*/
+    btn.addEventListener("click", () => {
+        if (chatWithElement.innerHTML !== "Public chat") {
+
+            document.querySelector(".user-container.active").classList.remove("active");
+        }
+        btn.classList.add("active");
+
+        publicBtn.disabled = false;
+        publicBtn.style.setProperty("color", "#C6AC8E");
+        messageContainer.innerHTML = "";
+        if (btn.querySelector(".message-counter").innerHTML !== "0") {
+            btn.querySelector(".message-counter").style.setProperty("visibility", "hidden");
+            btn.querySelector(".message-counter").innerHTML = "0";
+        }
+
+        var btnUserName = btn.querySelector(".user").innerHTML;
+        chatWithElement.innerHTML = "Private chat with: " + btnUserName;
+
         privateChatWith = btnUserName;
         getLastestHistory();
     });
 }
 
-
-/*function kickUser() {
-    var select = document.getElementById("select").value;
-    let date = new Date().toLocaleString();
-    stompClient.send("/app/chat", {}, JSON.stringify(
-        {
-            sender: 'admin',
-            type: 'kick',
-            content: select + ' was kicked out by admin!',
-            sendTo: select,
-            date: date
-        }));
-}*/
 
 function logOutUser() {
     loggedOutByButton = true;
@@ -695,7 +626,7 @@ function handleFiles(files) {
     let file = files[0];
     let reader = new FileReader();
     document.getElementById("fileData").files = files;
-    /*dragAndDrop.textContent = `Selected file: ${file.name}`;*/
+
     reader.onload = function (e) {
         let img = document.createElement("img");
         img.src = e.target.result;
@@ -776,8 +707,8 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
             console.log("PROFILE UPDATE DEBGU: " + data["message"]);
             if (data["message"].includes("successfully")) {
                 response.style.color = "#345635";
-                
-            } else { 
+
+            } else {
                 response.style.color = "#7E102C";
             }
             response.innerHTML = `${data["message"]}`;

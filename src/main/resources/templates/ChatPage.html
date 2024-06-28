@@ -2,10 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <!-- <meta charset="utf-8">-->
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
-    <link rel="stylesheet" type="text/css" th:href="@{CSS/chat_style.css}">
-    <!--<link rel="stylesheet" type="text/css" href="/static/CSS/chat_style.css">-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--<link rel="stylesheet" type="text/css" th:href="@{CSS/chat_style.css}">-->
+    <link rel="stylesheet" type="text/css" href="/static/CSS/chat_style.css">
+    <!--<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Caveat">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,15 +27,15 @@
     <div class="modal profile-mod" style="display:none">
 
         <form id="profile-update-form" class="modal-content" enctype="multipart/form-data">
-            <div class="modal-header"> Profile settings
+            <div class="modal-header head-font rnd-brd-15t"> Profile settings
             </div>
-            <div class="update-window ">
+            <div class="update-window rnd-brd-15b">
                 <!--<span id="closeBtn" class="close" onclick="closeModal('profile-mod')">&times;</span>-->
                 <label for="name-input">Select new username</label>
-                <input id="name-input" class="border-rnd" type="text" name="userName" placeholder="new user name">
+                <input id="name-input" class="rnd-brd-10" type="text" name="userName" placeholder="new user name">
 
                 <label for="new-pass-input">Select new password</label>
-                <input id="new-pass-input" class="border-rnd" type="password" name="newPass" placeholder="new password">
+                <input id="new-pass-input" class="rnd-brd-10" type="password" name="newPass" placeholder="new password">
                 <label for="drop">Upload new image</label>
                 <div class="drag-and-drop">
                     <div id="drop" class="drop-area">
@@ -44,10 +44,10 @@
                 </div>
 
                 <label for="act-pass-input">Confirm actual password<br></label>
-                <input id="act-pass-input" class="border-rnd " type="password" name="actualPass"
+                <input id="act-pass-input" class="rnd-brd-10" type="password" name="actualPass"
                        placeholder="Actual password" required>
                 <input id="fileData" type="file" name="file" style="visibility:hidden; position:absolute">
-                <button class="button-basic update-profile-btn" type="submit">Update profile</button>
+                <button class="button-basic rnd-brd-10" type="submit">Update profile</button>
                 <div class="response" style="font-size: 12px"></div>
 
             </div>
@@ -56,22 +56,21 @@
     </div>
     <div class="modal history-mod" style="display:none">
         <form class="history-modal-content" id="history-modal-form">
-            <div class="modal-header">
-                <span class="title">Message history </span><br>
-                <button class="button-basic full-history-btn" type="button" onclick="getFullPublicHistory()"> Full
+            <div class="modal-header head-font rnd-brd-15t">
+                <div> <!--class="title"-->Message history </div><br>
+                <button class="button-basic rnd-brd-10 PO-ss-400" type="button" onclick="getFullPublicHistory()"> Full
                     public history
                 </button>
-                <button class="button-basic private-history-btn" type="button" onclick="getFullPersonalHistory()">
-                    Private messages
-                    with:
+                <button class="button-basic rnd-brd-10l PO-ss-400" type="button" onclick="getFullPersonalHistory()">
+                    Private messages with:
                 </button>
-                <select name="history-select" id="user-to-find">
+                <select class="select-basic rnd-brd-10r PO-ss-400" name="history-select" id="user-to-find">
                     <option value="" selected disabled>Select user</option>
                     <option th:each="user : ${usersList}" th:value="${user}" th:text="${user}">
                 </select>
                 <!--<span class="close" onclick="closeModal('history-mod')">&times;</span>-->
             </div>
-            <div class="history-window"></div>
+            <div class="history-window rnd-brd-15b"></div>
 
         </form>
 
@@ -80,44 +79,44 @@
 
         <!--<div class="chat">-->
         <div class="online-user-panel">
-            <div class="online-users-header">
+            <div class="online-users-header head-font rnd-brd-15t">
                 Online users
             </div>
             <div id="users">
 
-                <!--<button class="user-container" type="button" >
-                    <img class="profile-img-online" src="file:///C:/Users/michal.mily/IdeaProjects/RealTimeChat/Profiles/Azrael/profileImg.jpg" alt="">
-                    <span class="new-user"> Azrael </span>
+              <!--  <button class="user-container" type="button" >
+                    <img class="profile-img-online" src="/ProfilePic/defaultPic.jpg" alt="profile pic">
+                    <span class="user"> Azrael </span>
                     <span class="new-message-counter"></span>
 
                 </button>
                 <button class="user-container" type="button" >
-                    <img class="profile-img-online" src="/static/Images/profileImg.jpg" alt="">
-                    <span class="new-user"> Azrael </span>
+                    <img class="profile-img-online" src="/ProfilePic/defaultPic.jpg" alt="profile pic">
+                    <span class="user"> Azrael </span>
                     <span class="new-message-counter"></span>
 
                 </button>
                 <button class="user-container" type="button" >
-                    <img class="profile-img-online" src="/static/Images/profileImg.jpg" alt="">
-                    <span class="new-user"> Azrael </span>
+                    <img class="profile-img-online" src="/ProfilePic/defaultPic.jpg" alt="profile pic">
+                    <span class="user"> Azrael </span>
                     <span class="new-message-counter"></span>
                     
                 </button>-->
 
             </div>
-            <button id="public-chat-btn" type="button" onclick="switchToPublic()" disabled>Public chat</button>
+            <button id="public-chat-btn" class="rnd-brd-15b" type="button" onclick="switchToPublic()" disabled>Public chat</button>
         </div>
         <div class="chat-window">
-            <div id="chat-with">Public chat</div>
+            <div id="chat-with" class="head-font rnd-brd-15t">Public chat</div>
             <div id="messages">
 
 
-                 <!--<div class="new-message-container revert ">
-                     <div class="new-sender"> Askir
+                 <!--<div class="message-container revert ">
+                     <div class="sender"> Askir
                          <img class="profile-img" src="/static/Images/profileImg.jpg" alt="avatar">
                      </div>
-                     <div class="new-message right-msg">
-                         <div class="new-date" onmouseup="showDate()">22.1.2024</div>
+                     <div class="message right-msg">
+                         <div class="date" onmouseup="showDate()">22.1.2024</div>
                          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
                          laboriosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
                          in
@@ -126,12 +125,12 @@
                      </div>
                  </div>
 
-                 <div class="new-message-container">
-                     <div class="new-sender"> Askir
+                 <div class="message-container">
+                     <div class="sender"> Askir
                          <img class="profile-img" src="/static/Images/profileImg.jpg" alt="avatar">
                          &lt;!&ndash;<div class="new-date">22.1.2024</div>&ndash;&gt;</div>
-                     <div class="new-message left-msg">
-                         <div class="new-date">22.1.2024</div>
+                     <div class="message left-msg">
+                         <div class="date">22.1.2024</div>
                          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
                          laboriosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
                          in
@@ -151,7 +150,7 @@
 
 
             </div>
-            <div class="inputContainer">
+            <div class="inputContainer rnd-brd-15b">
 
                 <div class="dropup ">
                     <button type="button" class="dropup dropbtn " onclick="show()">
@@ -161,7 +160,7 @@
                             <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z"/>
                         </svg>
                     </button>
-                    <div id="dropupMenu" class="dropup-content" >
+                    <div id="dropupMenu" class="dropup-content rnd-brd-15t" >
                         <input type="button" value="Get full history" onclick="openSelectedModal('history-mod')">
                         <input type="button" value="Manage profile" onclick="openSelectedModal('profile-mod')">
                         <input type="button" value="Logout" onclick="logOutUser()">

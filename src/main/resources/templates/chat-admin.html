@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <!-- <meta charset="utf-8">-->
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
-    <link rel="stylesheet" type="text/css" th:href="@{CSS/chat_style.css}">
-    <!--<link rel="stylesheet" type="text/css" href="/static/CSS/chat_style.css">-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--<link rel="stylesheet" type="text/css" th:href="@{CSS/chat_style.css}">-->
+    <link rel="stylesheet" type="text/css" href="/static/CSS/chat_style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Caveat">
 
@@ -64,7 +64,7 @@
                     Private messages
                     with:
                 </button>
-                <select name="history-select" id="user-to-find">
+                <select name="history-select" id="user-to-find" class="PO-ss-400">
                     <option value="" selected disabled>Select user</option>
                     <option th:each="user : ${usersList}" th:value="${user}" th:text="${user}">
                 </select>
@@ -77,11 +77,11 @@
     </div>
 
 
-    <div class="admin-control-panel-header"> Admin control panel</div>
+    <div class="head-font"> Admin control panel</div>
     <div class="admin-control-panel">
         <div class="admin-feat-onlineUsers" id="kick-option">
 
-            <select id="online-users" class="form-select select-basic" aria-label="Default select example">
+            <select id="online-users" class="form-select select-basic PO-ss-400 rnd-brd-10l" aria-label="Default select example">
                 <option value="0">select online user</option>
                 <option th:each="user : ${users}"
                         th:value="${user.nickname}"
@@ -89,8 +89,8 @@
                 </option>
 
             </select>
-            <button id="kick-btn" class="button-basic" type="button" onclick="kickUser()">Kick user</button>
-            <button id="BAN-btn" type="button" class="button-basic" onclick="banUser()">BAN user</button>
+            <button id="kick-btn" class="button-basic PO-ss-400" type="button" onclick="kickUser()">Kick user</button>
+            <button id="BAN-btn" type="button" class="button-basic PO-ss-400 rnd-brd-10r" onclick="banUser()">BAN user</button>
 
         </div>
         <!--<div class="admin-feat" id="ban-option">
@@ -98,94 +98,39 @@
         </div>-->
 
         <div class="admin-feat-bannedUsers" id="unBan-option">
-            <select id="banned-users" class="form-select select-basic" aria-label="Default select example">
+            <select id="banned-users" class="form-select select-basic PO-ss-400 rnd-brd-10l" aria-label="Default select example">
                 <option value="0">select user from banlist</option>
                 <option th:each="bannedUser : ${bannedUsers}"
                         th:value="${bannedUser.userName}"
                         th:text="${bannedUser.userName}">
                 </option>
             </select>
-            <button id="unBan-Btn" type="button" class="button-basic" onclick="unBanUser()">Remove from ban list</button>
+            <button id="unBan-Btn" type="button" class="button-basic PO-ss-400 rnd-brd-10r" onclick="unBanUser()">Remove from ban
+                list
+            </button>
 
         </div>
     </div>
 
 
-
     <div class="chat-main-windows">
-
-
-        <!--<div class="chat">-->
         <div class="online-user-panel">
-            <div class="online-users-header">
+            <div class="online-users-header head-font rnd-brd-15t">
                 Online users
             </div>
             <div id="users">
 
-                <!--<button class="user-container" type="button" >
-                    <img class="profile-img-online" src="file:///C:/Users/michal.mily/IdeaProjects/RealTimeChat/Profiles/Azrael/profileImg.jpg" alt="">
-                    <span class="new-user"> Azrael </span>
-                    <span class="new-message-counter"></span>
-
-                </button>
-                <button class="user-container" type="button" >
-                    <img class="profile-img-online" src="/static/Images/profileImg.jpg" alt="">
-                    <span class="new-user"> Azrael </span>
-                    <span class="new-message-counter"></span>
-
-                </button>
-                <button class="user-container" type="button" >
-                    <img class="profile-img-online" src="/static/Images/profileImg.jpg" alt="">
-                    <span class="new-user"> Azrael </span>
-                    <span class="new-message-counter"></span>
-
-                </button>-->
-
             </div>
-            <button id="public-chat-btn" type="button" onclick="switchToPublic()" disabled>Public chat</button>
+            <button id="public-chat-btn" class="rnd-brd-15b" type="button" onclick="switchToPublic()" disabled>Public
+                chat
+            </button>
         </div>
         <div class="chat-window">
-            <div id="chat-with">Public chat</div>
+            <div id="chat-with" class="head-font rnd-brd-15t">Public chat</div>
             <div id="messages">
-                <!-- <div class="new-message-container revert ">
-                     <div class="new-sender"> Askir
-                         <img class="profile-img" src="/static/Images/profileImg.jpg" alt="avatar">
-                     </div>
-                     <div class="new-message right-msg">
-                         <div class="new-date" onmouseup="showDate()">22.1.2024</div>
-                         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
-                         laboriosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
-                         in
-                         molestias officia sed sint ullam.
-
-                     </div>
-                 </div>
-
-                 <div class="new-message-container">
-                     <div class="new-sender"> Askir
-                         <img class="profile-img" src="/static/Images/profileImg.jpg" alt="avatar">
-                         &lt;!&ndash;<div class="new-date">22.1.2024</div>&ndash;&gt;</div>
-                     <div class="new-message left-msg">
-                         <div class="new-date">22.1.2024</div>
-                         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
-                         laboriosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
-                         in
-                         molestias officia sed sint ullam.
-
-                     </div>
-                 </div>
-                 &lt;!&ndash;<div class="event-message-container">&ndash;&gt;
-                 <div class='event-message logout-event'>
-                     Skaman just logged out.
-                 </div>
-                 &lt;!&ndash;            </div>&ndash;&gt;
-                 &lt;!&ndash;<div class="event-message-container">&ndash;&gt;
-                 <div class='event-message login-event'>
-                     Skaman just enter the chat.
-                 </div>-->
 
             </div>
-            <div class="inputContainer">
+            <div class="inputContainer rnd-brd-15b">
 
                 <div class="dropup ">
                     <button type="button" class="dropup dropbtn " onclick="show()">
@@ -195,7 +140,7 @@
                             <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z"/>
                         </svg>
                     </button>
-                    <div id="dropupMenu" class="dropup-content">
+                    <div id="dropupMenu" class="dropup-content rnd-brd-15t">
                         <input type="button" value="Get full history" onclick="openSelectedModal('history-mod')">
                         <input type="button" value="Manage profile" onclick="openSelectedModal('profile-mod')">
                         <input type="button" value="Logout" onclick="logOutUser()">
@@ -215,9 +160,9 @@
 
 
 </div>
-    <!--</div>-->
+<!--</div>-->
 
-    <!--<input type="button" value="Logout" onclick="logOutUser()">-->
+<!--<input type="button" value="Logout" onclick="logOutUser()">-->
 
 <!---->
 <div id="user-data" th:data-user="${user}"></div>
