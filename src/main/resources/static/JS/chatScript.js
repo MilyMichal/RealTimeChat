@@ -7,9 +7,14 @@ let chatWithElement = document.getElementById("chat-with");
 let usersContainer = document.getElementById("users");
 let publicBtn = document.getElementById("public-chat-btn");
 let historyContainer = document.querySelector(".history-window");
+
+let emojiPicker = document.getElementById('emoji-win');
+
 let privateChatWith;
 var loggedOutByButton = false;
 let isScrolledToBottom = true;
+
+var actDate = new Date().toLocaleString();
 
 let stompClient = null;
 let sock = new SockJS("http://localhost:28852/chat");
@@ -71,14 +76,14 @@ function register() {
 
 //function for sending msg to server
 function send() {
-    let date = new Date().toLocaleString();
+
     let finalMsg;
     if (msgInputWindow.value) {
         if (chatWithElement.innerHTML === "Public chat") {
             finalMsg = {
                 "content": msgInputWindow.value,
                 "sender": userName,
-                "date": date,
+                "date": actDate,
                 "type": 'message',
                 "sendTo": "public"
             }
@@ -87,7 +92,7 @@ function send() {
             finalMsg = {
                 "content": msgInputWindow.value,
                 "sender": userName,
-                "date": date,
+                "date": actDate,
                 "type": 'message',
                 "sendTo": privateChatWith
             }
@@ -105,7 +110,7 @@ function onMessageReceived(payload) {
     console.log("\n\n ! DEBUG ! MESSAGE TYPE:\n" + message.type);
     if (message.type) {
         if (message.type === "Leave") {
-            let date = new Date().toLocaleString();
+
             let disconnectedUser = message.sender;
             let disconnectedMsg = "<div class='event-message-container'> <div class='event-message logout-event'>" + message.content + "</div></div>";
             messageContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
@@ -318,7 +323,6 @@ function onMessageReceived(payload) {
 //connecting new user
 function onConnectedSuccessfully() {
 
-    let date = new Date().toLocaleString();
     stompClient.subscribe("/topic/chat", onMessageReceived);
 
     stompClient.send("/app/user", {}, JSON.stringify(
@@ -327,7 +331,7 @@ function onConnectedSuccessfully() {
             type: 'newUser',
             content: userName + ' just joined chatroom. Welcome!',
             sendTo: "public",
-            date: date
+            date: actDate
         }));
 }
 //"Public chat" switch button
@@ -364,13 +368,13 @@ function getLastestHistory() {
                         messageContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
                     }
 
-                    ///
+
                     if (msg.type === "update" && msg.sender != msg.content) {
                         let updateMsg = "<div class='event-message-container'> <div class='event-message  login-event'>" + msg.sender + " changed his name to: " + msg.content + "</div></div>";
                         messageContainer.insertAdjacentHTML("beforeend", updateMsg);
                     }
 
-                    ///
+
                     if (msg.type === "message") {
                         let history;
                         if (msg.sender === userName) {
@@ -492,27 +496,7 @@ function getFullPersonalHistory() {
 
 // online user button set up
 function setUpOnlineUserBtn(btn) {
-    /*btn.addEventListener("click", () => {
-        if (chatWithElement.innerHTML !== "Public chat") {
 
-            document.querySelector("." + privateChatWith).style.setProperty("Background-color", "#00000000");
-        }
-        btn.style.setProperty("Background-color", "#00000045");
-
-        publicBtn.disabled = false;
-        publicBtn.style.setProperty("color", "#C6AC8E");
-        messageContainer.innerHTML = "";
-        if (btn.querySelector(".message-counter").innerHTML !== "0") {
-            btn.querySelector(".message-counter").style.setProperty("visibility", "hidden");
-            btn.querySelector(".message-counter").innerHTML = "0";
-        }
-               
-        var btnUserName = btn.querySelector(".user").innerHTML;
-        chatWithElement.innerHTML = "Private chat with: " + btnUserName;
-        
-        privateChatWith = btnUserName;
-        getLastestHistory();
-    });*/
     btn.addEventListener("click", () => {
         if (chatWithElement.innerHTML !== "Public chat") {
 
@@ -561,6 +545,13 @@ function show() {
 
 // Close the dropdown menu if the user clicks outside of it or close modal if clics outside
 window.onclick = function (event) {
+    /*console.log(event.target);*/
+    if ((!event.target.matches('.emoji-picker') && !event.target.matches('.emoji-btn')) && emojiPicker.classList.contains('emojiShow')) {
+        /* console.log("off targer");*/
+        emojiPicker.classList.remove('emojiShow');
+        emojiPicker.classList.add('emojiHidden');
+    }
+
     if (!event.target.matches('.dropbtn')) {
         var dropupMenu = document.getElementById("dropupMenu");
 
@@ -588,11 +579,6 @@ function openSelectedModal(modal) {
     document.querySelector(`.${modal}`).style.display = "block";
 
 }
-
-/*function closeModal(modal) {
-    document.querySelector(`.${modal}`).style.display = "none";
- 
-}*/
 
 
 /*drag and drop area setup*/
@@ -659,12 +645,11 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                 } else {
                     if (data.hasOwnProperty("newUserName")) {
                         console.log("SEND UPDATE MSG");
-                        let date = new Date().toLocaleString();
                         updateMsg =
                         {
                             "sender": userName,
                             "content": data["newUserName"],
-                            "date": date,
+                            "date": actDate,
                             "type": 'update',
                             "sendTo": "public"
                         }
@@ -688,12 +673,12 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                             });
 
                     } else {
-                        let date = new Date().toLocaleString();
+
                         updateMsg =
                         {
                             "sender": userName,
                             "content": userName,
-                            "date": date,
+                            "date": actDate,
                             "type": 'update',
                             "sendTo": "public"
 
@@ -752,3 +737,35 @@ function setProfilePicture(button, nickname) {
         });
 }
 
+
+
+function showEmojiPicker() {
+
+    emojiPicker.classList.remove("emojiHidden");
+    emojiPicker.classList.add("emojiShow");
+
+}
+
+
+emojiPicker.addEventListener('emoji-click', event => {
+    var start = msgInputWindow.selectionStart;
+    var end = msgInputWindow.selectionEnd;
+    var textBefore;
+    var textAfter;
+    var text = msgInputWindow.value;
+    var emoji = event.detail.unicode;
+
+    if (start < end) {
+        textBefore = text.substring(0, start);
+        textAfter = text.substring(end, text.length);
+    } else {
+        textBefore = text.substring(0, start);
+        textAfter = text.substring(start, text.length);
+    }
+
+    msgInputWindow.value = textBefore + emoji + textAfter;
+    msgInputWindow.focus();
+    msgInputWindow.selectionStart = start + emoji.length;
+    msgInputWindow.selectionEnd = start + emoji.length;
+
+});
