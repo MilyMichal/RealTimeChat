@@ -24,8 +24,9 @@
             I am a self-taught programmer. For the past three years, I have been learning Java programming in my spare time. Initially, I used paid courses on <a href="https://www.hyperskill.org">Hyperskill.org</a> , where I created small projects as part of my studies. You can view my learning journey on my <a href="https://hyperskill.org/profile/139791986">profile</a>.
             Later, I decided to gain more practical experience by creating my own web application. I chose to develop a simple real-time chat application, which you can find here:
         </p>
+
         <form  th:action="@{/chat}" method="get">
-            <input class="enter_btn" type="submit"  value="Open chat">
+            <input class="enter-btn" type="submit"  value="Open chat">
         </form>
         <p style="text-align: justify;">
             I am primarily focused on developing my knowledge in backend technologies, as this is the direction I wish to pursue in my future career. However, since the frontend is an integral part of applications, I strive to maintain a basic understanding of this discipline as well.
@@ -66,7 +67,7 @@
                     <li>- Available history of public and private messages</li>
                     <li>- sending emojis</li>
                     <li>- Customizable profile settings: Nickname, password and profile picture</li>
-                    <li>- Admin account: admin can kick user from chat room and BAN user</li>
+                    <li>- Admin account: admin can kick user from chat room and BAN/UNBAN user, auto BAN expire check</li>
                 </ul>
             </div>
         </div>

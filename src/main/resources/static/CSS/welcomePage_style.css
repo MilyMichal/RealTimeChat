@@ -1,3 +1,6 @@
+a {
+    text-decoration: none;
+}
 /* styles.css */
 body, html {
     margin: 0;
@@ -14,18 +17,24 @@ header {
     text-align: center;
 }
 
+
 .container {
     width: 80%;
     margin: auto;
     overflow: hidden;
 }
 
+
+
 .info-section {
     padding: 20px 0;
     background: #ecf0f1;
     text-align: center;
     margin: 10px 0px;
+    overflow: hidden;
 }
+
+
 
     .info-section h2 {
         margin-top: 0;
@@ -34,7 +43,7 @@ header {
 .tech-stack {
     display: flex;
     justify-content: center;
-    gap: 40px;
+    gap: 30px;
     margin-top: 20px;
 }
 
@@ -56,7 +65,7 @@ header {
     }
 
 .app-feature {
-    margin-top: 40px;
+    margin-top: 30px;
     display: flex;
     justify-content: center;
 }
@@ -71,6 +80,7 @@ header {
 
     .app-feature ul {
         list-style: none;
+        padding: 0px;
     }
 
 footer {
@@ -93,7 +103,6 @@ footer p {
     from {
         opacity: 0;
         transform: translateY(20px);
-        he
     }
 
     to {
@@ -105,6 +114,29 @@ footer p {
 .info-section, .tech-stack div {
     animation: fadeInUp 2s ease-in-out both;
 }
+
+.enter-btn {
+    width: 120px;
+    height: 50px;
+    border: none;
+    box-shadow: 3px 3px 8px 2px black;
+    font-family:  Consolas;
+    background: none;
+    cursor: pointer;
+    border-radius: 15px;
+    transition: transform 1s ease, box-shadow 1.20s ease;
+  
+}
+
+    .enter-btn:hover {
+        transform: translateY(-5px);
+        box-shadow:6px 6px 10px 3px black;
+    }
+
+    .enter-btn:active {
+        transform: translateY(5px);
+    }
+  
 
 
 
