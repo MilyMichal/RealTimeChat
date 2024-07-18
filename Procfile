@@ -1,1 +1,1 @@
-web: java -jar target/RealTimeChat-0.0.1-SNAPSHOT.jar
+web: java -Dserver.port=$PORT -jar build/libs/RealTimeChat-0.0.1-SNAPSHOT.jar
