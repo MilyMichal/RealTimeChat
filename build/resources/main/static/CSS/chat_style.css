@@ -1,0 +1,763 @@
+
+
+
+body {
+    background-image: linear-gradient(to right, #22333B, #2a414b );
+    min-width: 650px;
+}
+
+
+
+.admin-control-panel {
+    margin-top: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 25px;
+    background-color: #00000045;
+    width: 90%;
+    min-height: 40px;
+}
+
+
+    .admin-control-panel > * {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 80%;
+        margin: 10px;
+    }
+
+.form-select {
+    flex-grow: 2;
+    text-align: center;
+}
+
+.admin-feat-onlineUsers {
+    gap: 5px;
+}
+
+.admin-feat-bannedUsers {
+    gap: 5px;
+}
+
+
+#online-users {
+    flex-grow: 2;
+}
+
+#kick-btn {
+    flex-grow: 1;
+}
+
+#BAN-btn {
+    flex-grow: 1;
+}
+
+
+#unBan-Btn {
+    flex-grow: 2;
+}
+
+
+
+/*.admin-control-panel-header {
+    align-self: center;
+    font-family: "Poetsen One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #C6AC8E;
+}*/
+
+/* Main container for other chat parts */
+.chat-body {
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    min-width: 650px;
+}
+
+.chat-window {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.chat-headers {
+    display: flex;
+}
+
+.chat-main-windows {
+    display: flex;
+    flex-direction: row;
+    padding: 8px;
+    align-content: flex-start;
+    gap: 10px;
+    width: 90%;
+}
+
+.online-users {
+    flex-grow: 1;
+    text-align: center;
+}
+/* Top chat header displaying name of current chat*/
+#chat-with {
+    height: 30px;
+    width: 100%;
+    text-align: center;
+    padding-top: 8px;
+    border-bottom: 1px solid;
+    background-color: #00000045;
+    border-color: #00000045;
+}
+
+.head-font {
+    text-align: center;
+    font-family: "Poetsen One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #C6AC8E;
+}
+
+
+
+/* Users displaying window */
+#users {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 80vh;
+    Background-color: #00000045;
+    border-color: #00000045;
+}
+
+.online-user-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 25%;
+    min-width: 150px;
+    max-width: 250px;
+}
+
+.online-users-header {
+    height: 30px;
+    width: 100%;
+    padding-top: 8px;
+    border-bottom: 1px solid black;
+    background-color: #00000045;
+    border-color: #00000045;
+}
+
+/* Each online user display settings */
+.user-container {
+    display: flex;
+    flex-direction: row;
+    background-color: #00000000;
+    width: 100%;
+    padding: 5px 0px 5px 0px;
+    border: none;
+    justify-content: space-around;
+    margin: 5px 0px;
+    cursor: pointer;
+}
+
+    .user-container:hover {
+        background-color: #00000025;
+    }
+
+    .user-container.active {
+        background-color: #00000045;
+    }
+
+.message-counter {
+    visibility: hidden;
+    font: bold;
+    color: red;
+    border-radius: 6px;
+    width: 15px;
+    height: 15px;
+    align-self: center;
+}
+
+.user {
+    font-family: "Poetsen One", sans-serif;
+    font-weight: 100;
+    color: #EAE0D5;
+}
+
+/* Messages displaying window */
+#messages {
+    overflow-y: auto;
+    height: 80vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    Background-color: #00000045;
+    border-color: #00000045;
+}
+
+/* Message object settings*/
+
+
+/* Window for message displaying */
+.message-container {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    width: 75%;
+    height: auto;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+
+.revert {
+    flex-direction: row-reverse;
+    align-self: flex-end;
+}
+
+.message {
+    background-color: #a6a6a699;
+    padding: 8px 15px 10px 10px;
+    border-radius: 10px;
+    height: auto;
+    overflow-y: auto;
+    flex-grow: 4;
+    order: 1;
+    text-align: left;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 14px;
+}
+
+    .message:hover .date {
+        visibility: visible;
+        transition-delay: 1s;
+    }
+
+.left-msg {
+    border-top-left-radius: 0;
+    box-shadow: -10px 15px 15px -5px black;
+}
+
+.right-msg {
+    border-top-right-radius: 0;
+    box-shadow: 10px 15px 15px -5px black;
+}
+
+
+.sender {
+    text-align: center;
+    padding: 0px 15px 0px 15px;
+    top: 10px;
+    left: 10px;
+    font-family: "Poetsen One", sans-serif;
+    font-weight: 100;
+    color: #EAE0D5;
+}
+
+.date {
+    visibility: hidden;
+    color: #D0D0D0;
+    font: Courier New;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 10px;
+    margin-bottom: 5px;
+}
+
+
+.profile-img {
+    border-radius: 40px;
+    width: 80px;
+    height: 80px;
+    margin-top: 15px;
+}
+
+.profile-img-online {
+    border-radius: 30px;
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+}
+
+
+.event-message {
+    font-family: "Caveat", sans-serif;
+    font: 100;
+    font-size: 18px;
+    padding: 3px;
+    text-align: center;
+    position: relative;
+    margin: 8px;
+}
+
+.login-event {
+    background-image: linear-gradient(to right, #00000005,  #345635, #00000005 );
+    color: rgb(0, 0, 0, 0.90);
+}
+
+.logout-event {
+    background-image: linear-gradient(to right, #00000005, #7E102C, #00000005 );
+    color: rgb(0, 0, 0, 0.90);
+}
+
+
+/* Container for sending button, message text field and chat switch button*/
+.inputContainer {
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    height: 56px;
+    background-color: #00000045;
+}
+
+
+/* Text field for writing messages */
+#input-msg {
+    height: 40px;
+    margin: 0px 0px 10px 0px;
+    flex-grow: 4;
+    background-color: #00000005;
+    border-color: #00000045;
+    resize: none;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 16px;
+    color: #D0D0D0;
+}
+
+    #input-msg:focus {
+        outline: none;
+    }
+
+/* Message send button */
+.send-msg-btn {
+    height: 46px;
+    cursor: pointer;
+    margin: 0px 10px 10px 0px;
+    border-bottom-right-radius: 15px;
+    width: 50px;
+    background-color: #00000025;
+    border: none;
+}
+
+
+#send-msg-btn:hover {
+    border: 1px outset;
+}
+
+#send-msg-btn:active {
+    border: 1px inset;
+}
+
+button img {
+    width: 50%;
+    height: 100%;
+    position: relative;
+}
+
+.settings-btn {
+    height: 46px;
+    cursor: pointer;
+    margin: 0px 0px 10px 10px;
+    border-bottom-left-radius: 15px;
+    width: 50px;
+    background-color: #00000025;
+    border: none;
+}
+
+
+
+/* The container <div> - needed to position the dropup content */
+.dropup {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+    height: 46px;
+    cursor: pointer;
+    margin: 0px 0px 10px 10px;
+    border-bottom-left-radius: 15px;
+    width: 50px;
+    background-color: #00000025;
+    border: none;
+    padding: 0px 0px;
+}
+
+    .dropbtn:hover, .send-msg-btn:hover {
+        background-color: #00000045;
+    }
+/* Dropup content (Hidden by Default) */
+.dropup-content {
+    display: none;
+    position: absolute;
+    bottom: 56px;
+    left: 10px;
+    background-color: #00000095;
+    min-width: 160px;
+    z-index: 1;
+}
+
+    /* Links inside the dropup */
+    .dropup-content > * {
+        color: black;
+        padding: 10px 5px;
+        text-decoration: none;
+        display: block;
+        border: none;
+        background-color: #00000005;
+        font-family: "Poetsen One", sans-serif;
+        font-weight: 200;
+        font-size: 12px;
+        /*color: #C6AC8E;*/
+        color: darkgrey;
+    }
+
+        /* Change color of dropup links on hover */
+        .dropup-content > *:hover {
+            background-color: #00000095;
+        }
+
+        /* Border setup for first choice in dropup*/
+        .dropup-content > *:first-child {
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+
+.show {
+    display: flex;
+    flex-direction: column;
+}
+
+
+/*modal settup*/
+.modal {
+    display: none;
+    z-index: 1;
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    min-width: 650px;
+    min-height: 560px;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0,0.3);
+    align-content: center;
+    animation: modalshow 1s ease-in;
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 350px;
+    width: 60%;
+    height: 70%;
+    min-height: 450px;
+    max-height: 550px;
+    border-radius: 15px;
+    background-image: linear-gradient(to right, #22333B, #2a414b );
+    margin: auto;
+    padding: 5px;
+    font-family: "Poetsen One", sans-serif;
+    font-weight: 100;
+    font-size: 14px;
+    color: darkgrey;
+}
+
+.history-modal-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 900px;
+    width: 90%;
+    height: 60%;
+    border-radius: 15px;
+    background-image: linear-gradient(to right, #22333B, #2a414b );
+    margin: auto;
+    padding: 10px;
+}
+
+
+.modal-header {
+    text-align: center;
+    background-color: rgb(0,0,0,0.2);
+    border-bottom: 1px solid black;
+    border-color: #00000045;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.history-window {
+    display: flex;
+    flex-direction: column;
+    top: 50px;
+    height: 85%;
+    width: 100%;
+    background-color: rgb(0,0,0,0.2);
+    overflow-y: auto;
+}
+
+.update-window {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    height: 90%;
+    width: 100%;
+    background-color: rgb(0,0,0,0.2);
+    padding: 5px 0px;
+}
+
+
+
+
+#user-to-find {
+    position: relative;
+    border: none;
+    /*font-family: "Poetsen One", sans-serif;
+    font-weight: 400;
+    font-size: 12px;*/
+    padding: 3px 8px;
+    text-decoration: none;
+    text-shadow: 0px 0px 0px #0e7566;
+    background: linear-gradient(to bottom, #2c7373 5%, #102929 100%);
+    color: darkgray;
+    box-shadow: 7px 8px 10px -3px #000000;
+}
+
+
+.drop-area {
+    width: 120px;
+    height: 120px;
+    border: 2px dashed #2b5263;
+    background-color: rgb(47, 71, 82);
+    text-align: center;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 12px;
+    padding: 5px;
+    color: #C6AC8E;
+}
+
+    .drop-area:hover {
+        /* border: 3px dashed #2b5263;*/
+        background-color: rgb(47, 71, 82, 0.6);
+    }
+
+
+
+@keyframes dropDown {
+    0% {
+        top: 310px
+    }
+
+    100% {
+        top: 150px
+    }
+}
+
+@keyframes modalshow {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes mymove {
+    0% {
+        top: -310px;
+        background: red;
+    }
+
+    100% {
+        top: 150px;
+        background: yellow;
+    }
+}
+
+
+/* Public to USer chat switching button*/
+#public-chat-btn {
+    width: 100%;
+    height: 55px;
+    cursor: pointer;
+    background-color: #00000045;
+    border-color: #00000045;
+    font-family: "Poetsen One", sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    /*color: #C6AC8E;*/
+    color: darkgrey;
+}
+
+
+.button-basic {
+    box-shadow: 7px 8px 10px -3px #000000;
+    background: linear-gradient(to bottom, #2c7373 5%, #102929 100%);
+    background-color: #2c7373;
+    border: none;
+    display: inline-block;
+    cursor: pointer;
+    color: darkgrey;
+    /* font-family: "Poetsen One", sans-serif;
+    font-weight: 400;
+    font-size: 12px;*/
+    padding: 3px 8px;
+    text-decoration: none;
+    text-shadow: 0px 0px 0px #0e7566;
+}
+
+select:hover {
+    cursor: pointer;
+}
+
+select:focus {
+    outline: none;
+}
+
+
+option {
+    background-color: #2c7373;
+    /* font-family: "Poetsen One", sans-serif;
+    font-weight: 400;
+    font-size: 12px;*/
+    padding: 3px 8px;
+    text-decoration: none;
+}
+
+.button-basic:hover {
+    background: linear-gradient(to bottom, #102929 5%, #2c7373 100%);
+    background-color: #102929;
+}
+
+.button-basic:active {
+    position: relative;
+    top: 3px;
+}
+
+#new-pass-input, #name-input, #act-pass-input {
+    padding: 3px 6px;
+    background-color: #2a414a;
+    border: none;
+}
+
+#new-pass-input, #name-input, #act-pass-input {
+    padding: 3px 6px;
+    background-color: #2a414a;
+    border: none;
+}
+
+label {
+    font-size: 13px;
+}
+
+input:focus {
+    outline: none;
+}
+
+
+.fnt-bsc-12 {
+    font-family: "Poetsen One", sans-serif;
+    font-weight: 200;
+    font-size: 12px;
+    color: darkgrey;
+}
+
+.select-basic {
+    border: none;
+    /*font-family: "Poetsen One", sans-serif;
+    font-weight: 400;
+    font-size: 12px;*/
+    padding: 3px 8px;
+    text-decoration: none;
+    text-shadow: 0px 0px 0px #0e7566;
+    background: linear-gradient(to bottom, #2c7373 5%, #102929 100%);
+    color: darkgray;
+    box-shadow: 7px 8px 10px -3px #000000;
+}
+
+/*borders setup*/
+
+.rnd-brd-10l {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.rnd-brd-10r {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.rnd-brd-10 {
+    border-radius: 10px;
+}
+
+.rnd-brd-15b {
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.rnd-brd-15t {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.PO-ss-400 {
+    font-family: "Poetsen One", sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+emoji-picker {
+    width: 100%;
+    height: 100%;
+}
+
+.emoji-window {
+    top: -307px;
+    left: -215px;
+    width: 250px;
+    height: 250px;
+    position: relative;
+    display: block;
+}
+
+.emojiShow {
+    display: block;
+}
+
+.emojiHidden {
+    display: none;
+}
+
+.emoji-btn-placeholder {
+    height: 46px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    width: 35px;
+}
+
+.emoji-btn {
+    outline: none;
+    width: 100%;
+    height: 100%;
+    background-color: #00000025;
+    border-top: none;
+    border-bottom: none;
+    border-left: none;
+    border-right-color: #00000045;
+}
+
+    .emoji-btn:hover {
+        background-color: #00000045;
+    }

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Real-time-chat App</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" th:href="@{CSS/welcomePage_style.css}">
+    <!--<link rel="stylesheet" type="text/css" href="/static/CSS/welcomePage_style.css">-->
+</head>
+<body>
+<header>
+    <div class="container">
+        <h1>Welcome to My Real-Time Chat Project</h1>
+        <p>A project by a self-taught programmer</p>
+    </div>
+</header>
+
+<section id="about-me" class="info-section">
+    <div class="container">
+
+        <h2>About Me</h2>
+        <p style="text-align: justify;">
+        Hi! My name is Michael.
+        <img th:src="@{/Images/BioPic.jpg}" style="margin: auto; border-radius: 20px; height: 95px; width: 95px;float: left; margin: 5px 5px 0px 5px; " alt="bioPic">
+            I am a self-taught programmer. For the past three years, I have been learning Java programming in my spare time. Initially, I used paid courses on <a href="https://www.hyperskill.org">Hyperskill.org</a> , where I created small projects as part of my studies. You can view my learning journey on my <a href="https://hyperskill.org/profile/139791986">profile</a>.
+            Later, I decided to gain more practical experience by creating my own web application. I chose to develop a simple real-time chat application, which you can find here:
+        </p>
+
+        <form  th:action="@{/chat}" method="get">
+            <input class="enter-btn" type="submit"  value="Open chat">
+        </form>
+        <p style="text-align: justify;">
+            I am primarily focused on developing my knowledge in backend technologies, as this is the direction I wish to pursue in my future career. However, since the frontend is an integral part of applications, I strive to maintain a basic understanding of this discipline as well.
+        </p>
+
+    </div>
+</section>
+
+<section id="about-project" class="info-section">
+    <div class="container">
+        <h2>About the Project</h2>
+        <p>It is a real-time chat application built using the following technologies:</p>
+        <div class="tech-stack">
+            <div class="backend">
+                <h3>Backend:</h3>
+                <ul>
+                    <li>Spring Boot</li>
+                    <li>PostgreSQL</li>
+                    <li>WebSocket</li>
+                    <li>STOMP</li>
+                    <li>Docker</li>
+                </ul>
+            </div>
+            <div class="frontend">
+                <h3>Frontend:</h3>
+                <ul>
+                    <li>Thymeleaf</li>
+                    <li>CSS</li>
+                </ul>
+            </div>
+        </div>
+        <div class="app-feature">
+            <div class="features">
+                <h3> Chat features:</h3>
+                <ul>
+                    <li>- Basic username&password login</li>
+                    <li>- Public & Private messages</li>
+                    <li>- Available history of public and private messages</li>
+                    <li>- sending emojis</li>
+                    <li>- Customizable profile settings: Nickname, password and profile picture</li>
+                    <li>- Admin account: admin can kick user from chat room and BAN/UNBAN user, auto BAN expire check</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2024 Real-Time Chat Project by Michal Milý</p>
+    </div>
+</footer>
+<!--
+<div class="grid-container">
+    <div class="item1 basicItem">
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur consequuntur provident sapiente ullam unde. Adipisci consequatur et facilis hic illum molestiae obcaecati, perferendis, provident quo, repellat saepe sint tempora tempore!
+        </p>
+    </div>
+    <div class="item2 basicItem">
+        <p>About project</p>
+    </div>
+    <form class="item3 basicItem" th:action="@{/chat}" method="get">
+        <input class="enter_btn" type="submit"  value="Enter chat">
+    </form>
+    &lt;!&ndash;<button class="item3 basicItem" type="button">
+        Open chat
+    </button>&ndash;&gt;
+    <div class="item4 basicItem">
+        <h1>Introduction</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Debitis doloribus earum enim illum, quae recusandae similique. Aliquam consequatur consequuntur eligendi, eos, id, minima quae quam quidem recusandae rem soluta totam?</p>
+    </div>
+    <div class="item5 basicItem">
+        <p>This is my test projectThis is my test projectThis is my test projectThis is my test projectThis is my test
+            projectThis is my test project</p>
+    </div>
+
+</div>
+
+
+-->
+
+</body>
+</html>
