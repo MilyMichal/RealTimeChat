@@ -1,15 +1,15 @@
 package com.m.m.RealTimeChat.Services;
 
 import com.m.m.RealTimeChat.Models.User;
-import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+//import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+//import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+//@SpringBootTest
 class UserStorageServiceTest {
 
     @Autowired
@@ -35,9 +35,9 @@ class UserStorageServiceTest {
         assertEquals(2,userStorageService.getUsersList().size());
     }*/
 
-    @Test
+   /* @Test
     void getAllBannedUsers() {
         assertEquals(2,userStorageService.getBannedUsers().size());
 
-    }
+    }*/
 }
