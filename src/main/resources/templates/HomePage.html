@@ -3,8 +3,8 @@
 <head>
     <title>Real-time-chat App</title>
     <meta charset="utf-8">
-    <!--<link rel="stylesheet" type="text/css" th:href="@{CSS/welcomePage_style.css}">-->
-    <link rel="stylesheet" type="text/css" href="/static/CSS/welcomePage_style.css">
+    <link rel="stylesheet" type="text/css" th:href="@{CSS/welcomePage_style.css}">
+    <!--<link rel="stylesheet" type="text/css" href="/static/CSS/welcomePage_style.css">-->
 </head>
 <body>
 <header>
@@ -20,7 +20,7 @@
         <h2>About Me</h2>
         <p style="text-align: justify;">
         Hi! My name is Michael.
-        <img src="/ProfilePic/Azrael/profileImg.jpg" style="margin: auto; border-radius: 20px; height: 95px; width: 95px;float: left; margin: 5px 5px 0px 5px; ">
+        <img th:src="@{Images/BioPic.jpg}" style="margin: auto; border-radius: 20px; height: 95px; width: 95px;float: left; margin: 5px 5px 0px 5px; ">
             I am a self-taught programmer. For the past three years, I have been learning Java programming in my spare time. Initially, I used paid courses on <a href="https://www.hyperskill.org">Hyperskill.org</a> , where I created small projects as part of my studies. You can view my learning journey on my <a href="https://hyperskill.org/profile/139791986">profile</a>.
             Later, I decided to gain more practical experience by creating my own web application. I chose to develop a simple real-time chat application, which you can find here:
         </p>

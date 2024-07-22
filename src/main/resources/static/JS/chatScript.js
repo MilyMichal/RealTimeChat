@@ -14,7 +14,7 @@ let privateChatWith;
 var loggedOutByButton = false;
 let isScrolledToBottom = true;
 
-var actDate = new Date().toLocaleString();
+var actDate = () => new Date().toLocaleString();
 
 let stompClient = null;
 let sock = new SockJS("http://localhost:28852/chat");
@@ -83,7 +83,7 @@ function send() {
             finalMsg = {
                 "content": msgInputWindow.value,
                 "sender": userName,
-                "date": actDate,
+                "date": actDate(),
                 "type": 'message',
                 "sendTo": "public"
             }
@@ -92,7 +92,7 @@ function send() {
             finalMsg = {
                 "content": msgInputWindow.value,
                 "sender": userName,
-                "date": actDate,
+                "date": actDate(),
                 "type": 'message',
                 "sendTo": privateChatWith
             }
@@ -331,7 +331,7 @@ function onConnectedSuccessfully() {
             type: 'newUser',
             content: userName + ' just joined chatroom. Welcome!',
             sendTo: "public",
-            date: actDate
+            date: actDate()
         }));
 }
 //"Public chat" switch button
@@ -649,7 +649,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                         {
                             "sender": userName,
                             "content": data["newUserName"],
-                            "date": actDate,
+                            "date": actDate(),
                             "type": 'update',
                             "sendTo": "public"
                         }
@@ -678,7 +678,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                         {
                             "sender": userName,
                             "content": userName,
-                            "date": actDate,
+                            "date": actDate(),
                             "type": 'update',
                             "sendTo": "public"
 
@@ -725,7 +725,7 @@ function setProfilePicture(button, nickname) {
                 return response.blob();
             } else {
                 throw new Error('Image not found');
-            }
+            }   
         })
         .then(blob => {
             const imageUrl = URL.createObjectURL(blob);
