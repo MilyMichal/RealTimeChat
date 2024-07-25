@@ -2,7 +2,6 @@ package com.m.m.RealTimeChat.Controllers;
 
 import com.m.m.RealTimeChat.Services.OnlineUserService;
 import com.m.m.RealTimeChat.Services.UserStorageService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

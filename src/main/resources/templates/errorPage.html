@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{CSS/errorPage_style.css}">
+    <!--<link rel="stylesheet" type="text/css" href="/static/CSS/ErrorPage_style.css">-->
+    <title>Error</title>
+</head>
+<body>
+<h2>OOPS! Looks like we have error here!</h2><br>
+   <div class="error-window">
+<p>Error status code</p>
+    <p id="status" th:text="${errorCode}">404</p>
+<p>Error message</p>
+    <p  id="err-message" th:text="${errorMessage}">Page not found</p>
+
+       <form th:action="@{/chat}" method="get">
+           <input class="back-btn" type="submit" value="Back to chat">
+       </form>
+   </div>
+</body>
+</html>

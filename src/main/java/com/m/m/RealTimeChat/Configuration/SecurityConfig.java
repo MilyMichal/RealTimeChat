@@ -32,7 +32,6 @@ public class SecurityConfig {
     private SimpMessagingTemplate messagingTemplates;
 
 
-
     @Autowired
     public SecurityConfig(CustomAuthenticationProvider customAuthenticationProvider, AppUserDetailService appUserDetailService) {
         this.customAuthenticationProvider = customAuthenticationProvider;
@@ -42,11 +41,14 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/", "Images/**","/CSS/**", "/register"/*, "/session-expired"*/, "logout", "/ProfilePic/**").permitAll()
+                        .requestMatchers("/", "Images/**", "/CSS/**", "/register", "logout", "/ProfilePic/**","/error").permitAll()
                         .anyRequest().authenticated()
+
                 )
+
                 .formLogin(form -> form.loginPage("/login")
                         .permitAll()
                         .failureUrl("/login-error")
@@ -54,13 +56,13 @@ public class SecurityConfig {
 
                 .authenticationProvider(customAuthenticationProvider)
                 .userDetailsService(appUserDetailService)
-               /* .sessionManagement(session -> session
-                                //.invalidSessionUrl("/session-expired")
-                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).maximumSessions(1)*/
+                /* .sessionManagement(session -> session
+                                 //.invalidSessionUrl("/session-expired")
+                                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).maximumSessions(1)*/
 
-                        /*.maximumSessions(1)
-                        .maxSessionsPreventsLogin(true)
-                        .expiredUrl("/sessionError")*/
+                /*.maximumSessions(1)
+                .maxSessionsPreventsLogin(true)
+                .expiredUrl("/sessionError")*/
                 .logout(logout -> logout.logoutSuccessUrl("/").permitAll()
 
                         .addLogoutHandler(customLogoutHandler())
@@ -68,6 +70,8 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID").invalidateHttpSession(true)
 
                 )
+
+
 
                 .csrf(AbstractHttpConfigurer::disable)
 
