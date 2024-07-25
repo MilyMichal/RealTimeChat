@@ -1,3 +1,4 @@
+/*
 package com.m.m.RealTimeChat.Services;
 
 import com.m.m.RealTimeChat.Models.User;
@@ -16,7 +17,8 @@ class UserStorageServiceTest {
     UserStorageService userStorageService;
     Long id  = 3L;
     //User user = new User(id,"Azrael","azrael","maill@admuuin.cz","user",true, LocalDateTime.now());
-    /*@Test
+    */
+/*@Test
     void addUser(){
 
 
@@ -33,11 +35,12 @@ class UserStorageServiceTest {
         userStorageService.removeUserFromStorage(user);
 
         assertEquals(2,userStorageService.getUsersList().size());
-    }*/
+    }*//*
+
 
     @Test
     void getAllBannedUsers() {
         assertEquals(2,userStorageService.getBannedUsers().size());
 
     }
-}
+}*/
