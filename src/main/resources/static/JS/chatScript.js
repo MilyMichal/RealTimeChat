@@ -26,16 +26,17 @@ var userName = userNameElement.getAttribute("data-user");
 
 
 //event listener for logout user from list after closing chat page
-window.addEventListener('unload', function (event) {
+/*window.addEventListener('unload', function (event) {
     if (!loggedOutByButton) {
         logOutUser();
     }
 
-});
+});*/
 
 //event listener for UNDO step from chat page
 
 window.addEventListener('popstate', function (event) {
+
     if (!event.state) {
         logOutUser();
 
@@ -71,7 +72,7 @@ function register() {
     });
 
     // loading chat history for new user
-    getLastestHistory();
+    getLatestHistory();
 }
 
 //function for sending msg to server
@@ -190,7 +191,7 @@ function onMessageReceived(payload) {
             }
 
             messageContainer.innerHTML = "";
-            getLastestHistory();
+            getLatestHistory();
 
         }
 
@@ -200,18 +201,8 @@ function onMessageReceived(payload) {
         if (message.type === 'message') {
             let html;
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === "public") {
-                if (message.sender === userName) {
-                    html = "<div class='message-container revert'><div class='sender'>" + message.sender + "</div>"
-                        + "<div class='message right-msg'><div class='date'>" + message.date + "</div>" + message.content + "</div></div></div>";
 
-
-                } else {
-                    html = "<div class='message-container'><div class='sender'>" + message.sender + "</div>"
-                        + "<div class='message left-msg'><div class='date'>" + message.date + "</div>" + message.content + "</div></div></div>";
-
-
-                }
-                messageContainer.insertAdjacentHTML("beforeend", html);
+                messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
                 msgInputWindow.value = "";
             }
 
@@ -229,22 +220,10 @@ function onMessageReceived(payload) {
 
             }
 
-
             if ((userName == message.sendTo && message.sender == privateChatWith) ||
                 (message.sendTo == privateChatWith && message.sender == userName)) {
-                if (message.sender === userName) {
-                    html = "<div class='message-container revert'><div class='sender'>" + message.sender + "</div>"
-                        + "<div class='message right-msg'><div class='date'>" + message.date + "</div>" + message.content + "</div></div>";
-
-
-                } else {
-                    html = "<div class='message-container'><div class='sender'>" + message.sender + "</div>"
-                        + "<div class='message left-msg'><div class='date'>" + message.date + "</div>" + message.content + "</div></div>";
-
-                }
-
-
-                messageContainer.insertAdjacentHTML("beforeend", html);
+                
+                messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
                 msgInputWindow.value = "";
 
             }
@@ -325,14 +304,21 @@ function onConnectedSuccessfully() {
 
     stompClient.subscribe("/topic/chat", onMessageReceived);
 
-    stompClient.send("/app/user", {}, JSON.stringify(
-        {
-            sender: userName,
-            type: 'newUser',
-            content: userName + ' just joined chatroom. Welcome!',
-            sendTo: "public",
-            date: actDate()
-        }));
+    fetch("http://localhost:28852/users")
+        .then(response => response.json())
+        .then(data => {
+            if (!data.includes(userName)) {
+
+                stompClient.send("/app/user", {}, JSON.stringify(
+                    {
+                        sender: userName,
+                        type: 'newUser',
+                        content: userName + ' just joined chatroom. Welcome!',
+                        sendTo: "public",
+                        date: actDate()
+                    }));
+            }
+        });
 }
 //"Public chat" switch button
 function switchToPublic() {
@@ -346,14 +332,14 @@ function switchToPublic() {
         if (activeBtn) {
             activeBtn.classList.remove("active");
         }
-        getLastestHistory();
+        getLatestHistory();
         privateChatWith = "";
         publicBtn.disabled = true;
         publicBtn.style.setProperty("color", "darkgrey");
     }
 }
 // getting message history form server
-function getLastestHistory() {
+function getLatestHistory() {
     if (chatWithElement.innerHTML === "Public chat") {
         fetch("http://localhost:28852/history/public-latest")
             .then(response => response.json())
@@ -376,20 +362,7 @@ function getLastestHistory() {
 
 
                     if (msg.type === "message") {
-                        let history;
-                        if (msg.sender === userName) {
-                            history =
-                                "<div class='message-container revert'><div class='sender'>"
-                                + msg.sender + "</div>"
-                                + "<div class='message right-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
-
-                        } else {
-                            history =
-                                "<div class='message-container'><div class='sender'>"
-                                + msg.sender + "</div>"
-                                + "<div class='message left-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
-                        }
-                        messageContainer.insertAdjacentHTML("beforeend", history);
+                      messageContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
                     }
                 });
             });
@@ -400,20 +373,7 @@ function getLastestHistory() {
             .then(message => {
                 message.forEach((msg) => {
 
-                    let history;
-                    if (msg.sender === userName) {
-                        history =
-                            "<div class='message-container revert'><div class='sender'>"
-                            + msg.sender + "</div>"
-                            + "<div class='message right-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
-
-                    } else {
-                        history =
-                            "<div class='message-container'><div class='sender'>"
-                            + msg.sender + "</div>"
-                            + "<div class='message left-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
-                    }
-                    messageContainer.insertAdjacentHTML("beforeend", history);
+                    messageContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
 
                 });
             });
@@ -445,20 +405,8 @@ function getFullPublicHistory() {
                 }
 
                 if (msg.type === "message") {
-                    let history;
-                    if (msg.sender === userName) {
-                        history =
-                            "<div class='message-container revert'><div class='sender'>"
-                            + msg.sender + "</div>"
-                            + "<div class='message right-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
-
-                    } else {
-                        history =
-                            "<div class='message-container'><div class='sender'>"
-                            + msg.sender + "</div>"
-                            + "<div class='message left-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
-                    }
-                    historyContainer.insertAdjacentHTML("beforeend", history);
+                   
+                    historyContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
                 }
             });
         });
@@ -473,25 +421,30 @@ function getFullPersonalHistory() {
         .then(message => {
             message.forEach((msg) => {
 
-                let history;
-                if (msg.sender === userName) {
-                    history =
-                        "<div class='message-container revert'><div class='sender'>"
-                        + msg.sender + "</div>"
-                        + "<div class='message right-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
-
-                } else {
-                    history =
-                        "<div class='message-container'><div class='sender'>"
-                        + msg.sender + "</div>"
-                        + "<div class='message left-msg'><div class='date'>" + msg.date + "</div>" + msg.content + "</div></div>";
-                }
-                historyContainer.insertAdjacentHTML("beforeend", history);
+                historyContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
 
             });
         });
 
 }
+
+////
+function prepareMessage(messageData) {
+    let completedMessage;
+    if (messageData.sender === userName) {
+        completedMessage = `<div class='message-container revert'><div class='sender'> ${messageData.sender}</div>
+                        <div class='message right-msg'><div class='date'>${messageData.date}</div> ${messageData.content}</div></div>`;
+
+    } else {
+        completedMessage = `<div class='message-container'><div class='sender'> ${messageData.sender}</div>
+                        <div class='message left-msg'><div class='date'> ${messageData.date}</div> ${messageData.content}</div></div>`;
+    }
+    return completedMessage;
+}
+
+////
+
+
 
 
 // online user button set up
@@ -516,7 +469,7 @@ function setUpOnlineUserBtn(btn) {
         chatWithElement.innerHTML = "Private chat with: " + btnUserName;
 
         privateChatWith = btnUserName;
-        getLastestHistory();
+        getLatestHistory();
     });
 }
 
@@ -725,7 +678,7 @@ function setProfilePicture(button, nickname) {
                 return response.blob();
             } else {
                 throw new Error('Image not found');
-            }   
+            }
         })
         .then(blob => {
             const imageUrl = URL.createObjectURL(blob);
