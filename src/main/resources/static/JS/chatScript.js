@@ -112,11 +112,13 @@ function onMessageReceived(payload) {
     if (message.type) {
         if (message.type === "Leave") {
 
-            let disconnectedUser = message.sender;
-            let disconnectedMsg = "<div class='event-message-container'> <div class='event-message logout-event'>" + message.content + "</div></div>";
-            messageContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
-            if (usersContainer.querySelector("." + disconnectedUser)) {
-                usersContainer.querySelector("." + disconnectedUser).remove();
+            /*let disconnectedUser = message.sender;
+            let disconnectedMsg = "<div class='event-message-container'> <div class='event-message logout-event'>" + message.content + "</div></div>";*/
+            
+
+            messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
+            if (usersContainer.querySelector(`.${message.sender}`)) {
+                usersContainer.querySelector(`.${message.sender}`).remove();
             }
         }
 
@@ -125,8 +127,8 @@ function onMessageReceived(payload) {
                 logOutUser();
                 alert("You have been kicked out by admin!");
             }
-            let kickedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + message.content + "</div></div>";
-            messageContainer.insertAdjacentHTML("beforeend", kickedMsg);
+            /*  let kickedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + message.content + "</div></div>";*/
+            messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
         }
 
         if (message.type === "BAN") {
@@ -222,7 +224,7 @@ function onMessageReceived(payload) {
 
             if ((userName == message.sendTo && message.sender == privateChatWith) ||
                 (message.sendTo == privateChatWith && message.sender == userName)) {
-                
+
                 messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
                 msgInputWindow.value = "";
 
@@ -245,23 +247,23 @@ function onMessageReceived(payload) {
                     .then(data => {
 
                         data.forEach(onlineUser => {
-
-                            if (onlineUser.nickname !== userName) {
-
-
-                                let user = `<button class='user-container ${onlineUser.nickname}' type='button'>
-                                    <img class='profile-img-online' src= '' alt='Profile Picture'>
-                                    <span class='user'>${onlineUser.nickname}</span>
-                                    <span class='message-counter'>0</span>
-                                    </button >`;
-
-                                usersContainer.insertAdjacentHTML("beforeend", user);
-                                let userBtn = document.querySelector("." + onlineUser.nickname);
-
-                                setUpOnlineUserBtn(userBtn);
-                                setProfilePicture(userBtn, onlineUser.nickname);
-
-                            }
+                            updateOnlineUserList(onlineUser);
+                            /* if (onlineUser.nickname !== userName) {
+ 
+ 
+                                 let user = `<button class='user-container ${onlineUser.nickname}' type='button'>
+                                     <img class='profile-img-online' src= '' alt='Profile Picture'>
+                                     <span class='user'>${onlineUser.nickname}</span>
+                                     <span class='message-counter'>0</span>
+                                     </button >`;
+ 
+                                 usersContainer.insertAdjacentHTML("beforeend", user);
+                                 let userBtn = document.querySelector("." + onlineUser.nickname);
+ 
+                                 setUpOnlineUserBtn(userBtn);
+                                 setProfilePicture(userBtn, onlineUser.nickname);
+ 
+                             }*/
                         });
 
                     });
@@ -273,22 +275,23 @@ function onMessageReceived(payload) {
                     .then(response => response.json())
                     .then(data => {
                         let lastUser = data[data.length - 1];
-
-                        if (lastUser.nickname !== userName) {
-
-                            let user = `<button class='user-container ${lastUser.nickname}' type='button'>
-                                    <img class='profile-img-online' src= '' alt='Profile Picture'>
-                                    <span class='user'>${lastUser.nickname}</span>
-                                    <span class='message-counter'>0</span>
-                                    </button >`;
-
-                            usersContainer.insertAdjacentHTML("beforeend", user);
-                            let userBtn = document.querySelector("." + lastUser.nickname);
-
-                            setUpOnlineUserBtn(userBtn);
-                            setProfilePicture(userBtn, lastUser.nickname);
-
-                        }
+                        updateOnlineUserList(lastUser);
+                        /*
+                                                if (lastUser.nickname !== userName) {
+                        
+                                                    let user = `<button class='user-container ${lastUser.nickname}' type='button'>
+                                                            <img class='profile-img-online' src= '' alt='Profile Picture'>
+                                                            <span class='user'>${lastUser.nickname}</span>
+                                                            <span class='message-counter'>0</span>
+                                                            </button >`;
+                        
+                                                    usersContainer.insertAdjacentHTML("beforeend", user);
+                                                    let userBtn = document.querySelector("." + lastUser.nickname);
+                        
+                                                    setUpOnlineUserBtn(userBtn);
+                                                    setProfilePicture(userBtn, lastUser.nickname);
+                        
+                                                }*/
 
                     });
 
@@ -345,25 +348,26 @@ function getLatestHistory() {
             .then(response => response.json())
             .then(message => {
                 message.forEach((msg) => {
-                    if (msg.type === "newUser") {
-                        let welcomeMsg = "<div class='event-message-container'><div class='event-message  login-event'> " + msg.content + "</div></div>";
-                        messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
-                    }
-                    if (msg.type === "Leave" || msg.type === "kick") {
-                        let disconnectedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + msg.content + "</div></div>";
-                        messageContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
-                    }
-
-
-                    if (msg.type === "update" && msg.sender != msg.content) {
-                        let updateMsg = "<div class='event-message-container'> <div class='event-message  login-event'>" + msg.sender + " changed his name to: " + msg.content + "</div></div>";
-                        messageContainer.insertAdjacentHTML("beforeend", updateMsg);
-                    }
-
-
-                    if (msg.type === "message") {
-                      messageContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
-                    }
+                    /* if (msg.type === "newUser") {
+                         let welcomeMsg = "<div class='event-message-container'><div class='event-message  login-event'> " + msg.content + "</div></div>";
+                         messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
+                     }
+                     if (msg.type === "Leave" || msg.type === "kick") {
+                         let disconnectedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + msg.content + "</div></div>";
+                         messageContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
+                     }
+ 
+ 
+                     if (msg.type === "update" && msg.sender != msg.content) {
+                         let updateMsg = "<div class='event-message-container'> <div class='event-message  login-event'>" + msg.sender + " changed his name to: " + msg.content + "</div></div>";
+                         messageContainer.insertAdjacentHTML("beforeend", updateMsg);
+                     }
+ 
+ 
+                     if (msg.type === "message") {
+                       messageContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
+                     }*/
+                    messageContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
                 });
             });
 
@@ -390,24 +394,25 @@ function getFullPublicHistory() {
         .then(response => response.json())
         .then(message => {
             message.forEach((msg) => {
-                if (msg.type === "newUser") {
-                    let welcomeMsg = "<div class='event-message-container'><div class='event-message  login-event'> " + msg.content + "</div></div>";
-                    historyContainer.insertAdjacentHTML("beforeend", welcomeMsg);
-                }
-                if (msg.type === "Leave" || msg.type === "kick") {
-                    let disconnectedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + msg.content + "</div></div>";
-                    historyContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
-                }
-
-                if (msg.type === "update") {
-                    let updateMsg = "<div class='event-message-container'> <div class='event-message  login-event'>" + msg.sender + " changed his name to: " + msg.content + "</div></div>";
-                    messageContainer.insertAdjacentHTML("beforeend", updateMsg);
-                }
-
-                if (msg.type === "message") {
-                   
-                    historyContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
-                }
+                /*  if (msg.type === "newUser") {
+                      let welcomeMsg = "<div class='event-message-container'><div class='event-message  login-event'> " + msg.content + "</div></div>";
+                      historyContainer.insertAdjacentHTML("beforeend", welcomeMsg);
+                  }
+                  if (msg.type === "Leave" || msg.type === "kick") {
+                      let disconnectedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + msg.content + "</div></div>";
+                      historyContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
+                  }
+  
+                  if (msg.type === "update") {
+                      let updateMsg = "<div class='event-message-container'> <div class='event-message  login-event'>" + msg.sender + " changed his name to: " + msg.content + "</div></div>";
+                      messageContainer.insertAdjacentHTML("beforeend", updateMsg);
+                  }
+  
+                  if (msg.type === "message") {
+  
+                      historyContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
+                  }*/
+                historyContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
             });
         });
 }
@@ -428,18 +433,52 @@ function getFullPersonalHistory() {
 
 }
 
-////
+// function for creating message to display
 function prepareMessage(messageData) {
     let completedMessage;
-    if (messageData.sender === userName) {
-        completedMessage = `<div class='message-container revert'><div class='sender'> ${messageData.sender}</div>
+
+    if (messageData.type === "newUser") {
+        completedMessage = "<div class='event-message-container'><div class='event-message  login-event'> " + messageData.content + "</div></div>";
+    }
+    if (messageData.type === "Leave" || messageData.type === "kick") {
+        completedMessage = "<div class='event-message-container'> <div class='event-message  logout-event'>" + messageData.content + "</div></div>";
+    }
+
+    if (messageData.type === "update" && messageData.sender != messageData.content) {
+        completedMessage = "<div class='event-message-container'> <div class='event-message  login-event'>" + messageData.sender + " changed his name to: " + messageData.content + "</div></div>";
+    }
+
+
+    if (messageData.type === "message") {
+
+        if (messageData.sender === userName) {
+            completedMessage = `<div class='message-container revert'><div class='sender'> ${messageData.sender}</div>
                         <div class='message right-msg'><div class='date'>${messageData.date}</div> ${messageData.content}</div></div>`;
 
-    } else {
-        completedMessage = `<div class='message-container'><div class='sender'> ${messageData.sender}</div>
+        } else {
+            completedMessage = `<div class='message-container'><div class='sender'> ${messageData.sender}</div>
                         <div class='message left-msg'><div class='date'> ${messageData.date}</div> ${messageData.content}</div></div>`;
+        }
+
     }
     return completedMessage;
+}
+
+function updateOnlineUserList(userData) {
+    if (userData.nickname !== userName) {
+
+        let user = `<button class='user-container ${userData.nickname}' type='button'>
+                                    <img class='profile-img-online' src= '' alt='Profile Picture'>
+                                    <span class='user'>${userData.nickname}</span>
+                                    <span class='message-counter'>0</span>
+                                    </button >`;
+
+        usersContainer.insertAdjacentHTML("beforeend", user);
+        let userBtn = document.querySelector("." + userData.nickname);
+
+        setUpOnlineUserBtn(userBtn);
+        setProfilePicture(userBtn, userData.nickname);
+    }
 }
 
 ////
