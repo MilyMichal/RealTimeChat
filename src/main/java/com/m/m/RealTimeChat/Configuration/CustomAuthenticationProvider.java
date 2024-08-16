@@ -11,7 +11,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -38,11 +37,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         UserDetails userDetails = appUserDetailService.loadUserByUsername(authentication.getName());
-
-        /*if (!userDetails.getUsername().equals(authentication.getName())) {
-            System.out.println("AUTHENTICATION USERNAME EXCEPTION DEBUG ");
-            throw new UsernameNotFoundException("There is no user with username \"" + authentication.getName() + "\"");
-        }*/
 
         if (onlineUserService.findOnlineUser(userDetails.getUsername()).isPresent()) {
             System.out.println("AUTH DEBUG: AUTHENTICATION FAILED");

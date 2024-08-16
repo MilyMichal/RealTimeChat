@@ -29,8 +29,8 @@ public class ProfileSettingsController {
                                                @RequestParam(required = false) String newPass,
                                                @RequestParam String actualPass) {
 
-            return new ResponseEntity<>(profileSettingsService.updateUserProfile(auth, file, userName, newPass, actualPass), HttpStatus.OK);
-           }
+        return new ResponseEntity<>(profileSettingsService.updateUserProfile(auth, file, userName, newPass, actualPass), HttpStatus.OK);
+    }
 
     @GetMapping("get/{username}")
     public ResponseEntity<Resource> getProfilePic(@PathVariable String username) throws IOException {

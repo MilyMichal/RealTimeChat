@@ -1,4 +1,5 @@
 package com.m.m.RealTimeChat.Services;
+
 import com.m.m.RealTimeChat.Models.SecuredUser;
 import com.m.m.RealTimeChat.Repository.UserRepository;
 
@@ -20,9 +21,9 @@ public class AppUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-               return userRepository.findUserByUserName(username)
-               .map(SecuredUser::new)
-               .orElseThrow(()-> new UsernameNotFoundException("There is no user with username \"" + username + "\""));
+        return userRepository.findUserByUserName(username)
+                .map(SecuredUser::new)
+                .orElseThrow(() -> new UsernameNotFoundException("There is no user with username \"" + username + "\""));
     }
 
     @Override

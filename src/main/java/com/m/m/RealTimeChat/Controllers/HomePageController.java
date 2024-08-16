@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomePageController {
 
 
-@GetMapping
+    @GetMapping
     public String home() {
 
-    return "HomePage";
-}
+        return "HomePage";
+    }
 
 }

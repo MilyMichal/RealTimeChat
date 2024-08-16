@@ -2,7 +2,6 @@ package com.m.m.RealTimeChat.Services;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.data.repository.query.parser.Part;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,10 +51,10 @@ public class ProfileSettingsService {
             } else {
                 String pathForDatabase = userStorageService.getUser(auth.getName()).getProfilePic();
 
-                System.out.println("UPDATE DEBUG : PATH FOR DATABASE " + pathForDatabase);
+                /*System.out.println("UPDATE DEBUG : PATH FOR DATABASE " + pathForDatabase);*/
                 if (!userName.equals(auth.getName())) {
-                    if(isNewUsernameTaken(userName)) {
-                        message.put("message","Username is already taken");
+                    if (isNewUsernameTaken(userName)) {
+                        message.put("message", "Username is already taken");
                     } else {
                         if (!newPass.isEmpty() && userStorageService.isNewPassNotDifferent(newPass, actualPass)) {
                             message.put("message", "new password must be different from actual");
@@ -64,7 +64,7 @@ public class ProfileSettingsService {
                             }
                             if (auth.isAuthenticated()) {
 
-                                System.out.println("DEBUG AUTH BEFORE CHANGE: " + SecurityContextHolder.getContext().getAuthentication().getName());
+                                /*System.out.println("DEBUG AUTH BEFORE CHANGE: " + SecurityContextHolder.getContext().getAuthentication().getName());*/
                                 UserDetails currentUserDetails = (UserDetails) auth.getPrincipal();
                                 UserDetails updatedUserDetails = User.builder()
                                         .username(userName.isEmpty() ? auth.getName() : userName)
@@ -78,11 +78,11 @@ public class ProfileSettingsService {
                                     File newFolder = new File(currentFolder.getParent(), userName);
                                     if (currentFolder.exists()) {
                                         renamed = currentFolder.renameTo(newFolder);
-                                        System.out.println("DEBUG - WAS FOLDER RENAMED: " + renamed);
+                                        /*System.out.println("DEBUG - WAS FOLDER RENAMED: " + renamed);*/
                                         Path newPath = Paths.get(newFolder.getPath(), currPic);
 
                                         pathForDatabase = newPath.toString();
-                                        System.out.println("NEW PATH FOR DB DEBUG: " + pathForDatabase);
+                                        /*System.out.println("NEW PATH FOR DB DEBUG: " + pathForDatabase);*/
                                     }
 
                                     message.put("newUserName", userName);
@@ -94,14 +94,17 @@ public class ProfileSettingsService {
                                         byte[] bytes = file.getBytes();
                                         Path path = Paths.get(IMAGE_FOLDER, renamed ? userName : auth.getName(), file.getOriginalFilename());
                                         Files.createDirectories(path.getParent());
-                                        System.out.println("PATH DEBUG: " + path);
+                                        /*System.out.println("PATH DEBUG: " + path);*/
                                         File userDirectory = new File(String.valueOf(path.toFile().getParent()));
-                                        System.out.println("DIRECTORY DEBUG :" + userDirectory.getName());
+                                        /*System.out.println("DIRECTORY DEBUG :" + userDirectory.getName())*/;
                                         if (userDirectory.exists() && userDirectory.isDirectory()) {
                                             File[] files = userDirectory.listFiles();
                                             if (files != null) {
                                                 for (File picture : files) {
-                                                    System.out.println("Picture: " + picture.getName() + "was deleted: " + picture.delete());
+                                                   /* System.out.println("Picture: " + picture.getName() + "was deleted: " + picture.delete());*/
+                                                    if(!picture.delete()) {
+                                                        throw new FileSystemException(picture.getName() + " cannot be deleted!");
+                                                    }
                                                 }
                                             }
                                         }
@@ -122,7 +125,7 @@ public class ProfileSettingsService {
                                 Authentication newAuthentication = new UsernamePasswordAuthenticationToken(updatedUserDetails, auth.getCredentials(), updatedUserDetails.getAuthorities());
                                 SecurityContextHolder.getContext().setAuthentication(newAuthentication);
 
-                                System.out.println("DEBUG AUTH AFTER CHANGE " + SecurityContextHolder.getContext().getAuthentication().getName());
+                                /*System.out.println("DEBUG AUTH AFTER CHANGE " + SecurityContextHolder.getContext().getAuthentication().getName());*/
                             }
                         }
                     }
@@ -137,9 +140,9 @@ public class ProfileSettingsService {
     public Resource loadImage(String name) throws IOException {
         String picURL = userStorageService.getUser(name).getProfilePic();
         Path path = Path.of(picURL);
-        System.out.println("PATH DEBUG: " + path);
+        /*System.out.println("PATH DEBUG: " + path);*/
         if (Files.exists(path)) {
-            System.out.println("FOUND DEBUG: " + Files.exists(path));
+            /*System.out.println("FOUND DEBUG: " + Files.exists(path));*/
             return new UrlResource(path.toUri());
 
         }

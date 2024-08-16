@@ -11,7 +11,7 @@ function onMessageReceived(payload) {
     if (message.type) {
         if (message.type === "Leave") {
 
-              messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
+            messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
             if (usersContainer.querySelector(`.${message.sender}`)) {
                 usersContainer.querySelector(`.${message.sender}`).remove();
             }
@@ -34,7 +34,7 @@ function onMessageReceived(payload) {
             removeUserFromSelect(message.sendTo, bannedUsers);
         }
 
-        
+
 
         if (message.type === "update") {
             console.log("userName before updatemsg: " + userName);
@@ -136,7 +136,7 @@ function onMessageReceived(payload) {
 
                         data.forEach(onlineUser => {
                             updateOnlineUserList(onlineUser);
-                  
+
                         });
 
                     });
@@ -149,7 +149,7 @@ function onMessageReceived(payload) {
                     .then(data => {
                         let lastUser = data[data.length - 1];
                         updateOnlineUserList(lastUser);
-                     
+
                     });
 
 
@@ -168,10 +168,9 @@ function onMessageReceived(payload) {
 
 //Kick selected user from chat
 function kickUser() {
+    var select = document.getElementById("online-users").value;
+    if (select != 0) {
 
-    if (select != "0") {
-        var select = document.getElementById("online-users").value;
-        /* let date = new Date().toLocaleString();*/
         stompClient.send("/app/chat", {}, JSON.stringify(
             {
                 sender: 'admin',
@@ -183,12 +182,12 @@ function kickUser() {
         );
         removeUserFromSelect(select, onlineUsers);
     }
-    
+
 }
 
 // remove kicked user from option list
 function removeUserFromSelect(user, options) {
-    /*var options = select.options;*/
+
     for (var i = 0; i < options.length; i++) {
         if (options[i].value === user) {
             options.remove(i);
@@ -209,10 +208,7 @@ function addUserToSelect(user, options) {
 function banUser() {
     var select = document.getElementById("online-users").value;
     if (select != "0") {
-        /* let date = new Date().toLocaleString();*/
-        /*date.setMinutes(date.getMinutes() + 1);
-        let banExp = date.toLocaleString();
-*/
+
         stompClient.send("/app/chat", {}, JSON.stringify(
             {
                 sender: 'admin',
@@ -229,7 +225,7 @@ function banUser() {
 function unBanUser() {
     var select = document.getElementById("banned-users").value;
     if (select != "0") {
-        /* let date = new Date().toLocaleString();*/
+
         stompClient.send("/app/chat", {}, JSON.stringify(
             {
                 sender: 'admin',

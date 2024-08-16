@@ -9,24 +9,22 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface MessageRepository extends JpaRepository<Message,Long> {
-    @Query(value = "SELECT * FROM (SELECT * FROM messages WHERE send_to = 'public' ORDER BY date DESC LIMIT 15) subquery ORDER BY date ASC",nativeQuery = true)
+public interface MessageRepository extends JpaRepository<Message, Long> {
+    @Query(value = "SELECT * FROM (SELECT * FROM messages WHERE send_to = 'public' ORDER BY date DESC LIMIT 15) subquery ORDER BY date ASC", nativeQuery = true)
     List<Message> findLatestPublicMessages();
-    /*@Query(value = "SELECT * FROM messages WHERE send_to = 'public' ORDER BY date DESC LIMIT 15",nativeQuery = true)
-    List<Message> findLatestPublicMessages();
-*/
-    @Query(value = "SELECT * FROM messages WHERE send_to = 'public'",nativeQuery = true)
+
+    @Query(value = "SELECT * FROM messages WHERE send_to = 'public'", nativeQuery = true)
     List<Message> findAllPublicMessages();
 
-    @Query(value = "SELECT * FROM messages WHERE send_to = :to AND sender = :from OR send_to = :from AND sender = :to",nativeQuery = true)
+    @Query(value = "SELECT * FROM messages WHERE send_to = :to AND sender = :from OR send_to = :from AND sender = :to", nativeQuery = true)
     List<Message> findAllPrivateMessages(@Param("to") String sendTo, @Param("from") String sender);
 
-    @Query(value = "SELECT * FROM (SELECT * FROM messages WHERE send_to = :to AND sender = :from OR send_to = :from AND sender = :to ORDER BY date DESC LIMIT 15) subquery ORDER BY date ASC ",nativeQuery = true)
+    @Query(value = "SELECT * FROM (SELECT * FROM messages WHERE send_to = :to AND sender = :from OR send_to = :from AND sender = :to ORDER BY date DESC LIMIT 15) subquery ORDER BY date ASC ", nativeQuery = true)
     List<Message> findLatestPrivateMessages(@Param("to") String sendTo, @Param("from") String sender);
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE messages SET sender = CASE WHEN sender = :oldName THEN :newName ELSE sender END, send_to = CASE WHEN send_to = :oldName THEN :newName ELSE send_to END WHERE sender = :oldName OR send_to = :oldName " +
+    @Query(value = "UPDATE messages SET sender = CASE WHEN sender = :oldName AND type != 'update' THEN :newName ELSE sender END, send_to = CASE WHEN send_to = :oldName AND type != 'update' THEN :newName ELSE send_to END WHERE sender = :oldName OR send_to = :oldName " +
             ";UPDATE online_users SET nickname = :newName WHERE nickname = :oldName",nativeQuery = true)
     void updateHistory (@Param("oldName") String oldName, @Param("newName") String newName);
 

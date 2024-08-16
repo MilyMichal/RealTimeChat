@@ -7,4 +7,3 @@ public class AccountAlreadyLoggedInException extends AccountStatusException {
         super(msg);
     }
 }
-;

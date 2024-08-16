@@ -30,11 +30,11 @@ public class OnlineUserService {
 
     public void removeOnlineUser(String name) {
         OnlineUser user = onlineUserRepository.findOnlineUserByNickname(name)
-                .orElseThrow(()-> new UsernameNotFoundException("Not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("Not found"));
         onlineUserRepository.delete(user);
     }
 
     public Optional<OnlineUser> findOnlineUser(String name) {
-            return onlineUserRepository.findOnlineUserByNickname(name);
+        return onlineUserRepository.findOnlineUserByNickname(name);
     }
 }

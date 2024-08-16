@@ -1,6 +1,5 @@
 package com.m.m.RealTimeChat.Services;
 
-import com.m.m.RealTimeChat.Models.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -38,15 +37,15 @@ public class AdminService {
 
     @Scheduled(cron = "0 * * * * *")
     public void checkBanExpired() {
-        System.out.println("BAN SCHEDULED CHECK");
+        /*System.out.println("BAN SCHEDULED CHECK");*/
         userStorageService.getBannedUsers().forEach(bannedUser -> {
             if (bannedUser.getBanExpiration().isBefore(LocalDateTime.now())) {
                 userStorageService.unBanUser(bannedUser.getUserName());
                 Map<String, String> message = new HashMap<>();
                 message.put("type", "BanExpired");
                 message.put("sendTo", bannedUser.getUserName());
-                messagingTemplate.convertAndSend("/topic/chat",message);
-        }
+                messagingTemplate.convertAndSend("/topic/chat", message);
+            }
         });
 
 

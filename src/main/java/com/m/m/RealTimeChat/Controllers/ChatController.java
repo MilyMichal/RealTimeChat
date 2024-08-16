@@ -23,7 +23,7 @@ public class ChatController {
     }
 
     @GetMapping
-    public String openChat(Model model, /*HttpServletRequest request,*/ Authentication authentication) {
+    public String openChat(Model model, Authentication authentication) {
         model.addAttribute("user", authentication.getName());
         model.addAttribute("usersList",userStorageService.getUsersList(authentication.getName()));
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equalsIgnoreCase("admin"))) {

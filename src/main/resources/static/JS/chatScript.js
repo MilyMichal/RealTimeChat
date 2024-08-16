@@ -444,9 +444,11 @@ function prepareMessage(messageData) {
         completedMessage = "<div class='event-message-container'> <div class='event-message  logout-event'>" + messageData.content + "</div></div>";
     }
 
-    if (messageData.type === "update" && messageData.sender != messageData.content) {
+    if (messageData.type === "update" /*&& messageData.sender != messageData.content*/) {
         completedMessage = "<div class='event-message-container'> <div class='event-message  login-event'>" + messageData.sender + " changed his name to: " + messageData.content + "</div></div>";
     }
+
+    
 
 
     if (messageData.type === "message") {

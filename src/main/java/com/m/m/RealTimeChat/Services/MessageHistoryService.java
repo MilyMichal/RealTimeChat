@@ -39,6 +39,6 @@ public class MessageHistoryService {
 
     public void updateHistory(String oldName, String newName) {
         System.out.println("HISTORY UPDATE RUN");
-        messageRepository.updateHistory(oldName,newName);
+        messageRepository.updateHistory(oldName, newName);
     }
 }

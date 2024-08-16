@@ -18,7 +18,7 @@ public class OnlineUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column/*(unique = true)*/
+    @Column
     private String nickname;
 
     public OnlineUser(String name ) {

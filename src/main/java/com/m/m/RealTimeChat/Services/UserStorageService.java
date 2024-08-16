@@ -25,7 +25,7 @@ public class UserStorageService {
 
     @Transactional
     public void saveUserToStorage(User user) {
-        System.out.println("SAVE USER TO STORAGE DEBUG");
+        /*System.out.println("SAVE USER TO STORAGE DEBUG");*/
         if (user != null) {
             user.setProfilePic("ProfilePic/defaultPic.jpg");
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -42,8 +42,9 @@ public class UserStorageService {
     public List<String> getUsersList(String user) {
         return userRepository.findRawUsernameList(user);
     }
+
     public List<String> getAllUsers() {
-       return userRepository.findAllUsersNames();
+        return userRepository.findAllUsersNames();
     }
 
     public void removeUserFromStorage(User user) {
@@ -54,7 +55,7 @@ public class UserStorageService {
 
     public void banUser(String user, LocalDateTime banExp) {
 
-        System.out.println("BANNED DEBUG: user " + user + " is BANNED!");
+        /*System.out.println("BANNED DEBUG: user " + user + " is BANNED!");*/
         User banndedUser = userRepository.findUserByUserName(user).orElseThrow(() -> new UsernameNotFoundException("User doesn't exist"));
         banndedUser.setNonBanned(false);
         banndedUser.setBanExpiration(banExp);

@@ -1,7 +1,6 @@
 package com.m.m.RealTimeChat.Configuration;
 
 import com.m.m.RealTimeChat.Services.AppUserDetailService;
-import com.m.m.RealTimeChat.Services.OnlineUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -10,9 +9,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.SecurityFilterChain;
 
 import org.springframework.security.web.authentication.logout.LogoutHandler;
@@ -84,10 +80,10 @@ public class SecurityConfig {
         return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
     }
 
-    @Bean
+/*    @Bean
     public SessionRegistry sessionRegistry() {
         return new SessionRegistryImpl();
-    }
+    }*/
 
 
     @Bean

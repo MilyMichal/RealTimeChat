@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -40,7 +39,7 @@ public class CustomLogoutHandler implements LogoutHandler {
 
         synchronized (lock) {
 
-            System.out.println("DEBUG CUSTOM LOGOUT");
+            /*System.out.println("DEBUG CUSTOM LOGOUT");*/
             if (authentication != null) {
                 String user = authentication.getName();
                 Map<String, String> message = new HashMap<>();
@@ -63,8 +62,7 @@ public class CustomLogoutHandler implements LogoutHandler {
                 if (onlineUserService.findOnlineUser(user).isPresent()) {
                     onlineUserService.removeOnlineUser(user);
                 }
-                //SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
-                //authentication.setAuthenticated(false);
+
             }
 
         }

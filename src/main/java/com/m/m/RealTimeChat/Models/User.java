@@ -1,6 +1,6 @@
 package com.m.m.RealTimeChat.Models;
 
-import jakarta.annotation.Nonnull;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,15 +23,12 @@ public class User implements Serializable {
     @Column(unique = true)
     String userName;
 
-    @Column
     String password;
 
     @Column(unique = true)
     String email;
 
-    @Column
     String roles;
-
 
     @Column(name = "pictureURL")
     String profilePic;
