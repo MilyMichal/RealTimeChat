@@ -472,6 +472,26 @@ button img {
     color: darkgrey;
 }
 
+.delete-modal-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 400px;
+    width: 70%;
+    height:70%;
+    min-height: 50px;
+    max-height: 200px;
+    border-radius: 15px;
+    background-image: linear-gradient(to right, #22333B, #2a414b );
+    margin: auto;
+    padding: 5px;
+    font-family: "Poetsen One", sans-serif;
+    font-weight: 100;
+    font-size: 14px;
+    color: darkgrey;
+}
+
+
 .history-modal-content {
     display: flex;
     flex-direction: column;
@@ -511,6 +531,17 @@ button img {
     justify-content: space-around;
     align-items: center;
     height: 90%;
+    width: 100%;
+    background-color: rgb(0,0,0,0.2);
+    padding: 5px 0px;
+}
+
+.delete-window {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
     width: 100%;
     background-color: rgb(0,0,0,0.2);
     padding: 5px 0px;
@@ -645,17 +676,17 @@ option {
     top: 3px;
 }
 
-#new-pass-input, #name-input, #act-pass-input {
+#new-pass-input, #name-input, #act-pass-input,#pass-confirm-input {
     padding: 3px 6px;
     background-color: #2a414a;
     border: none;
 }
 
-#new-pass-input, #name-input, #act-pass-input {
+/*#new-pass-input, #name-input, #act-pass-input {
     padding: 3px 6px;
     background-color: #2a414a;
     border: none;
-}
+}*/
 
 label {
     font-size: 13px;

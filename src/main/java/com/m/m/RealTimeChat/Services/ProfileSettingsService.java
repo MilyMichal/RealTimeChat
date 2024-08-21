@@ -32,6 +32,13 @@ public class ProfileSettingsService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public boolean deleteUserProfile(String userName, String pass) {
+        if (!userStorageService.confirmActualPassword(userName, pass)) {
+            return false;
+        }
+        return userStorageService.removeUserFromStorage(userName);
+    }
+
 
     public Map<String, String> updateUserProfile(Authentication auth,
                                                  MultipartFile file,
@@ -96,13 +103,14 @@ public class ProfileSettingsService {
                                         Files.createDirectories(path.getParent());
                                         /*System.out.println("PATH DEBUG: " + path);*/
                                         File userDirectory = new File(String.valueOf(path.toFile().getParent()));
-                                        /*System.out.println("DIRECTORY DEBUG :" + userDirectory.getName())*/;
+                                        /*System.out.println("DIRECTORY DEBUG :" + userDirectory.getName())*/
+
                                         if (userDirectory.exists() && userDirectory.isDirectory()) {
                                             File[] files = userDirectory.listFiles();
                                             if (files != null) {
                                                 for (File picture : files) {
-                                                   /* System.out.println("Picture: " + picture.getName() + "was deleted: " + picture.delete());*/
-                                                    if(!picture.delete()) {
+                                                    /* System.out.println("Picture: " + picture.getName() + "was deleted: " + picture.delete());*/
+                                                    if (!picture.delete()) {
                                                         throw new FileSystemException(picture.getName() + " cannot be deleted!");
                                                     }
                                                 }

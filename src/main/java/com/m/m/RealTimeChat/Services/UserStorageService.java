@@ -47,10 +47,10 @@ public class UserStorageService {
         return userRepository.findAllUsersNames();
     }
 
-    public void removeUserFromStorage(User user) {
-        if (userRepository.exists(Example.of(user))) {
-            userRepository.delete(user);
-        }
+    public boolean removeUserFromStorage(String user) {
+        User userToDelete = userRepository.findUserByUserName(user).orElseThrow(()-> new UsernameNotFoundException("User doesn't exist"));
+        userRepository.delete(userToDelete);
+        return userRepository.findUserByUserName(user).isEmpty();
     }
 
     public void banUser(String user, LocalDateTime banExp) {

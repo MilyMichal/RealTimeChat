@@ -51,7 +51,8 @@
                 <input id="fileData" type="file" name="file" style="visibility:hidden; position:absolute">
                 <button class="button-basic rnd-brd-10" type="submit">Update profile</button>
                 <div class="response" style="font-size: 12px"></div>
-
+                <!--<button class="button-basic rnd-brd-10" type="button" onclick="deleteProfile()">Delete profile</button>-->
+                <input class="button-basic rnd-brd-10" type="button" value="Delete profile" onclick="openSelectedModal('delete-mod')">
             </div>
         </form>
 
@@ -77,6 +78,27 @@
         </form>
 
     </div>
+    <div class="modal delete-mod" style="display:none">
+        <form class="delete-modal-content" id="delete-profile-form">
+            <div class="modal-header head-font rnd-brd-15t">
+            Profile DELETE
+            </div>
+            <div class="delete-window rnd-brd-15b">
+               <p style="padding:5px; text-align: center; margin: 0px;">
+                   Please type your current password and press delete button. Your account will be deleted.
+               </p>
+                <div style="padding:5px; text-align: center; margin: 10Opx 30px; color:red;">
+                    This action cannot be undone!</div>
+
+
+                   <input id="pass-confirm-input" class="rnd-brd-10" type="password" name="actualPass"
+                       placeholder="Actual password" required>
+                <button class="button-basic rnd-brd-10" type="submit">Delete profile</button>
+            </div>
+
+        </form>
+    </div>
+
     <div class="chat-main-windows">
 
         <!--<div class="chat">-->

@@ -1,4 +1,5 @@
 
+/*const URL = "http://localhost:28852/";*/
 let inputContainer = document.querySelector(".inputContainer");
 let chatScreen = document.querySelector(".chat");
 let msgInputWindow = document.getElementById("input-msg");
@@ -7,6 +8,8 @@ let chatWithElement = document.getElementById("chat-with");
 let usersContainer = document.getElementById("users");
 let publicBtn = document.getElementById("public-chat-btn");
 let historyContainer = document.querySelector(".history-window");
+
+let deleteProfileModal = document.querySelector('.modal.delete-mod');
 
 let emojiPicker = document.getElementById('emoji-win');
 
@@ -546,6 +549,14 @@ window.onclick = function (event) {
         emojiPicker.classList.add('emojiHidden');
     }
 
+    ///
+    if (event.target.matches('.modal.delete-mod') ) {
+        console.log("TRIGGERED");
+        deleteProfileModal.style.display = "none";
+    }
+    ///
+
+
     if (!event.target.matches('.dropbtn')) {
         var dropupMenu = document.getElementById("dropupMenu");
 
@@ -554,7 +565,7 @@ window.onclick = function (event) {
             dropupMenu.classList.remove('show');
         }
     }
-    if (event.target.matches('.modal')) {
+    if (event.target.matches('.modal') && !event.target.matches('.modal.delete-mod')) {
         var modals = document.getElementsByClassName("modal");
         Array.prototype.forEach.call(modals, function (modal) {
             if (modal.style.display == "block") {
@@ -619,6 +630,25 @@ function handleFiles(files) {
 
 }
 //#endregion
+
+//#region DeleteProfileUpdate
+document.getElementById("delete-profile-form").addEventListener("submit", function (event) {
+    event.preventDefault();
+    console.log("CLICKED DELETE PROFILE BUTTON")
+    const formData = new FormData(this);
+    fetch("http://localhost:28852/profile/delete", { method: 'POST', body: formData })
+        .then(response => {
+            if (response.ok) {
+                alert("Your account was deleted!");
+                logOutUser();
+            } else {
+                alert("PRODILE NOT DELETED");
+            }
+        });
+});
+
+//#endregion
+
 
 //#region SubmitProfileUpdate
 document.getElementById("profile-update-form").addEventListener("submit", function (event) {
@@ -730,6 +760,23 @@ function setProfilePicture(button, nickname) {
             console.error('Error fetching image:', error);
         });
 }
+
+
+///
+function deleteProfile() {
+    fetch("http://localhost:28852/profile/" + "delete", { method: 'DELETE' }).then(response => {
+        if (response.ok) {
+            alert("Your account was deleted!");
+            logOutUser();
+        } else {
+            alert("PRODILE NOT DELETED");
+        }
+               
+    });
+
+}
+
+///
 
 
 
