@@ -38,8 +38,8 @@ public class ProfileSettingsService {
         if (!userStorageService.confirmActualPassword(userName, pass)) {
             return new ResponseEntity<>("incorrect password", HttpStatus.BAD_REQUEST);
         }
-        if (userStorageService.removeUserFromStorage(userName)){
-            return new ResponseEntity<>("Your profile was deleted!",HttpStatus.OK);
+        if (userStorageService.removeUserFromStorage(userName)) {
+            return new ResponseEntity<>("Your profile was deleted!", HttpStatus.OK);
         }
         return new ResponseEntity<>("Profile cannot be deleted", HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -63,7 +63,6 @@ public class ProfileSettingsService {
             } else {
                 String pathForDatabase = userStorageService.getUser(auth.getName()).getProfilePic();
 
-                /*System.out.println("UPDATE DEBUG : PATH FOR DATABASE " + pathForDatabase);*/
                 if (!userName.equals(auth.getName())) {
                     if (isNewUsernameTaken(userName)) {
                         message.put("message", "Username is already taken");
@@ -76,7 +75,6 @@ public class ProfileSettingsService {
                             }
                             if (auth.isAuthenticated()) {
 
-                                /*System.out.println("DEBUG AUTH BEFORE CHANGE: " + SecurityContextHolder.getContext().getAuthentication().getName());*/
                                 UserDetails currentUserDetails = (UserDetails) auth.getPrincipal();
                                 UserDetails updatedUserDetails = User.builder()
                                         .username(userName.isEmpty() ? auth.getName() : userName)
@@ -90,11 +88,10 @@ public class ProfileSettingsService {
                                     File newFolder = new File(currentFolder.getParent(), userName);
                                     if (currentFolder.exists()) {
                                         renamed = currentFolder.renameTo(newFolder);
-                                        /*System.out.println("DEBUG - WAS FOLDER RENAMED: " + renamed);*/
+
                                         Path newPath = Paths.get(newFolder.getPath(), currPic);
 
                                         pathForDatabase = newPath.toString();
-                                        /*System.out.println("NEW PATH FOR DB DEBUG: " + pathForDatabase);*/
                                     }
 
                                     message.put("newUserName", userName);
@@ -106,15 +103,15 @@ public class ProfileSettingsService {
                                         byte[] bytes = file.getBytes();
                                         Path path = Paths.get(IMAGE_FOLDER, renamed ? userName : auth.getName(), file.getOriginalFilename());
                                         Files.createDirectories(path.getParent());
-                                        /*System.out.println("PATH DEBUG: " + path);*/
+
                                         File userDirectory = new File(String.valueOf(path.toFile().getParent()));
-                                        /*System.out.println("DIRECTORY DEBUG :" + userDirectory.getName())*/
+
 
                                         if (userDirectory.exists() && userDirectory.isDirectory()) {
                                             File[] files = userDirectory.listFiles();
                                             if (files != null) {
                                                 for (File picture : files) {
-                                                    /* System.out.println("Picture: " + picture.getName() + "was deleted: " + picture.delete());*/
+
                                                     if (!picture.delete()) {
                                                         throw new FileSystemException(picture.getName() + " cannot be deleted!");
                                                     }
@@ -138,7 +135,6 @@ public class ProfileSettingsService {
                                 Authentication newAuthentication = new UsernamePasswordAuthenticationToken(updatedUserDetails, auth.getCredentials(), updatedUserDetails.getAuthorities());
                                 SecurityContextHolder.getContext().setAuthentication(newAuthentication);
 
-                                /*System.out.println("DEBUG AUTH AFTER CHANGE " + SecurityContextHolder.getContext().getAuthentication().getName());*/
                             }
                         }
                     }

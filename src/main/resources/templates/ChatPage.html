@@ -3,8 +3,8 @@
 <head>
     <!-- <meta charset="utf-8">-->
     <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
-    <!--<link rel="stylesheet" type="text/css" th:href="@{CSS/chat_style.css}">-->
-    <link rel="stylesheet" type="text/css" href="/static/CSS/chat_style.css">
+    <link rel="stylesheet" type="text/css" th:href="@{CSS/chat_style.css}">
+    <!--<link rel="stylesheet" type="text/css" href="/static/CSS/chat_style.css">-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Caveat">
 
@@ -40,14 +40,14 @@
                 <label for="drop">Upload new image</label>
                 <div class="drag-and-drop">
                     <div id="drop" class="drop-area">
-                        Drag your profile picture HERE
+                        Drag your profile picture HERE <br> Max size of picture: 2MB
                     </div>
                 </div>
 
                 <label for="act-pass-input">Confirm actual password<br></label>
                 <input id="act-pass-input" class="rnd-brd-10" type="password" name="actualPass"
                        placeholder="Actual password" required>
-                <input id="fileData" type="file" name="file" style="visibility:hidden; position:absolute">
+                <input id="fileData" type="file" name="file"  style="visibility:hidden; position:absolute">
                 <button class="button-basic rnd-brd-10" type="submit">Update profile</button>
                 <div class="response" style="font-size: 12px"></div>
                 <input class="button-basic rnd-brd-10" type="button" value="Delete profile" onclick="openSelectedModal('delete-mod')">

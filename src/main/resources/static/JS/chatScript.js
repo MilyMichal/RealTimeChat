@@ -451,18 +451,27 @@ function prepareMessage(messageData) {
         completedMessage = "<div class='event-message-container'> <div class='event-message  login-event'>" + messageData.sender + " changed his name to: " + messageData.content + "</div></div>";
     }
 
-
-
-
-    if (messageData.type === "message") {
-
-        if (messageData.sender === userName) {
+    /*
+     if (messageData.sender === userName) {
             completedMessage = `<div class='message-container revert'><div class='sender'> ${messageData.sender}</div>
                         <div class='message right-msg'><div class='date'>${messageData.date}</div> ${messageData.content}</div></div>`;
 
         } else {
             completedMessage = `<div class='message-container'><div class='sender'> ${messageData.sender}</div>
                         <div class='message left-msg'><div class='date'> ${messageData.date}</div> ${messageData.content}</div></div>`;
+        }
+    */
+
+
+    if (messageData.type === "message") {
+
+        if (messageData.sender === userName) {
+            completedMessage = `<div class='message-container revert'><div class='sender'> ${messageData.sender}<div class='date'>${messageData.date}</div></div>
+                        <div class='message right-msg'> ${messageData.content}</div></div>`;
+
+        } else {
+            completedMessage = `<div class='message-container'><div class='sender'> ${messageData.sender}<div class='date'> ${messageData.date}</div></div>
+                        <div class='message left-msg'> ${messageData.content}</div></div>`;
         }
 
     }
@@ -616,24 +625,28 @@ function handleDrop(ev) {
 
     let files = dataTrans.files;
 
+   
     handleFiles(files);
 }
 
 function handleFiles(files) {
     let file = files[0];
-    let reader = new FileReader();
-    document.getElementById("fileData").files = files;
+    if (file.size > 2 * 1024 * 1024) {
+        alert("Picture is too big");
+    } else {
+        let reader = new FileReader();
+        document.getElementById("fileData").files = files;
 
-    reader.onload = function (e) {
-        let img = document.createElement("img");
-        img.src = e.target.result;
-        img.style.maxWidth = "100%";
-        img.style.maxHeight = "100%";
-        dragAndDrop.innerHTML = "";
-        dragAndDrop.appendChild(img);
-    };
-    reader.readAsDataURL(file);
-
+        reader.onload = function (e) {
+            let img = document.createElement("img");
+            img.src = e.target.result;
+            img.style.maxWidth = "100%";
+            img.style.maxHeight = "100%";
+            dragAndDrop.innerHTML = "";
+            dragAndDrop.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    }
 }
 //#endregion
 

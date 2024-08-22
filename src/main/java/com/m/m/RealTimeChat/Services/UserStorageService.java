@@ -55,7 +55,6 @@ public class UserStorageService {
 
     public void banUser(String user, LocalDateTime banExp) {
 
-        /*System.out.println("BANNED DEBUG: user " + user + " is BANNED!");*/
         User banndedUser = userRepository.findUserByUserName(user).orElseThrow(() -> new UsernameNotFoundException("User doesn't exist"));
         banndedUser.setNonBanned(false);
         banndedUser.setBanExpiration(banExp);
