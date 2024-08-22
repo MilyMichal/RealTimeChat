@@ -2,6 +2,8 @@ package com.m.m.RealTimeChat.Services;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,11 +34,14 @@ public class ProfileSettingsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public boolean deleteUserProfile(String userName, String pass) {
+    public ResponseEntity<?> deleteUserProfile(String userName, String pass) {
         if (!userStorageService.confirmActualPassword(userName, pass)) {
-            return false;
+            return new ResponseEntity<>("incorrect password", HttpStatus.BAD_REQUEST);
         }
-        return userStorageService.removeUserFromStorage(userName);
+        if (userStorageService.removeUserFromStorage(userName)){
+            return new ResponseEntity<>("Your profile was deleted!",HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Profile cannot be deleted", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 

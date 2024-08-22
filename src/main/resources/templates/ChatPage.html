@@ -3,8 +3,8 @@
 <head>
     <!-- <meta charset="utf-8">-->
     <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
-    <link rel="stylesheet" type="text/css" th:href="@{CSS/chat_style.css}">
-    <!--<link rel="stylesheet" type="text/css" href="/static/CSS/chat_style.css">-->
+    <!--<link rel="stylesheet" type="text/css" th:href="@{CSS/chat_style.css}">-->
+    <link rel="stylesheet" type="text/css" href="/static/CSS/chat_style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Caveat">
 
@@ -32,7 +32,6 @@
             <div class="modal-header head-font rnd-brd-15t"> Profile settings
             </div>
             <div class="update-window rnd-brd-15b">
-                <!--<span id="closeBtn" class="close" onclick="closeModal('profile-mod')">&times;</span>-->
                 <label for="name-input">Select new username</label>
                 <input id="name-input" class="rnd-brd-10" type="text" name="userName" placeholder="new user name">
 
@@ -51,7 +50,6 @@
                 <input id="fileData" type="file" name="file" style="visibility:hidden; position:absolute">
                 <button class="button-basic rnd-brd-10" type="submit">Update profile</button>
                 <div class="response" style="font-size: 12px"></div>
-                <!--<button class="button-basic rnd-brd-10" type="button" onclick="deleteProfile()">Delete profile</button>-->
                 <input class="button-basic rnd-brd-10" type="button" value="Delete profile" onclick="openSelectedModal('delete-mod')">
             </div>
         </form>
@@ -60,7 +58,7 @@
     <div class="modal history-mod" style="display:none">
         <form class="history-modal-content" id="history-modal-form">
             <div class="modal-header head-font rnd-brd-15t">
-                <div> <!--class="title"-->Message history </div><br>
+                <div> Message history </div><br>
                 <button class="button-basic rnd-brd-10 PO-ss-400" type="button" onclick="getFullPublicHistory()"> Full
                     public history
                 </button>
@@ -71,8 +69,7 @@
                     <option value="" selected disabled>Select user</option>
                     <option th:each="user : ${usersList}" th:value="${user}" th:text="${user}">
                 </select>
-                <!--<span class="close" onclick="closeModal('history-mod')">&times;</span>-->
-            </div>
+                        </div>
             <div class="history-window rnd-brd-15b"></div>
 
         </form>
@@ -85,14 +82,14 @@
             </div>
             <div class="delete-window rnd-brd-15b">
                <p style="padding:5px; text-align: center; margin: 0px;">
-                   Please type your current password and press delete button. Your account will be deleted.
+                   Please type your current password and press delete button. <b>Your account will be deleted.</b>
                </p>
                 <div style="padding:5px; text-align: center; margin: 10Opx 30px; color:red;">
                     This action cannot be undone!</div>
 
-
                    <input id="pass-confirm-input" class="rnd-brd-10" type="password" name="actualPass"
                        placeholder="Actual password" required>
+                <div class="delete-response" style="font-size: 12px"></div>
                 <button class="button-basic rnd-brd-10" type="submit">Delete profile</button>
             </div>
 
@@ -101,7 +98,7 @@
 
     <div class="chat-main-windows">
 
-        <!--<div class="chat">-->
+
         <div class="online-user-panel">
             <div class="online-users-header head-font rnd-brd-15t">
                 Online users
@@ -135,7 +132,7 @@
             <div id="messages">
 
 
-                <!-- <div class="message-container revert ">
+                 <!--<div class="message-container revert ">
                      <div class="sender"> Askir
                          <img class="profile-img" src="/ProfilePic/defaultPic.jpg" alt="avatar">
                      </div>
@@ -149,17 +146,16 @@
                      </div>
                  </div>
 
+                <div class='message-container revert'><div class='sender'>Azrael<div class='date'>22.8.2024 14:53:32</div></div>
+                    <div class='message right-msg'> POkusssss</div></div>
+
                  <div class="message-container">
                      <div class="sender"> Askir
                          <img class="profile-img" src="/ProfilePic/Azrael/profileImg.jpg" alt="avatar">
                          &lt;!&ndash;<div class="new-date">22.1.2024</div>&ndash;&gt;</div>
                      <div class="message left-msg">
                          <div class="date">22.1.2024</div>
-                         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
-                         laboriosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
-                         in
-                         molestias officia sed sint ullam.
-
+                       :-D
                      </div>
                  </div>
                  &lt;!&ndash;<div class="event-message-container">&ndash;&gt;
@@ -170,8 +166,8 @@
                  &lt;!&ndash;<div class="event-message-container">&ndash;&gt;
                  <div class='event-message login-event'>
                      Skaman just enter the chat.
-                 </div>-->
-
+                 </div>
+-->
 
             </div>
             <div class="inputContainer rnd-brd-15b">
@@ -191,9 +187,6 @@
                     </div>
                 </div>
 
-                <!-- <button type="button" class="settings-btn" onclick="send()" name="settings_btn" >
-
-             </button>-->
                 <textarea id="input-msg" placeholder="Write a message here" maxlength="500"></textarea>
                 <div class="emoji-btn-placeholder" >
                     <button class="emoji-btn" type="button" onclick="showEmojiPicker()">
@@ -214,16 +207,14 @@
             </div>
         </div>
     </div>
-    <!--</div>-->
 
 
-    <!--<input type="button" value="Logout" onclick="logOutUser()">-->
+
+
 </div>
-<!---->
+
 <div id="user-data" th:data-user="${user}"></div>
-<!---->
-<!--<form th:action="@{/logout}" method="post">-->
-<!--</form>-->
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"
         integrity="sha512-aHuAnb+FZ/yM5zYvdiA8q0sxLdsBQ3PRwO8D/08qsenCLQ2gWsosB43Cn1X8esAz0IpaC7Ns5cAPyKIdJQ0hNw=="

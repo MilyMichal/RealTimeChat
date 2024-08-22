@@ -45,9 +45,6 @@ public class ProfileSettingsController {
 
     @PostMapping("/delete")
     public ResponseEntity<?> deleteUserProfile(Authentication auth, @RequestParam String actualPass) {
-        if (profileSettingsService.deleteUserProfile(auth.getName(), actualPass)) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        return profileSettingsService.deleteUserProfile(auth.getName(), actualPass);
     }
 }

@@ -117,7 +117,7 @@ function onMessageReceived(payload) {
 
             /*let disconnectedUser = message.sender;
             let disconnectedMsg = "<div class='event-message-container'> <div class='event-message logout-event'>" + message.content + "</div></div>";*/
-            
+
 
             messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
             if (usersContainer.querySelector(`.${message.sender}`)) {
@@ -451,7 +451,7 @@ function prepareMessage(messageData) {
         completedMessage = "<div class='event-message-container'> <div class='event-message  login-event'>" + messageData.sender + " changed his name to: " + messageData.content + "</div></div>";
     }
 
-    
+
 
 
     if (messageData.type === "message") {
@@ -539,24 +539,28 @@ toggle between hiding and showing the dropdown content */
 function show() {
     document.getElementById("dropupMenu").classList.toggle("show");
 }
+/* Modals open/close settings*/
+//#region ModalsDisplay
 
 // Close the dropdown menu if the user clicks outside of it or close modal if clics outside
 window.onclick = function (event) {
-    /*console.log(event.target);*/
+
+    /* close emoji window when click outside */
     if ((!event.target.matches('.emoji-picker') && !event.target.matches('.emoji-btn')) && emojiPicker.classList.contains('emojiShow')) {
-        /* console.log("off targer");*/
+
         emojiPicker.classList.remove('emojiShow');
         emojiPicker.classList.add('emojiHidden');
     }
 
-    ///
-    if (event.target.matches('.modal.delete-mod') ) {
-        console.log("TRIGGERED");
+    /* close only profile delete window when click outside  */
+    if (event.target.matches('.modal.delete-mod')) {
+        document.getElementById("pass-confirm-input").value = "";
+        document.querySelector('.delete-response').innerHTML = "";
         deleteProfileModal.style.display = "none";
     }
-    ///
 
 
+    /* close dropUp menu when click outside */
     if (!event.target.matches('.dropbtn')) {
         var dropupMenu = document.getElementById("dropupMenu");
 
@@ -565,6 +569,8 @@ window.onclick = function (event) {
             dropupMenu.classList.remove('show');
         }
     }
+
+    /* close any other current open modal */
     if (event.target.matches('.modal') && !event.target.matches('.modal.delete-mod')) {
         var modals = document.getElementsByClassName("modal");
         Array.prototype.forEach.call(modals, function (modal) {
@@ -579,12 +585,12 @@ window.onclick = function (event) {
 }
 
 
-/*Modal display settings */
+/* open selected modal */
 function openSelectedModal(modal) {
     document.querySelector(`.${modal}`).style.display = "block";
 
 }
-
+//#endregion
 
 /*drag and drop area setup*/
 //#region DragAndDrop
@@ -634,17 +640,27 @@ function handleFiles(files) {
 //#region DeleteProfileUpdate
 document.getElementById("delete-profile-form").addEventListener("submit", function (event) {
     event.preventDefault();
-    console.log("CLICKED DELETE PROFILE BUTTON")
     const formData = new FormData(this);
+    let deleteResponse = document.querySelector('.delete-response');
+    deleteResponse.innerHTML = "";
+
     fetch("http://localhost:28852/profile/delete", { method: 'POST', body: formData })
         .then(response => {
+
             if (response.ok) {
-                alert("Your account was deleted!");
+                alert("Your profile was succesfully deleted!");
                 logOutUser();
             } else {
-                alert("PRODILE NOT DELETED");
+                response.text()
+                    .then(errorText => {
+                        deleteResponse.innerHTML = errorText;
+                        deleteResponse.style.color = "#7E102C";
+                    });
+
             }
+
         });
+
 });
 
 //#endregion
@@ -760,23 +776,6 @@ function setProfilePicture(button, nickname) {
             console.error('Error fetching image:', error);
         });
 }
-
-
-///
-function deleteProfile() {
-    fetch("http://localhost:28852/profile/" + "delete", { method: 'DELETE' }).then(response => {
-        if (response.ok) {
-            alert("Your account was deleted!");
-            logOutUser();
-        } else {
-            alert("PRODILE NOT DELETED");
-        }
-               
-    });
-
-}
-
-///
 
 
 
