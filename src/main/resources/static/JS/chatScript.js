@@ -115,10 +115,6 @@ function onMessageReceived(payload) {
     if (message.type) {
         if (message.type === "Leave") {
 
-            /*let disconnectedUser = message.sender;
-            let disconnectedMsg = "<div class='event-message-container'> <div class='event-message logout-event'>" + message.content + "</div></div>";*/
-
-
             messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
             if (usersContainer.querySelector(`.${message.sender}`)) {
                 usersContainer.querySelector(`.${message.sender}`).remove();
@@ -130,7 +126,7 @@ function onMessageReceived(payload) {
                 logOutUser();
                 alert("You have been kicked out by admin!");
             }
-            /*  let kickedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + message.content + "</div></div>";*/
+
             messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
         }
 
@@ -152,7 +148,7 @@ function onMessageReceived(payload) {
             let bannedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + message.content + "</div></div>";
             messageContainer.insertAdjacentHTML("beforeend", bannedMsg);
         }
-        ///
+
         if (message.type === "update-name") {
             console.log("userName before updatemsg: " + userName);
             if (userName === message.sender) {
@@ -204,52 +200,6 @@ function onMessageReceived(payload) {
         }
 
     }
-    ///
-    /*if (message.type === "update") {
-        console.log("userName before updatemsg: " + userName);
-        if (userName === message.sender) {
-
-            if (message.sender !== message.content) {
-                userName = message.content;
-                console.log("userName after updatemsg: " + userName);
-            }
-        } else {
-            let onUserbtn = document.querySelector(`.${message.sender}`);
-            let name = onUserbtn.querySelector(`.user`);
-            if (message.sender !== message.content) {
-
-                Array.from(document.getElementById("user-to-find").options).forEach(option => {
-
-                    if (option.value === message.sender) {
-                        option.value = message.content;
-                        option.text = message.content;
-
-                    }
-                });
-
-                onUserbtn.classList.replace(`${message.sender}`, `${message.content}`);
-
-                name.innerHTML = `${message.content}`;
-                name.classList.replace(`${message.sender}`, `${message.content}`);
-                setProfilePicture(onUserbtn, message.content);
-
-                if (chatWithElement.innerHTML !== "Public chat") {
-                    privateChatWith = message.content;
-                    chatWithElement.innerHTML = "Private chat with: " + message.content;
-                }
-            } else {
-                setProfilePicture(onUserbtn, message.sender);
-            }
-
-
-            console.log("CLEARING MESSAGE WINDOW");
-        }
-
-        messageContainer.innerHTML = "";
-        getLatestHistory();
-
-    }*/
-
 
 
     // displaying newest message
@@ -301,22 +251,7 @@ function onMessageReceived(payload) {
 
                     data.forEach(onlineUser => {
                         updateOnlineUserList(onlineUser);
-                        /* if (onlineUser.nickname !== userName) {
- 
- 
-                             let user = `<button class='user-container ${onlineUser.nickname}' type='button'>
-                                 <img class='profile-img-online' src= '' alt='Profile Picture'>
-                                 <span class='user'>${onlineUser.nickname}</span>
-                                 <span class='message-counter'>0</span>
-                                 </button >`;
- 
-                             usersContainer.insertAdjacentHTML("beforeend", user);
-                             let userBtn = document.querySelector("." + onlineUser.nickname);
- 
-                             setUpOnlineUserBtn(userBtn);
-                             setProfilePicture(userBtn, onlineUser.nickname);
- 
-                         }*/
+
                     });
 
                 });
@@ -329,22 +264,6 @@ function onMessageReceived(payload) {
                 .then(data => {
                     let lastUser = data[data.length - 1];
                     updateOnlineUserList(lastUser);
-                    /*
-                                            if (lastUser.nickname !== userName) {
-                    
-                                                let user = `<button class='user-container ${lastUser.nickname}' type='button'>
-                                                        <img class='profile-img-online' src= '' alt='Profile Picture'>
-                                                        <span class='user'>${lastUser.nickname}</span>
-                                                        <span class='message-counter'>0</span>
-                                                        </button >`;
-                    
-                                                usersContainer.insertAdjacentHTML("beforeend", user);
-                                                let userBtn = document.querySelector("." + lastUser.nickname);
-                    
-                                                setUpOnlineUserBtn(userBtn);
-                                                setProfilePicture(userBtn, lastUser.nickname);
-                    
-                                            }*/
 
                 });
 
@@ -401,25 +320,7 @@ function getLatestHistory() {
             .then(response => response.json())
             .then(message => {
                 message.forEach((msg) => {
-                    /* if (msg.type === "newUser") {
-                         let welcomeMsg = "<div class='event-message-container'><div class='event-message  login-event'> " + msg.content + "</div></div>";
-                         messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
-                     }
-                     if (msg.type === "Leave" || msg.type === "kick") {
-                         let disconnectedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + msg.content + "</div></div>";
-                         messageContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
-                     }
- 
- 
-                     if (msg.type === "update" && msg.sender != msg.content) {
-                         let updateMsg = "<div class='event-message-container'> <div class='event-message  login-event'>" + msg.sender + " changed his name to: " + msg.content + "</div></div>";
-                         messageContainer.insertAdjacentHTML("beforeend", updateMsg);
-                     }
- 
- 
-                     if (msg.type === "message") {
-                       messageContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
-                     }*/
+
                     messageContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
                 });
             });
@@ -447,24 +348,7 @@ function getFullPublicHistory() {
         .then(response => response.json())
         .then(message => {
             message.forEach((msg) => {
-                /*  if (msg.type === "newUser") {
-                      let welcomeMsg = "<div class='event-message-container'><div class='event-message  login-event'> " + msg.content + "</div></div>";
-                      historyContainer.insertAdjacentHTML("beforeend", welcomeMsg);
-                  }
-                  if (msg.type === "Leave" || msg.type === "kick") {
-                      let disconnectedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + msg.content + "</div></div>";
-                      historyContainer.insertAdjacentHTML("beforeend", disconnectedMsg);
-                  }
-  
-                  if (msg.type === "update") {
-                      let updateMsg = "<div class='event-message-container'> <div class='event-message  login-event'>" + msg.sender + " changed his name to: " + msg.content + "</div></div>";
-                      messageContainer.insertAdjacentHTML("beforeend", updateMsg);
-                  }
-  
-                  if (msg.type === "message") {
-  
-                      historyContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
-                  }*/
+
                 historyContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
             });
         });
@@ -497,7 +381,7 @@ function prepareMessage(messageData) {
         completedMessage = "<div class='event-message-container'> <div class='event-message  logout-event'>" + messageData.content + "</div></div>";
     }
 
-    if (messageData.type === "update-name" /*&& messageData.sender != messageData.content*/) {
+    if (messageData.type === "update-name") {
         completedMessage = "<div class='event-message-container'> <div class='event-message  login-event'>" + messageData.sender + " changed his name to: " + messageData.content + "</div></div>";
     }
 
@@ -549,7 +433,7 @@ function updateOnlineUserList(userData) {
     }
 }
 
-////
+
 
 
 
@@ -642,10 +526,7 @@ window.onclick = function (event) {
             }
         });
         clearUpdateForm();
-       /* document.querySelector(".history-window").innerHTML = "";
-        document.querySelector(".response").innerHTML = "";
-        document.getElementById("fileData").value = null;
-        document.getElementById("drop").innerHTML = "Drag your profile picture HERE";*/
+
     }
 
 }
@@ -708,30 +589,32 @@ function handleFiles(files) {
 //#endregion
 
 //#region DeleteProfileUpdate
-document.getElementById("delete-profile-form").addEventListener("submit", function (event) {
-    event.preventDefault();
-    const formData = new FormData(this);
-    let deleteResponse = document.querySelector('.delete-response');
-    deleteResponse.innerHTML = "";
+if (userName !== "Admin") {
+    document.getElementById("delete-profile-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        let deleteResponse = document.querySelector('.delete-response');
+        deleteResponse.innerHTML = "";
 
-    fetch("http://localhost:28852/profile/delete", { method: 'POST', body: formData })
-        .then(response => {
+        fetch("http://localhost:28852/profile/delete", { method: 'POST', body: formData })
+            .then(response => {
 
-            if (response.ok) {
-                alert("Your profile was succesfully deleted!");
-                logOutUser();
-            } else {
-                response.text()
-                    .then(errorText => {
-                        deleteResponse.innerHTML = errorText;
-                        deleteResponse.style.color = "#7E102C";
-                    });
+                if (response.ok) {
+                    alert("Your profile was succesfully deleted!");
+                    logOutUser();
+                } else {
+                    response.text()
+                        .then(errorText => {
+                            deleteResponse.innerHTML = errorText;
+                            deleteResponse.style.color = "#7E102C";
+                        });
 
-            }
+                }
 
-        });
+            });
 
-});
+    });
+}
 
 //#endregion
 
@@ -751,10 +634,10 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
             let updateMsg;
             if (Object.keys(data).length > 1) {
                 if (Object.keys(data).length == 2 && data.hasOwnProperty("pass")) {
-                    console.log("JUST PASS UDPATED");
+                    /*console.log("JUST PASS UDPATED");*/
                 } else {
                     if (data.hasOwnProperty("newUserName")) {
-                        console.log("SEND UPDATE MSG");
+                        /* console.log("SEND UPDATE MSG");*/
                         updateMsg =
                         {
                             "sender": userName,
@@ -776,7 +659,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                         })
                             .then(() => {
 
-                                console.log("HISTORY NAME Update is succesfull");
+                                /*  console.log("HISTORY NAME Update is succesfull");*/
 
                                 stompClient.send("/app/chat", {}, JSON.stringify(updateMsg));
 
