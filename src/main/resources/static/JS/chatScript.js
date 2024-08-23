@@ -152,10 +152,8 @@ function onMessageReceived(payload) {
             let bannedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + message.content + "</div></div>";
             messageContainer.insertAdjacentHTML("beforeend", bannedMsg);
         }
-
-
-
-        if (message.type === "update") {
+        ///
+        if (message.type === "update-name") {
             console.log("userName before updatemsg: " + userName);
             if (userName === message.sender) {
 
@@ -166,145 +164,197 @@ function onMessageReceived(payload) {
             } else {
                 let onUserbtn = document.querySelector(`.${message.sender}`);
                 let name = onUserbtn.querySelector(`.user`);
-                if (message.sender !== message.content) {
 
-                    Array.from(document.getElementById("user-to-find").options).forEach(option => {
+                Array.from(document.getElementById("user-to-find").options).forEach(option => {
 
-                        if (option.value === message.sender) {
-                            option.value = message.content;
-                            option.text = message.content;
+                    if (option.value === message.sender) {
+                        option.value = message.content;
+                        option.text = message.content;
 
-                        }
-                    });
-
-                    onUserbtn.classList.replace(`${message.sender}`, `${message.content}`);
-
-                    name.innerHTML = `${message.content}`;
-                    name.classList.replace(`${message.sender}`, `${message.content}`);
-                    setProfilePicture(onUserbtn, message.content);
-
-                    if (chatWithElement.innerHTML !== "Public chat") {
-                        privateChatWith = message.content;
-                        chatWithElement.innerHTML = "Private chat with: " + message.content;
                     }
-                } else {
-                    setProfilePicture(onUserbtn, message.sender);
+                });
+
+                onUserbtn.classList.replace(`${message.sender}`, `${message.content}`);
+
+                name.innerHTML = `${message.content}`;
+                name.classList.replace(`${message.sender}`, `${message.content}`);
+                setProfilePicture(onUserbtn, message.content);
+
+                if (chatWithElement.innerHTML !== "Public chat") {
+                    privateChatWith = message.content;
+                    chatWithElement.innerHTML = "Private chat with: " + message.content;
                 }
-
-
-                console.log("CLEARING MESSAGE WINDOW");
             }
+
+            console.log("CLEARING MESSAGE WINDOW");
+
 
             messageContainer.innerHTML = "";
             getLatestHistory();
-
         }
 
+        if (message.type === "update-profilePic") {
+            if (userName !== message.sender) {
+                let onUserbtn = document.querySelector(`.${message.sender}`);
 
-
-        // displaying newest message
-        if (message.type === 'message') {
-            let html;
-            if (chatWithElement.innerHTML === "Public chat" && message.sendTo === "public") {
-
-                messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
-                msgInputWindow.value = "";
-            }
-
-            if (chatWithElement.innerHTML === "Public chat" && message.sendTo === userName) {
-                let incomingMsgUser = document.querySelector("." + message.sender);
-                let msgCounter = incomingMsgUser.querySelector(".message-counter");
-
-
-                usersContainer.insertBefore(incomingMsgUser, usersContainer.firstChild);
-
-
-                let count = parseInt(msgCounter.innerHTML) + 1;
-                msgCounter.innerText = count;
-                msgCounter.style.setProperty("visibility", "visible");
+                setProfilePicture(onUserbtn, message.sender);
 
             }
-
-            if ((userName == message.sendTo && message.sender == privateChatWith) ||
-                (message.sendTo == privateChatWith && message.sender == userName)) {
-
-                messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
-                msgInputWindow.value = "";
-
-            }
-            clearOldMsg();
-            if (isScrolledToBottom) {
-                messageContainer.scrollTop = messageContainer.scrollHeight - messageContainer.clientHeight;
-            }
-        }
-
-        // displaying new user in chat and online user panel
-        if (message.type === 'newUser') {
-            let welcomeMsg = "<div class='event-message-container'> <div class='event-message login-event'>" + message.content + "</div></div>";
-            messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
-
-            if (usersContainer.querySelectorAll("*").length === 0) {
-                console.log(" var 1 triggered num of users " + usersContainer.querySelectorAll("*").length);
-                fetch("http://localhost:28852/users")
-                    .then(response => response.json())
-                    .then(data => {
-
-                        data.forEach(onlineUser => {
-                            updateOnlineUserList(onlineUser);
-                            /* if (onlineUser.nickname !== userName) {
- 
- 
-                                 let user = `<button class='user-container ${onlineUser.nickname}' type='button'>
-                                     <img class='profile-img-online' src= '' alt='Profile Picture'>
-                                     <span class='user'>${onlineUser.nickname}</span>
-                                     <span class='message-counter'>0</span>
-                                     </button >`;
- 
-                                 usersContainer.insertAdjacentHTML("beforeend", user);
-                                 let userBtn = document.querySelector("." + onlineUser.nickname);
- 
-                                 setUpOnlineUserBtn(userBtn);
-                                 setProfilePicture(userBtn, onlineUser.nickname);
- 
-                             }*/
-                        });
-
-                    });
-
-
-            } else {
-                console.log(" var 2 triggered num of users " + usersContainer.querySelectorAll("*").length)
-                fetch("http://localhost:28852/users")
-                    .then(response => response.json())
-                    .then(data => {
-                        let lastUser = data[data.length - 1];
-                        updateOnlineUserList(lastUser);
-                        /*
-                                                if (lastUser.nickname !== userName) {
-                        
-                                                    let user = `<button class='user-container ${lastUser.nickname}' type='button'>
-                                                            <img class='profile-img-online' src= '' alt='Profile Picture'>
-                                                            <span class='user'>${lastUser.nickname}</span>
-                                                            <span class='message-counter'>0</span>
-                                                            </button >`;
-                        
-                                                    usersContainer.insertAdjacentHTML("beforeend", user);
-                                                    let userBtn = document.querySelector("." + lastUser.nickname);
-                        
-                                                    setUpOnlineUserBtn(userBtn);
-                                                    setProfilePicture(userBtn, lastUser.nickname);
-                        
-                                                }*/
-
-                    });
-
-
-            }
+            messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
         }
 
     }
+    ///
+    /*if (message.type === "update") {
+        console.log("userName before updatemsg: " + userName);
+        if (userName === message.sender) {
+
+            if (message.sender !== message.content) {
+                userName = message.content;
+                console.log("userName after updatemsg: " + userName);
+            }
+        } else {
+            let onUserbtn = document.querySelector(`.${message.sender}`);
+            let name = onUserbtn.querySelector(`.user`);
+            if (message.sender !== message.content) {
+
+                Array.from(document.getElementById("user-to-find").options).forEach(option => {
+
+                    if (option.value === message.sender) {
+                        option.value = message.content;
+                        option.text = message.content;
+
+                    }
+                });
+
+                onUserbtn.classList.replace(`${message.sender}`, `${message.content}`);
+
+                name.innerHTML = `${message.content}`;
+                name.classList.replace(`${message.sender}`, `${message.content}`);
+                setProfilePicture(onUserbtn, message.content);
+
+                if (chatWithElement.innerHTML !== "Public chat") {
+                    privateChatWith = message.content;
+                    chatWithElement.innerHTML = "Private chat with: " + message.content;
+                }
+            } else {
+                setProfilePicture(onUserbtn, message.sender);
+            }
+
+
+            console.log("CLEARING MESSAGE WINDOW");
+        }
+
+        messageContainer.innerHTML = "";
+        getLatestHistory();
+
+    }*/
+
+
+
+    // displaying newest message
+    if (message.type === 'message') {
+        let html;
+        if (chatWithElement.innerHTML === "Public chat" && message.sendTo === "public") {
+
+            messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
+            msgInputWindow.value = "";
+        }
+
+        if (chatWithElement.innerHTML === "Public chat" && message.sendTo === userName) {
+            let incomingMsgUser = document.querySelector("." + message.sender);
+            let msgCounter = incomingMsgUser.querySelector(".message-counter");
+
+
+            usersContainer.insertBefore(incomingMsgUser, usersContainer.firstChild);
+
+
+            let count = parseInt(msgCounter.innerHTML) + 1;
+            msgCounter.innerText = count;
+            msgCounter.style.setProperty("visibility", "visible");
+
+        }
+
+        if ((userName == message.sendTo && message.sender == privateChatWith) ||
+            (message.sendTo == privateChatWith && message.sender == userName)) {
+
+            messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
+            msgInputWindow.value = "";
+
+        }
+        clearOldMsg();
+        if (isScrolledToBottom) {
+            messageContainer.scrollTop = messageContainer.scrollHeight - messageContainer.clientHeight;
+        }
+    }
+
+    // displaying new user in chat and online user panel
+    if (message.type === 'newUser') {
+        let welcomeMsg = "<div class='event-message-container'> <div class='event-message login-event'>" + message.content + "</div></div>";
+        messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
+
+        if (usersContainer.querySelectorAll("*").length === 0) {
+            console.log(" var 1 triggered num of users " + usersContainer.querySelectorAll("*").length);
+            fetch("http://localhost:28852/users")
+                .then(response => response.json())
+                .then(data => {
+
+                    data.forEach(onlineUser => {
+                        updateOnlineUserList(onlineUser);
+                        /* if (onlineUser.nickname !== userName) {
+ 
+ 
+                             let user = `<button class='user-container ${onlineUser.nickname}' type='button'>
+                                 <img class='profile-img-online' src= '' alt='Profile Picture'>
+                                 <span class='user'>${onlineUser.nickname}</span>
+                                 <span class='message-counter'>0</span>
+                                 </button >`;
+ 
+                             usersContainer.insertAdjacentHTML("beforeend", user);
+                             let userBtn = document.querySelector("." + onlineUser.nickname);
+ 
+                             setUpOnlineUserBtn(userBtn);
+                             setProfilePicture(userBtn, onlineUser.nickname);
+ 
+                         }*/
+                    });
+
+                });
+
+
+        } else {
+            console.log(" var 2 triggered num of users " + usersContainer.querySelectorAll("*").length)
+            fetch("http://localhost:28852/users")
+                .then(response => response.json())
+                .then(data => {
+                    let lastUser = data[data.length - 1];
+                    updateOnlineUserList(lastUser);
+                    /*
+                                            if (lastUser.nickname !== userName) {
+                    
+                                                let user = `<button class='user-container ${lastUser.nickname}' type='button'>
+                                                        <img class='profile-img-online' src= '' alt='Profile Picture'>
+                                                        <span class='user'>${lastUser.nickname}</span>
+                                                        <span class='message-counter'>0</span>
+                                                        </button >`;
+                    
+                                                usersContainer.insertAdjacentHTML("beforeend", user);
+                                                let userBtn = document.querySelector("." + lastUser.nickname);
+                    
+                                                setUpOnlineUserBtn(userBtn);
+                                                setProfilePicture(userBtn, lastUser.nickname);
+                    
+                                            }*/
+
+                });
+
+
+        }
+    }
 
 }
+
+
 //connecting new user
 function onConnectedSuccessfully() {
 
@@ -447,8 +497,12 @@ function prepareMessage(messageData) {
         completedMessage = "<div class='event-message-container'> <div class='event-message  logout-event'>" + messageData.content + "</div></div>";
     }
 
-    if (messageData.type === "update" /*&& messageData.sender != messageData.content*/) {
+    if (messageData.type === "update-name" /*&& messageData.sender != messageData.content*/) {
         completedMessage = "<div class='event-message-container'> <div class='event-message  login-event'>" + messageData.sender + " changed his name to: " + messageData.content + "</div></div>";
+    }
+
+    if (messageData.type === "update-profilePic") {
+        completedMessage = "<div class='event-message-container'> <div class='event-message  login-event'>" + messageData.sender + " changed his profile picture </div></div>";
     }
 
     /*
@@ -587,8 +641,11 @@ window.onclick = function (event) {
                 modal.style.display = "none";
             }
         });
-        document.querySelector(".history-window").innerHTML = "";
+        clearUpdateForm();
+       /* document.querySelector(".history-window").innerHTML = "";
         document.querySelector(".response").innerHTML = "";
+        document.getElementById("fileData").value = null;
+        document.getElementById("drop").innerHTML = "Drag your profile picture HERE";*/
     }
 
 }
@@ -625,7 +682,7 @@ function handleDrop(ev) {
 
     let files = dataTrans.files;
 
-   
+
     handleFiles(files);
 }
 
@@ -703,7 +760,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                             "sender": userName,
                             "content": data["newUserName"],
                             "date": actDate(),
-                            "type": 'update',
+                            "type": 'update-name',
                             "sendTo": "public"
                         }
 
@@ -732,7 +789,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                             "sender": userName,
                             "content": userName,
                             "date": actDate(),
-                            "type": 'update',
+                            "type": 'update-profilePic',
                             "sendTo": "public"
 
                         }
@@ -751,16 +808,18 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
             }
             response.innerHTML = `${data["message"]}`;
         });
-    document.getElementById("act-pass-input").value = "";
-    document.getElementById("new-pass-input").value = "";
-    document.getElementById("name-input").value = "";
-    document.getElementById("fileData").value = null;
-    document.getElementById("drop").innerHTML = "Drag your profile picture HERE";
+    clearUpdateForm();
 
 });
 //#endregion
 
-
+function clearUpdateForm() {
+    document.getElementById("act-pass-input").value = "";
+    document.getElementById("new-pass-input").value = "";
+    document.getElementById("name-input").value = "";
+    document.getElementById("fileData").value = null;
+    document.getElementById("drop").innerHTML = "Drag your profile picture HERE < br > Max size of picture: 2MB";
+}
 
 function clearOldMsg() {
     console.log("nume of messages in window: " + messageContainer.querySelectorAll(".message-container").length);
