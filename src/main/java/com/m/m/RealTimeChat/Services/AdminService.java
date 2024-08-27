@@ -28,7 +28,9 @@ public class AdminService {
         HttpSession session = request.getSession(false);
         if (session != null) {
             AuthenticationException exception = (AuthenticationException) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+
             if (exception != null) {
+                System.out.println("DEBUG LOGIN: \n" + exception.getMessage());
                 return exception.getMessage();
             }
         }

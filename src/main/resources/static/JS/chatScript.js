@@ -111,7 +111,7 @@ function onMessageReceived(payload) {
 
     var message = JSON.parse(payload.body);
 
-    console.log("\n\n ! DEBUG ! MESSAGE TYPE:\n" + message.type);
+    /*console.log("\n\n ! DEBUG ! MESSAGE TYPE:\n" + message.type);*/
     if (message.type) {
         if (message.type === "Leave") {
 
@@ -145,17 +145,17 @@ function onMessageReceived(payload) {
                     }
                 });
             }
-            let bannedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + message.content + "</div></div>";
-            messageContainer.insertAdjacentHTML("beforeend", bannedMsg);
+            /*  let bannedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + message.content + "</div></div>";*/
+            messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
         }
 
         if (message.type === "update-name") {
-            console.log("userName before updatemsg: " + userName);
+            /*  console.log("userName before updatemsg: " + userName);*/
             if (userName === message.sender) {
 
                 if (message.sender !== message.content) {
                     userName = message.content;
-                    console.log("userName after updatemsg: " + userName);
+                    /*console.log("userName after updatemsg: " + userName);*/
                 }
             } else {
                 let onUserbtn = document.querySelector(`.${message.sender}`);
@@ -178,11 +178,11 @@ function onMessageReceived(payload) {
 
                 if (chatWithElement.innerHTML !== "Public chat") {
                     privateChatWith = message.content;
-                    chatWithElement.innerHTML = "Private chat with: " + message.content;
+                    chatWithElement.innerHTML = `Private chat with: ${message.content}`;
                 }
             }
 
-            console.log("CLEARING MESSAGE WINDOW");
+            /*  console.log("CLEARING MESSAGE WINDOW");*/
 
 
             messageContainer.innerHTML = "";
@@ -240,11 +240,11 @@ function onMessageReceived(payload) {
 
     // displaying new user in chat and online user panel
     if (message.type === 'newUser') {
-        let welcomeMsg = "<div class='event-message-container'> <div class='event-message login-event'>" + message.content + "</div></div>";
+        let welcomeMsg = `<div class='event-message-container'> <div class='event-message login-event'>${message.content}</div></div>`;
         messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
 
         if (usersContainer.querySelectorAll("*").length === 0) {
-            console.log(" var 1 triggered num of users " + usersContainer.querySelectorAll("*").length);
+            /* console.log(" var 1 triggered num of users " + usersContainer.querySelectorAll("*").length);*/
             fetch("http://localhost:28852/users")
                 .then(response => response.json())
                 .then(data => {
@@ -258,7 +258,7 @@ function onMessageReceived(payload) {
 
 
         } else {
-            console.log(" var 2 triggered num of users " + usersContainer.querySelectorAll("*").length)
+            /*  console.log(" var 2 triggered num of users " + usersContainer.querySelectorAll("*").length)*/
             fetch("http://localhost:28852/users")
                 .then(response => response.json())
                 .then(data => {
@@ -375,18 +375,19 @@ function prepareMessage(messageData) {
     let completedMessage;
 
     if (messageData.type === "newUser") {
-        completedMessage = "<div class='event-message-container'><div class='event-message  login-event'> " + messageData.content + "</div></div>";
+        completedMessage = `<div class='event-message-container'><div class='event-message  login-event'>${messageData.content}</div></div>`;
     }
-    if (messageData.type === "Leave" || messageData.type === "kick") {
-        completedMessage = "<div class='event-message-container'> <div class='event-message  logout-event'>" + messageData.content + "</div></div>";
+    if (messageData.type === "Leave" || messageData.type === "kick" || messageData.type === "BAN") {
+        console.log(`DEBUG MESSAGES: TYPE - ${messageData.type} \n CONTENT - ${messageData.content}`);
+        completedMessage = `<div class='event-message-container'> <div class='event-message  logout-event'>${messageData.content}</div></div>`;
     }
 
     if (messageData.type === "update-name") {
-        completedMessage = "<div class='event-message-container'> <div class='event-message  login-event'>" + messageData.sender + " changed his name to: " + messageData.content + "</div></div>";
+        completedMessage = `<div class='event-message-container'> <div class='event-message  login-event'>${messageData.sender} changed his name to: ${messageData.content}</div></div>`;
     }
 
     if (messageData.type === "update-profilePic") {
-        completedMessage = "<div class='event-message-container'> <div class='event-message  login-event'>" + messageData.sender + " changed his profile picture </div></div>";
+        completedMessage = `<div class='event-message-container'> <div class='event-message  login-event'>${messageData.sender} changed his profile picture</div></div>`;
     }
 
     /*
@@ -432,10 +433,6 @@ function updateOnlineUserList(userData) {
         setProfilePicture(userBtn, userData.nickname);
     }
 }
-
-
-
-
 
 
 // online user button set up
@@ -677,12 +674,12 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
 
                         }
 
-                        console.log("PROFILE PIC UPDATE SUCCESFUL")
+                        /* console.log("PROFILE PIC UPDATE SUCCESFUL")*/
                         stompClient.send("/app/chat", {}, JSON.stringify(updateMsg));
                     }
                 }
             }
-            console.log("PROFILE UPDATE DEBGU: " + data["message"]);
+            /**console.log("PROFILE UPDATE DEBGU: " + data["message"]);*/
             if (data["message"].includes("successfully")) {
                 response.style.color = "#345635";
 
@@ -701,11 +698,11 @@ function clearUpdateForm() {
     document.getElementById("new-pass-input").value = "";
     document.getElementById("name-input").value = "";
     document.getElementById("fileData").value = null;
-    document.getElementById("drop").innerHTML = "Drag your profile picture HERE < br > Max size of picture: 2MB";
+    document.getElementById("drop").innerHTML = "Drag your profile picture HERE <br> Max size of picture: 2MB";
 }
 
 function clearOldMsg() {
-    console.log("nume of messages in window: " + messageContainer.querySelectorAll(".message-container").length);
+    /*console.log("nume of messages in window: " + messageContainer.querySelectorAll(".message-container").length);*/
     if (messageContainer.querySelectorAll(".message-container").length + messageContainer.querySelectorAll(".event-message-container").length > 15) {
         messageContainer.removeChild(messageContainer.firstElementChild);
     }

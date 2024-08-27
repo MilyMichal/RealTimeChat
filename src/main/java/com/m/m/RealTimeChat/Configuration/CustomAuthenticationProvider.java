@@ -38,8 +38,16 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         UserDetails userDetails = appUserDetailService.loadUserByUsername(authentication.getName());
 
+        if (!userDetails.isAccountNonLocked()) {
+
+            throw new LockedException(
+                    "Your account is BANNED! BAN will expire on: "
+                            + userStorageService.getUser(authentication.getName())
+                            .getBanExpiration()
+                            .format(DateTimeFormatter.ofPattern("dd-M-yyyy hh:mm:ss")));
+        }
+
         if (onlineUserService.findOnlineUser(userDetails.getUsername()).isPresent()) {
-            System.out.println("AUTH DEBUG: AUTHENTICATION FAILED");
             throw new AccountAlreadyLoggedInException("User \"" + authentication.getName() + "\" is already online");
         }
 
@@ -47,13 +55,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("Incorrect password! Try again.");
         }
 
-        if (!userDetails.isAccountNonLocked()) {
-            throw new LockedException(
-                    "Your account is BANNED! BAN will expire on: "
-                            + userStorageService.getUser(authentication.getName())
-                            .getBanExpiration()
-                            .format(DateTimeFormatter.ofPattern("dd-M-yyyy hh:mm:ss")));
-        }
 
         return new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
     }

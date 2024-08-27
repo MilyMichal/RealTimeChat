@@ -17,6 +17,7 @@ public class LoginController {
 
     @GetMapping("/login-error")
     public String getLoginPage(HttpServletRequest request, Model model) {
+
         model.addAttribute("message", adminService.manageErrorMessage(request));
         return "loginPage";
     }

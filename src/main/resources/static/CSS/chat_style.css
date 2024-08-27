@@ -209,6 +209,8 @@ body {
 .message-container {
     display: flex;
     flex-direction: row;
+    /*flex-direction: column;*/
+    /*flex-wrap: wrap;*/
     position: relative;
     width: fit-content;
     height: fit-content;
@@ -229,7 +231,8 @@ body {
     border-radius: 10px;
     width: fit-content;
     height: auto;
-    overflow-y: auto;
+    overflow-wrap: anywhere;
+    /*overflow-y: auto;*/
     flex-grow: 4;
     order: 1;
     text-align: left;
@@ -261,6 +264,8 @@ body {
     font-family: "Poetsen One", sans-serif;
     font-weight: 100;
     color: #EAE0D5;
+    word-wrap: break-word;
+    max-width: 120px;
 }
 
 .date {
