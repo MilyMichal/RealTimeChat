@@ -1,5 +1,5 @@
 
-/*const URL = "http://localhost:28852/";*/
+const URL = "http://localhost:28852/";
 let inputContainer = document.querySelector(".inputContainer");
 let chatScreen = document.querySelector(".chat");
 let msgInputWindow = document.getElementById("input-msg");
@@ -20,7 +20,7 @@ let isScrolledToBottom = true;
 var actDate = () => new Date().toLocaleString();
 
 let stompClient = null;
-let sock = new SockJS("http://localhost:28852/chat");
+let sock = new SockJS(`${URL}chat`);
 
 register();
 
@@ -111,7 +111,7 @@ function onMessageReceived(payload) {
 
     var message = JSON.parse(payload.body);
 
-    /*console.log("\n\n ! DEBUG ! MESSAGE TYPE:\n" + message.type);*/
+
     if (message.type) {
         if (message.type === "Leave") {
 
@@ -132,30 +132,30 @@ function onMessageReceived(payload) {
 
         if (message.type === "BAN") {
             if (userName === message.sendTo) {
-                fetch("http://localhost:28852/admin/banned/" + message.sendTo, {
+                fetch(`${URL}admin/banned/${message.sendTo}`, {
                     method: 'PUT'
                 }).then(response => {
                     if (response.ok) {
-                        fetch('http://localhost:28852/logout', {
+                        fetch(`${URL}logout`, {
                             method: 'POST'
                         });
                         stompClient.disconnect();
-                        window.location.href = 'http://localhost:28852/';
+                        window.location.href = URL;
                         alert("Admin banned you")
                     }
                 });
             }
-            /*  let bannedMsg = "<div class='event-message-container'> <div class='event-message  logout-event'>" + message.content + "</div></div>";*/
+
             messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
         }
 
         if (message.type === "update-name") {
-            /*  console.log("userName before updatemsg: " + userName);*/
+
             if (userName === message.sender) {
 
                 if (message.sender !== message.content) {
                     userName = message.content;
-                    /*console.log("userName after updatemsg: " + userName);*/
+
                 }
             } else {
                 let onUserbtn = document.querySelector(`.${message.sender}`);
@@ -181,8 +181,6 @@ function onMessageReceived(payload) {
                     chatWithElement.innerHTML = `Private chat with: ${message.content}`;
                 }
             }
-
-            /*  console.log("CLEARING MESSAGE WINDOW");*/
 
 
             messageContainer.innerHTML = "";
@@ -212,7 +210,7 @@ function onMessageReceived(payload) {
         }
 
         if (chatWithElement.innerHTML === "Public chat" && message.sendTo === userName) {
-            let incomingMsgUser = document.querySelector("." + message.sender);
+            let incomingMsgUser = document.querySelector(`.${message.sender}`);
             let msgCounter = incomingMsgUser.querySelector(".message-counter");
 
 
@@ -244,8 +242,7 @@ function onMessageReceived(payload) {
         messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
 
         if (usersContainer.querySelectorAll("*").length === 0) {
-            /* console.log(" var 1 triggered num of users " + usersContainer.querySelectorAll("*").length);*/
-            fetch("http://localhost:28852/users")
+            fetch(`${URL}users`)
                 .then(response => response.json())
                 .then(data => {
 
@@ -258,8 +255,8 @@ function onMessageReceived(payload) {
 
 
         } else {
-            /*  console.log(" var 2 triggered num of users " + usersContainer.querySelectorAll("*").length)*/
-            fetch("http://localhost:28852/users")
+
+            fetch(`${URL}users`)
                 .then(response => response.json())
                 .then(data => {
                     let lastUser = data[data.length - 1];
@@ -279,7 +276,7 @@ function onConnectedSuccessfully() {
 
     stompClient.subscribe("/topic/chat", onMessageReceived);
 
-    fetch("http://localhost:28852/users")
+    fetch(`${URL}users`)
         .then(response => response.json())
         .then(data => {
             if (!data.includes(userName)) {
@@ -288,7 +285,7 @@ function onConnectedSuccessfully() {
                     {
                         sender: userName,
                         type: 'newUser',
-                        content: userName + ' just joined chatroom. Welcome!',
+                        content: `${userName} just joined chatroom. Welcome!`,
                         sendTo: "public",
                         date: actDate()
                     }));
@@ -316,7 +313,7 @@ function switchToPublic() {
 // getting message history form server
 function getLatestHistory() {
     if (chatWithElement.innerHTML === "Public chat") {
-        fetch("http://localhost:28852/history/public-latest")
+        fetch(`${URL}history/public-latest`)
             .then(response => response.json())
             .then(message => {
                 message.forEach((msg) => {
@@ -326,7 +323,7 @@ function getLatestHistory() {
             });
 
     } else {
-        fetch("http://localhost:28852/history/" + privateChatWith + "-" + userName + "/latest")
+        fetch(`${URL}history/${privateChatWith}-${userName}/latest`)
             .then(response => response.json())
             .then(message => {
                 message.forEach((msg) => {
@@ -344,7 +341,7 @@ function getFullPublicHistory() {
 
 
     historyContainer.innerHTML = "";
-    fetch("http://localhost:28852/history/public")
+    fetch(`${URL}history/public`)
         .then(response => response.json())
         .then(message => {
             message.forEach((msg) => {
@@ -358,7 +355,7 @@ function getFullPersonalHistory() {
     historyContainer.innerHTML = "";
     let selectedUser = document.getElementById("user-to-find");
 
-    fetch("http://localhost:28852/history/" + selectedUser.value + "-" + userName)
+    fetch(`${URL}history/${selectedUser.value}-${userName}`)
         .then(response => response.json())
         .then(message => {
             message.forEach((msg) => {
@@ -390,18 +387,6 @@ function prepareMessage(messageData) {
         completedMessage = `<div class='event-message-container'> <div class='event-message  login-event'>${messageData.sender} changed his profile picture</div></div>`;
     }
 
-    /*
-     if (messageData.sender === userName) {
-            completedMessage = `<div class='message-container revert'><div class='sender'> ${messageData.sender}</div>
-                        <div class='message right-msg'><div class='date'>${messageData.date}</div> ${messageData.content}</div></div>`;
-
-        } else {
-            completedMessage = `<div class='message-container'><div class='sender'> ${messageData.sender}</div>
-                        <div class='message left-msg'><div class='date'> ${messageData.date}</div> ${messageData.content}</div></div>`;
-        }
-    */
-
-
     if (messageData.type === "message") {
 
         if (messageData.sender === userName) {
@@ -427,7 +412,7 @@ function updateOnlineUserList(userData) {
                                     </button >`;
 
         usersContainer.insertAdjacentHTML("beforeend", user);
-        let userBtn = document.querySelector("." + userData.nickname);
+        let userBtn = document.querySelector(`.${userData.nickname}`);
 
         setUpOnlineUserBtn(userBtn);
         setProfilePicture(userBtn, userData.nickname);
@@ -454,7 +439,7 @@ function setUpOnlineUserBtn(btn) {
         }
 
         var btnUserName = btn.querySelector(".user").innerHTML;
-        chatWithElement.innerHTML = "Private chat with: " + btnUserName;
+        chatWithElement.innerHTML = `Private chat with: ${btnUserName}`;
 
         privateChatWith = btnUserName;
         getLatestHistory();
@@ -465,11 +450,11 @@ function setUpOnlineUserBtn(btn) {
 function logOutUser() {
     loggedOutByButton = true;
     try {
-        fetch('http://localhost:28852/logout', {
+        fetch(`${URL}logout`, {
             method: 'POST'
         }).then(response => {
             if (response.ok) {
-                window.location.href = 'http://localhost:28852/';
+                window.location.href = URL;
             }
         });
     } catch (error) {
@@ -593,7 +578,7 @@ if (userName !== "Admin") {
         let deleteResponse = document.querySelector('.delete-response');
         deleteResponse.innerHTML = "";
 
-        fetch("http://localhost:28852/profile/delete", { method: 'POST', body: formData })
+        fetch(`${URL}profile/delete`, { method: 'POST', body: formData })
             .then(response => {
 
                 if (response.ok) {
@@ -622,7 +607,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
 
     const formData = new FormData(this);
     let response = document.querySelector(".response");
-    fetch("http://localhost:28852/profile/update", {
+    fetch(`${URL}profile/update`, {
         method: 'POST',
         body: formData
     })
@@ -631,10 +616,10 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
             let updateMsg;
             if (Object.keys(data).length > 1) {
                 if (Object.keys(data).length == 2 && data.hasOwnProperty("pass")) {
-                    /*console.log("JUST PASS UDPATED");*/
+
                 } else {
                     if (data.hasOwnProperty("newUserName")) {
-                        /* console.log("SEND UPDATE MSG");*/
+
                         updateMsg =
                         {
                             "sender": userName,
@@ -644,7 +629,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                             "sendTo": "public"
                         }
 
-                        fetch('http://localhost:28852/history/update', {
+                        fetch(`${URL}history/update`, {
                             method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -655,8 +640,6 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                             })
                         })
                             .then(() => {
-
-                                /*  console.log("HISTORY NAME Update is succesfull");*/
 
                                 stompClient.send("/app/chat", {}, JSON.stringify(updateMsg));
 
@@ -674,20 +657,18 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
 
                         }
 
-                        /* console.log("PROFILE PIC UPDATE SUCCESFUL")*/
                         stompClient.send("/app/chat", {}, JSON.stringify(updateMsg));
                     }
                 }
-            }
-            /**console.log("PROFILE UPDATE DEBGU: " + data["message"]);*/
-            if (data["message"].includes("successfully")) {
-                response.style.color = "#345635";
 
-            } else {
-                response.style.color = "#7E102C";
-            }
-            response.innerHTML = `${data["message"]}`;
-        });
+                if (data["message"].includes("successfully")) {
+                    response.style.color = "#345635";
+
+                } else {
+                    response.style.color = "#7E102C";
+                }
+                response.innerHTML = `${data["message"]}`;
+            });
     clearUpdateForm();
 
 });
@@ -702,7 +683,6 @@ function clearUpdateForm() {
 }
 
 function clearOldMsg() {
-    /*console.log("nume of messages in window: " + messageContainer.querySelectorAll(".message-container").length);*/
     if (messageContainer.querySelectorAll(".message-container").length + messageContainer.querySelectorAll(".event-message-container").length > 15) {
         messageContainer.removeChild(messageContainer.firstElementChild);
     }
@@ -711,7 +691,7 @@ function clearOldMsg() {
 
 function setProfilePicture(button, nickname) {
 
-    fetch("http://localhost:28852/profile/get/" + nickname)
+    fetch(`${URL}profile/get/${nickname}`)
         .then(response => {
             if (response.ok) {
                 return response.blob();
