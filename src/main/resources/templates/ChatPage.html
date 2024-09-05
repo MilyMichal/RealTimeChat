@@ -3,11 +3,10 @@
 <head>
     <!-- <meta charset="utf-8">-->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" th:href="@{CSS/chat_style.css}">
-    <!--<link rel="stylesheet" type="text/css" href="/static/CSS/chat_style.css">-->
+    <!--<link rel="stylesheet" type="text/css" th:href="@{CSS/chat_style.css}">-->
+    <link rel="stylesheet" type="text/css" href="/static/CSS/chat_style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Caveat">
-
 
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,10 +46,11 @@
                 <label for="act-pass-input">Confirm actual password<br></label>
                 <input id="act-pass-input" class="rnd-brd-10" type="password" name="actualPass"
                        placeholder="Actual password" required>
-                <input id="fileData" type="file" name="file"  style="visibility:hidden; position:absolute">
+                <input id="fileData" type="file" name="file" style="visibility:hidden; position:absolute">
                 <button class="button-basic rnd-brd-10" type="submit">Update profile</button>
                 <div class="response" style="font-size: 12px"></div>
-                <input class="button-basic rnd-brd-10" type="button" value="Delete profile" onclick="openSelectedModal('delete-mod')">
+                <input class="button-basic rnd-brd-10" type="button" value="Delete profile"
+                       onclick="openSelectedModal('delete-mod')">
             </div>
         </form>
 
@@ -58,7 +58,8 @@
     <div class="modal history-mod" style="display:none">
         <form class="history-modal-content" id="history-modal-form">
             <div class="modal-header head-font rnd-brd-15t">
-                <div> Message history </div><br>
+                <div> Message history</div>
+                <br>
                 <button class="button-basic rnd-brd-10 PO-ss-400" type="button" onclick="getFullPublicHistory()"> Full
                     public history
                 </button>
@@ -69,7 +70,7 @@
                     <option value="" selected disabled>Select user</option>
                     <option th:each="user : ${usersList}" th:value="${user}" th:text="${user}">
                 </select>
-                        </div>
+            </div>
             <div class="history-window rnd-brd-15b"></div>
 
         </form>
@@ -78,16 +79,17 @@
     <div class="modal delete-mod" style="display:none">
         <form class="delete-modal-content" id="delete-profile-form">
             <div class="modal-header head-font rnd-brd-15t">
-            Profile DELETE
+                Profile DELETE
             </div>
             <div class="delete-window rnd-brd-15b">
-               <p style="padding:5px; text-align: center; margin: 0px;">
-                   Please type your current password and press delete button. <b>Your account will be deleted.</b>
-               </p>
+                <p style="padding:5px; text-align: center; margin: 0px;">
+                    Please type your current password and press delete button. <b>Your account will be deleted.</b>
+                </p>
                 <div style="padding:5px; text-align: center; margin: 10Opx 30px; color:red;">
-                    This action cannot be undone!</div>
+                    This action cannot be undone!
+                </div>
 
-                   <input id="pass-confirm-input" class="rnd-brd-10" type="password" name="actualPass"
+                <input id="pass-confirm-input" class="rnd-brd-10" type="password" name="actualPass"
                        placeholder="Actual password" required>
                 <div class="delete-response" style="font-size: 12px"></div>
                 <button class="button-basic rnd-brd-10" type="submit">Delete profile</button>
@@ -105,83 +107,95 @@
             </div>
             <div id="users">
 
-              <!--  <button class="user-container" type="button" >
+
+                <!--<button class="user-container" type="button">
+                    <img class="profile-img-online" src="/ProfilePic/defaultPic.jpg" alt="profile pic">
+                    <span class="user"> Azrael </span>
+                    <span class="message-counter-container">
+                        <span class="msg-counter-bg">
+                            <svg
+                                    class="msg-counter-bg" id="Layer_1"
+                                    xmlns="http://www.w3.org/2000/svg" width="17px"
+                                    height="17px" viewBox="0 0 64 64"
+                                    xml:space="preserve">
+<g>
+	<rect x="1" y="13" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" width="62" height="37"/>
+	<polyline fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" points="1,13 32,33 63,13 	"/>
+</g>
+</svg>
+                        </span>
+                    <span class="message-counter"> 2 </span>
+
+                    </span>
+
+                </button>
+                <button class="user-container" type="button">
                     <img class="profile-img-online" src="/ProfilePic/defaultPic.jpg" alt="profile pic">
                     <span class="user"> Azrael </span>
                     <span class="new-message-counter"></span>
 
-                </button>
-                <button class="user-container" type="button" >
-                    <img class="profile-img-online" src="/ProfilePic/defaultPic.jpg" alt="profile pic">
-                    <span class="user"> Azrael </span>
-                    <span class="new-message-counter"></span>
-
-                </button>
-                <button class="user-container" type="button" >
-                    <img class="profile-img-online" src="/ProfilePic/defaultPic.jpg" alt="profile pic">
-                    <span class="user"> Azrael </span>
-                    <span class="new-message-counter"></span>
-                    
                 </button>-->
 
             </div>
-            <button id="public-chat-btn" class="rnd-brd-15b" type="button" onclick="switchToPublic()" disabled>Public chat</button>
+            <button id="public-chat-btn" class="rnd-brd-15b" type="button" onclick="switchToPublic()" disabled>Public
+                chat
+            </button>
         </div>
         <div class="chat-window">
             <div id="chat-with" class="head-font rnd-brd-15t">Public chat</div>
             <div id="messages">
 
 
-                 <!--<div class="message-container revert ">
-                     <div class="sender"> Askir
-                         <img class="profile-img" src="/ProfilePic/defaultPic.jpg" alt="avatar">
-                     </div>
-                     <div class="message right-msg">
-                         <div class="date" onmouseup="showDate()">22.1.2024</div>
-                         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
-                         laboriosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
-                         in
-                         molestias officia sed sint ullam.
-                         riosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
-                         in
-                         molestias officia sed sint ullam.
-
-                     </div>
-                 </div>
-
-                <div class='message-container revert'><div class='sender'>Azrael<div class='date'>send: 22.8.2024 14:53:32</div></div>
-                    <div class='message right-msg'> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
+                <!--<div class="message-container revert ">
+                    <div class="sender"> Askir
+                        <img class="profile-img" src="/ProfilePic/defaultPic.jpg" alt="avatar">
+                    </div>
+                    <div class="message right-msg">
+                        <div class="date" onmouseup="showDate()">22.1.2024</div>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
                         laboriosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
                         in
                         molestias officia sed sint ullam.
                         riosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
                         in
-                        molestias officia sed sint ullam.</div></div>
+                        molestias officia sed sint ullam.
 
-                <div class='message-container revert'><div class='sender' >AskirTo_je_Hom_exteme_dlouhej_nick_je_na_picu<div class='date'>22.8.2024 14:53:32</div></div>
-                    <div class='message right-msg'> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
-                        laboriosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
-                        in
-                        </div></div>
+                    </div>
+                </div>
+
+               <div class='message-container revert'><div class='sender'>Azrael<div class='date'>send: 22.8.2024 14:53:32</div></div>
+                   <div class='message right-msg'> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
+                       laboriosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
+                       in
+                       molestias officia sed sint ullam.
+                       riosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
+                       in
+                       molestias officia sed sint ullam.</div></div>
+
+               <div class='message-container revert'><div class='sender' >AskirTo_je_Hom_exteme_dlouhej_nick_je_na_picu<div class='date'>22.8.2024 14:53:32</div></div>
+                   <div class='message right-msg'> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
+                       laboriosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
+                       in
+                       </div></div>
 
 
-                 <div class="message-container">
-                     <div class="sender"> AskirTo je Homo
-                         <br><div class="date">22.1.2024</div>
-                     </div>
-                     <div class="message left-msg">
-                       :-D 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
-                     </div>
-                 </div>
-                 &lt;!&ndash;<div class="event-message-container">&ndash;&gt;
-                 <div class='event-message logout-event'>
-                     Skaman to je homosexual extremně dlouhej NICK just logged out.
-                 </div>
-                 &lt;!&ndash;            </div>&ndash;&gt;
-                 &lt;!&ndash;<div class="event-message-container">&ndash;&gt;
-                 <div class='event-message login-event'>
-                     Skaman just enter the chat.
-                 </div>-->
+                <div class="message-container">
+                    <div class="sender"> AskirTo je Homo
+                        <br><div class="date">22.1.2024</div>
+                    </div>
+                    <div class="message left-msg">
+                      :-D 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
+                    </div>
+                </div>
+                &lt;!&ndash;<div class="event-message-container">&ndash;&gt;
+                <div class='event-message logout-event'>
+                    Skaman to je homosexual extremně dlouhej NICK just logged out.
+                </div>
+                &lt;!&ndash;            </div>&ndash;&gt;
+                &lt;!&ndash;<div class="event-message-container">&ndash;&gt;
+                <div class='event-message login-event'>
+                    Skaman just enter the chat.
+                </div>-->
             </div>
             <div class="inputContainer rnd-brd-15b">
 
@@ -193,7 +207,7 @@
                             <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z"/>
                         </svg>
                     </button>
-                    <div id="dropupMenu" class="dropup-content rnd-brd-15t" >
+                    <div id="dropupMenu" class="dropup-content rnd-brd-15t">
                         <input type="button" value="Get full history" onclick="openSelectedModal('history-mod')">
                         <input type="button" value="Manage profile" onclick="openSelectedModal('profile-mod')">
                         <input type="button" value="Logout" onclick="logOutUser()">
@@ -201,27 +215,27 @@
                 </div>
 
                 <textarea id="input-msg" placeholder="Write a message here" maxlength="500"></textarea>
-                <div class="emoji-btn-placeholder" >
+                <div class="emoji-btn-placeholder">
                     <button class="emoji-btn" type="button" onclick="showEmojiPicker()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#C6AC8E"  class="bi bi-emoji-smile-fill" style="pointer-events: none;" viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#C6AC8E"
+                             class="bi bi-emoji-smile-fill" style="pointer-events: none;" viewBox="0 0 16 16">
                             <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16M7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5M4.285 9.567a.5.5 0 0 1 .683.183A3.5 3.5 0 0 0 8 11.5a3.5 3.5 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1-3.898-2.25.5.5 0 0 1 .183-.683M10 8c-.552 0-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5S10.552 8 10 8"/>
                         </svg>
                     </button>
-                <div  id="emoji-win" class="emoji-window emojiHidden " >
-                    <emoji-picker class="emoji-picker "></emoji-picker>
-                </div>
+                    <div id="emoji-win" class="emoji-window emojiHidden ">
+                        <emoji-picker class="emoji-picker "></emoji-picker>
+                    </div>
                 </div>
 
-                <button type="submit" class="send-msg-btn" onclick="send()" name="send_msg_btn"  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#C6AC8E" class="bi bi-send" viewBox="0 0 16 16">
+                <button type="submit" class="send-msg-btn" onclick="send()" name="send_msg_btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#C6AC8E" class="bi bi-send"
+                         viewBox="0 0 16 16">
                         <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
                     </svg>
                 </button>
             </div>
         </div>
     </div>
-
-
 
 
 </div>

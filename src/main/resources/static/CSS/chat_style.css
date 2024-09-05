@@ -154,6 +154,22 @@ body {
     border-color: #00000045;
 }
 
+
+.message-counter-container {
+   /* width: fit-content;*/
+    align-self: end;
+  /* visibility: hidden;*/
+    
+}
+
+.msg-counter-bg {
+    position: relative;
+    z-index: 1;
+    
+   }
+
+
+
 /* Each online user display settings */
 .user-container {
     display: flex;
@@ -176,13 +192,15 @@ body {
     }
 
 .message-counter {
-    visibility: hidden;
+   /* visibility: hidden;*/
     font: bold;
     color: red;
-    border-radius: 6px;
+    /*border-radius: 6px;*/
     width: 15px;
     height: 15px;
-    align-self: center;
+    /*align-self: center;*/
+    position: relative;
+    z-index: 2;
 }
 
 .user {

@@ -7,7 +7,7 @@ function onMessageReceived(payload) {
 
     var message = JSON.parse(payload.body);
 
-    console.log("\n\n ! DEBUG ! MESSAGE TYPE:\n" + message.type);
+    /*console.log("\n\n ! DEBUG ! MESSAGE TYPE:\n" + message.type);*/
     if (message.type) {
         if (message.type === "Leave") {
 
@@ -23,7 +23,7 @@ function onMessageReceived(payload) {
 
 
         if (message.type === "UNBAN") {
-            fetch("http://localhost:28852/admin/unban/" + message.sendTo, {
+            fetch(`${serverURL}admin/unban/${message.sendTo}`, {
                 method: 'PUT'
             });
             removeUserFromSelect(message.sendTo, bannedUsers);
@@ -34,15 +34,61 @@ function onMessageReceived(payload) {
             removeUserFromSelect(message.sendTo, bannedUsers);
         }
 
+        if (message.type === "update-name") {
 
-
-        if (message.type === "update") {
-            console.log("userName before updatemsg: " + userName);
             if (userName === message.sender) {
 
                 if (message.sender !== message.content) {
                     userName = message.content;
-                    console.log("userName after updatemsg: " + userName);
+
+                }
+            } else {
+                let onUserbtn = document.querySelector(`.${message.sender}`);
+                let name = onUserbtn.querySelector(`.user`);
+
+                Array.from(document.getElementById("user-to-find").options).forEach(option => {
+
+                    if (option.value === message.sender) {
+                        option.value = message.content;
+                        option.text = message.content;
+
+                    }
+                });
+
+                onUserbtn.classList.replace(`${message.sender}`, `${message.content}`);
+
+                name.innerHTML = `${message.content}`;
+                name.classList.replace(`${message.sender}`, `${message.content}`);
+                setProfilePicture(onUserbtn, message.content);
+
+                if (chatWithElement.innerHTML !== "Public chat") {
+                    privateChatWith = message.content;
+                    chatWithElement.innerHTML = `Private chat with: ${message.content}`;
+                }
+            }
+
+
+            messageContainer.innerHTML = "";
+            getLatestHistory();
+        }
+
+        if (message.type === "update-profilePic") {
+            if (userName !== message.sender) {
+                let onUserbtn = document.querySelector(`.${message.sender}`);
+
+                setProfilePicture(onUserbtn, message.sender);
+
+            }
+            messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
+        }
+
+        /*if (message.type === "update") {
+           
+            if (userName === message.sender) {
+
+                if (message.sender !== message.content) {
+                    userName = message.content;
+                   
                 }
             } else {
                 let onUserbtn = document.querySelector(`.${message.sender}`);
@@ -66,21 +112,19 @@ function onMessageReceived(payload) {
 
                     if (chatWithElement.innerHTML !== "Public chat") {
                         privateChatWith = message.content;
-                        chatWithElement.innerHTML = "Private chat with: " + message.content;
+                        chatWithElement.innerHTML = `Private chat with: ${message.content}`;
                     }
                 } else {
                     setProfilePicture(onUserbtn, message.sender);
                 }
 
-
-                console.log("CLEARING MESSAGE WINDOW");
+               
             }
 
             messageContainer.innerHTML = "";
             getLatestHistory();
 
-        }
-
+        }*/
 
 
         // displaying newest message
@@ -93,7 +137,7 @@ function onMessageReceived(payload) {
             }
 
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === userName) {
-                let incomingMsgUser = document.querySelector("." + message.sender);
+                let incomingMsgUser = document.querySelector(`.${message.sender}`);
                 let msgCounter = incomingMsgUser.querySelector(".message-counter");
 
 
@@ -121,7 +165,7 @@ function onMessageReceived(payload) {
 
         // displaying new user in chat and online user panel
         if (message.type === 'newUser') {
-            let welcomeMsg = "<div class='event-message-container'> <div class='event-message login-event'>" + message.content + "</div></div>";
+            let welcomeMsg = `<div class='event-message-container'><div class='event-message login-event'> ${message.content}</div></div>`;
             messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
 
             if (message.sender != userName) {
@@ -129,8 +173,8 @@ function onMessageReceived(payload) {
             }
 
             if (usersContainer.querySelectorAll("*").length === 0) {
-                console.log(" var 1 triggered num of users " + usersContainer.querySelectorAll("*").length);
-                fetch("http://localhost:28852/users")
+                /*console.log(" var 1 triggered num of users " + usersContainer.querySelectorAll("*").length);*/
+                fetch(`${serverURL}users`)
                     .then(response => response.json())
                     .then(data => {
 
@@ -143,8 +187,8 @@ function onMessageReceived(payload) {
 
 
             } else {
-                console.log(" var 2 triggered num of users " + usersContainer.querySelectorAll("*").length)
-                fetch("http://localhost:28852/users")
+                /*console.log(" var 2 triggered num of users " + usersContainer.querySelectorAll("*").length)*/
+                fetch(`${serverURL}users`)
                     .then(response => response.json())
                     .then(data => {
                         let lastUser = data[data.length - 1];
@@ -171,15 +215,15 @@ function kickUser() {
     var select = document.getElementById("online-users").value;
     if (select != 0) {
 
-        stompClient.send("/app/chat", {}, JSON.stringify(
-            {
-                sender: 'admin',
-                type: 'kick',
-                content: select + ' was kicked out by admin!',
-                sendTo: select,
-                date: actDate()
-            })
-        );
+        stompClient.send("/app/chat", {}, JSON.stringify(prepareAdminMessage(select, 'kick')));
+        /* {
+             sender: 'admin',
+             type: 'kick',
+             content: `${select} was kicked out by admin!`,
+             sendTo: select,
+             date: actDate()
+         })*/
+
         removeUserFromSelect(select, onlineUsers);
     }
 
@@ -209,14 +253,14 @@ function banUser() {
     var select = document.getElementById("online-users").value;
     if (select != "0") {
 
-        stompClient.send("/app/chat", {}, JSON.stringify(
-            {
-                sender: 'admin',
-                type: 'BAN',
-                content: select + ' was BANNED by admin!',
-                sendTo: select,
-                date: actDate()
-            }));
+        stompClient.send("/app/chat", {}, JSON.stringify(prepareAdminMessage(select, 'BAN')));
+        /* {
+             sender: 'admin',
+             type: 'BAN',
+             content: `${select} was BANNED by admin!`,
+             sendTo: select,
+             date: actDate()
+         }));*/
         addUserToSelect(select, bannedUsers);
         removeUserFromSelect(select, onlineUsers);
     };
@@ -226,17 +270,57 @@ function unBanUser() {
     var select = document.getElementById("banned-users").value;
     if (select != "0") {
 
-        stompClient.send("/app/chat", {}, JSON.stringify(
-            {
-                sender: 'admin',
-                type: 'UNBAN',
-                content: select + ' was set free by admin!',
-                sendTo: select,
-                date: actDate()
-            }));
-    };
+        stompClient.send("/app/chat", {}, JSON.stringify(prepareAdminMessage(select, 'UNBAN')));
+        /* {
+             sender: 'admin',
+             type: 'UNBAN',
+             content: select + ' was set free by admin!',
+             sendTo: select,
+             date: actDate()
+         }));*/
+    }
 }
 
+function prepareAdminMessage(targetName, msgType) {
+    let adminmsg;
+
+    if (msgType == 'UNBAN') {
+
+        adminmsg =
+
+        {
+            sender: 'admin',
+            type: msgType,
+            content: `${targetName} was set free by admin!`,
+            sendTo: targetName,
+            date: actDate()
+        }
+    }
+    if (msgType == 'BAN') {
+        adminmsg =
+
+        {
+            sender: 'admin',
+            type: msgType,
+            content: `${targetName} was BANNED by admin!`,
+            sendTo: targetName,
+            date: actDate()
+        }
+    }
+
+    if (msgType == 'kick') {
+        adminmsg =
+
+        {
+            sender: 'admin',
+            type: msgType,
+            content: `${targetName} was kicked out by admin!`,
+            sendTo: targetName,
+            date: actDate()
+        }
+    }
+    return adminmsg;
+}
 
 
 

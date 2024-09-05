@@ -1,5 +1,5 @@
 
-const URL = "http://localhost:28852/";
+const serverURL = "http://localhost:28852/";
 let inputContainer = document.querySelector(".inputContainer");
 let chatScreen = document.querySelector(".chat");
 let msgInputWindow = document.getElementById("input-msg");
@@ -20,7 +20,7 @@ let isScrolledToBottom = true;
 var actDate = () => new Date().toLocaleString();
 
 let stompClient = null;
-let sock = new SockJS(`${URL}chat`);
+let sock = new SockJS(`${serverURL}chat`);
 
 register();
 
@@ -132,15 +132,15 @@ function onMessageReceived(payload) {
 
         if (message.type === "BAN") {
             if (userName === message.sendTo) {
-                fetch(`${URL}admin/banned/${message.sendTo}`, {
+                fetch(`${serverURL}admin/banned/${message.sendTo}`, {
                     method: 'PUT'
                 }).then(response => {
                     if (response.ok) {
-                        fetch(`${URL}logout`, {
+                        fetch(`${serverURL}logout`, {
                             method: 'POST'
                         });
                         stompClient.disconnect();
-                        window.location.href = URL;
+                        window.location.href = serverURL;
                         alert("Admin banned you")
                     }
                 });
@@ -242,7 +242,7 @@ function onMessageReceived(payload) {
         messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
 
         if (usersContainer.querySelectorAll("*").length === 0) {
-            fetch(`${URL}users`)
+            fetch(`${serverURL}users`)
                 .then(response => response.json())
                 .then(data => {
 
@@ -256,7 +256,7 @@ function onMessageReceived(payload) {
 
         } else {
 
-            fetch(`${URL}users`)
+            fetch(`${serverURL}users`)
                 .then(response => response.json())
                 .then(data => {
                     let lastUser = data[data.length - 1];
@@ -276,7 +276,7 @@ function onConnectedSuccessfully() {
 
     stompClient.subscribe("/topic/chat", onMessageReceived);
 
-    fetch(`${URL}users`)
+    fetch(`${serverURL}users`)
         .then(response => response.json())
         .then(data => {
             if (!data.includes(userName)) {
@@ -313,7 +313,7 @@ function switchToPublic() {
 // getting message history form server
 function getLatestHistory() {
     if (chatWithElement.innerHTML === "Public chat") {
-        fetch(`${URL}history/public-latest`)
+        fetch(`${serverURL}history/public-latest`)
             .then(response => response.json())
             .then(message => {
                 message.forEach((msg) => {
@@ -323,7 +323,7 @@ function getLatestHistory() {
             });
 
     } else {
-        fetch(`${URL}history/${privateChatWith}-${userName}/latest`)
+        fetch(`${serverURL}history/${privateChatWith}-${userName}/latest`)
             .then(response => response.json())
             .then(message => {
                 message.forEach((msg) => {
@@ -341,7 +341,7 @@ function getFullPublicHistory() {
 
 
     historyContainer.innerHTML = "";
-    fetch(`${URL}history/public`)
+    fetch(`${serverURL}history/public`)
         .then(response => response.json())
         .then(message => {
             message.forEach((msg) => {
@@ -355,7 +355,7 @@ function getFullPersonalHistory() {
     historyContainer.innerHTML = "";
     let selectedUser = document.getElementById("user-to-find");
 
-    fetch(`${URL}history/${selectedUser.value}-${userName}`)
+    fetch(`${serverURL}history/${selectedUser.value}-${userName}`)
         .then(response => response.json())
         .then(message => {
             message.forEach((msg) => {
@@ -375,7 +375,7 @@ function prepareMessage(messageData) {
         completedMessage = `<div class='event-message-container'><div class='event-message  login-event'>${messageData.content}</div></div>`;
     }
     if (messageData.type === "Leave" || messageData.type === "kick" || messageData.type === "BAN") {
-        console.log(`DEBUG MESSAGES: TYPE - ${messageData.type} \n CONTENT - ${messageData.content}`);
+        /*console.log(`DEBUG MESSAGES: TYPE - ${messageData.type} \n CONTENT - ${messageData.content}`);*/
         completedMessage = `<div class='event-message-container'> <div class='event-message  logout-event'>${messageData.content}</div></div>`;
     }
 
@@ -450,11 +450,11 @@ function setUpOnlineUserBtn(btn) {
 function logOutUser() {
     loggedOutByButton = true;
     try {
-        fetch(`${URL}logout`, {
+        fetch(`${serverURL}logout`, {
             method: 'POST'
         }).then(response => {
             if (response.ok) {
-                window.location.href = URL;
+                window.location.href = serverURL;
             }
         });
     } catch (error) {
@@ -578,7 +578,7 @@ if (userName !== "Admin") {
         let deleteResponse = document.querySelector('.delete-response');
         deleteResponse.innerHTML = "";
 
-        fetch(`${URL}profile/delete`, { method: 'POST', body: formData })
+        fetch(`${serverURL}profile/delete`, { method: 'POST', body: formData })
             .then(response => {
 
                 if (response.ok) {
@@ -607,7 +607,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
 
     const formData = new FormData(this);
     let response = document.querySelector(".response");
-    fetch(`${URL}profile/update`, {
+    fetch(`${serverURL}profile/update`, {
         method: 'POST',
         body: formData
     })
@@ -629,7 +629,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                             "sendTo": "public"
                         }
 
-                        fetch(`${URL}history/update`, {
+                        fetch(`${serverURL}history/update`, {
                             method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -660,7 +660,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                         stompClient.send("/app/chat", {}, JSON.stringify(updateMsg));
                     }
                 }
-
+            }
                 if (data["message"].includes("successfully")) {
                     response.style.color = "#345635";
 
@@ -669,8 +669,9 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                 }
                 response.innerHTML = `${data["message"]}`;
             });
-    clearUpdateForm();
+            clearUpdateForm();
 
+        /*});*/
 });
 //#endregion
 
@@ -691,7 +692,7 @@ function clearOldMsg() {
 
 function setProfilePicture(button, nickname) {
 
-    fetch(`${URL}profile/get/${nickname}`)
+    fetch(`${serverURL}profile/get/${nickname}`)
         .then(response => {
             if (response.ok) {
                 return response.blob();
