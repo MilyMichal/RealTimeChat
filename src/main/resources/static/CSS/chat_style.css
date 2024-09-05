@@ -156,17 +156,14 @@ body {
 
 
 .message-counter-container {
-   /* width: fit-content;*/
     align-self: end;
-  /* visibility: hidden;*/
-    
+    visibility: hidden;
 }
 
 .msg-counter-bg {
     position: relative;
     z-index: 1;
-    
-   }
+}
 
 
 
@@ -192,7 +189,7 @@ body {
     }
 
 .message-counter {
-   /* visibility: hidden;*/
+    /* visibility: hidden;*/
     font: bold;
     color: red;
     /*border-radius: 6px;*/

@@ -211,6 +211,7 @@ function onMessageReceived(payload) {
 
         if (chatWithElement.innerHTML === "Public chat" && message.sendTo === userName) {
             let incomingMsgUser = document.querySelector(`.${message.sender}`);
+            let msgCounterContainer = incomingMsgUser.querySelector(".message-counter-container");
             let msgCounter = incomingMsgUser.querySelector(".message-counter");
 
 
@@ -219,7 +220,7 @@ function onMessageReceived(payload) {
 
             let count = parseInt(msgCounter.innerHTML) + 1;
             msgCounter.innerText = count;
-            msgCounter.style.setProperty("visibility", "visible");
+            msgCounterContainer.style.setProperty("visibility", "visible");
 
         }
 
@@ -408,7 +409,20 @@ function updateOnlineUserList(userData) {
         let user = `<button class='user-container ${userData.nickname}' type='button'>
                                     <img class='profile-img-online' src= '' alt='Profile Picture'>
                                     <span class='user'>${userData.nickname}</span>
-                                    <span class='message-counter'>0</span>
+                                    <span class="message-counter-container">
+                                    <span class="msg-counter-bg">
+                                    <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" width="17px"
+                                    height="17px" viewBox="0 0 64 64"
+                                    xml:space="preserve">
+                                    <g>
+	                                    <rect x="1" y="13" fill="none" stroke="#C6AC8E" stroke-width="2" stroke-miterlimit="10" width="62" height="37"/>
+	                                    <polyline fill="none" stroke="#C6AC8E" stroke-width="2" stroke-miterlimit="10" points="1,13 32,33 63,13"/>
+                                    </g>
+                                    </svg>
+                                    </span>
+                                    <span class="message-counter">0</span>
+                                    </span>
+                                                                       
                                     </button >`;
 
         usersContainer.insertAdjacentHTML("beforeend", user);
@@ -434,7 +448,7 @@ function setUpOnlineUserBtn(btn) {
         publicBtn.style.setProperty("color", "#C6AC8E");
         messageContainer.innerHTML = "";
         if (btn.querySelector(".message-counter").innerHTML !== "0") {
-            btn.querySelector(".message-counter").style.setProperty("visibility", "hidden");
+            btn.querySelector(".message-counter-container").style.setProperty("visibility", "hidden");
             btn.querySelector(".message-counter").innerHTML = "0";
         }
 
@@ -661,17 +675,17 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                     }
                 }
             }
-                if (data["message"].includes("successfully")) {
-                    response.style.color = "#345635";
+            if (data["message"].includes("successfully")) {
+                response.style.color = "#345635";
 
-                } else {
-                    response.style.color = "#7E102C";
-                }
-                response.innerHTML = `${data["message"]}`;
-            });
-            clearUpdateForm();
+            } else {
+                response.style.color = "#7E102C";
+            }
+            response.innerHTML = `${data["message"]}`;
+        });
+    clearUpdateForm();
 
-        /*});*/
+    /*});*/
 });
 //#endregion
 

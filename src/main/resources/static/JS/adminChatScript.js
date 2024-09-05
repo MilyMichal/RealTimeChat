@@ -82,50 +82,7 @@ function onMessageReceived(payload) {
             messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
         }
 
-        /*if (message.type === "update") {
-           
-            if (userName === message.sender) {
-
-                if (message.sender !== message.content) {
-                    userName = message.content;
-                   
-                }
-            } else {
-                let onUserbtn = document.querySelector(`.${message.sender}`);
-                let name = onUserbtn.querySelector(`.user`);
-                if (message.sender !== message.content) {
-
-                    Array.from(document.getElementById("user-to-find").options).forEach(option => {
-
-                        if (option.value === message.sender) {
-                            option.value = message.content;
-                            option.text = message.content;
-
-                        }
-                    });
-
-                    onUserbtn.classList.replace(`${message.sender}`, `${message.content}`);
-
-                    name.innerHTML = `${message.content}`;
-                    name.classList.replace(`${message.sender}`, `${message.content}`);
-                    setProfilePicture(onUserbtn, message.content);
-
-                    if (chatWithElement.innerHTML !== "Public chat") {
-                        privateChatWith = message.content;
-                        chatWithElement.innerHTML = `Private chat with: ${message.content}`;
-                    }
-                } else {
-                    setProfilePicture(onUserbtn, message.sender);
-                }
-
-               
-            }
-
-            messageContainer.innerHTML = "";
-            getLatestHistory();
-
-        }*/
-
+     
 
         // displaying newest message
         if (message.type === 'message') {
@@ -138,6 +95,7 @@ function onMessageReceived(payload) {
 
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === userName) {
                 let incomingMsgUser = document.querySelector(`.${message.sender}`);
+                let msgCounterContainer = incomingMsgUser.querySelector(".message-counter-container");
                 let msgCounter = incomingMsgUser.querySelector(".message-counter");
 
 
@@ -146,7 +104,7 @@ function onMessageReceived(payload) {
 
                 let count = parseInt(msgCounter.innerHTML) + 1;
                 msgCounter.innerText = count;
-                msgCounter.style.setProperty("visibility", "visible");
+                msgCounterContainer.style.setProperty("visibility", "visible");
 
             }
 
