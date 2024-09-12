@@ -132,7 +132,7 @@ function onMessageReceived(payload) {
 
         if (message.type === "BAN") {
             if (userName === message.sendTo) {
-                fetch(`${serverURL}admin/banned/${message.sendTo}`, {
+                fetch(`${serverURL}admin/banned/${message.sendTo}-${message.content}`, {
                     method: 'PUT'
                 }).then(response => {
                     if (response.ok) {
@@ -375,11 +375,15 @@ function prepareMessage(messageData) {
     if (messageData.type === "newUser") {
         completedMessage = `<div class='event-message-container'><div class='event-message  login-event'>${messageData.content}</div></div>`;
     }
-    if (messageData.type === "Leave" || messageData.type === "kick" || messageData.type === "BAN") {
-        /*console.log(`DEBUG MESSAGES: TYPE - ${messageData.type} \n CONTENT - ${messageData.content}`);*/
+    if (messageData.type === "Leave" || messageData.type === "kick" /*|| messageData.type === "BAN"*/) {
+        
         completedMessage = `<div class='event-message-container'> <div class='event-message  logout-event'>${messageData.content}</div></div>`;
     }
-
+    //
+    if (messageData.type === "BAN") {
+        completedMessage = `<div class='event-message-container'> <div class='event-message  logout-event'>${messageData.sendTo} was banned by admin for ${messageData.content} minutes! </div></div>`;
+    }
+    //
     if (messageData.type === "update-name") {
         completedMessage = `<div class='event-message-container'> <div class='event-message  login-event'>${messageData.sender} changed his name to: ${messageData.content}</div></div>`;
     }

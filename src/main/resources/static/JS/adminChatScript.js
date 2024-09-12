@@ -2,6 +2,8 @@
 let onlineUsers = document.getElementById("online-users");
 let bannedUsers = document.getElementById("banned-users")
 
+var banDuration = () => document.getElementById("ban-duration").value;
+
 
 function onMessageReceived(payload) {
 
@@ -174,14 +176,7 @@ function kickUser() {
     if (select != 0) {
 
         stompClient.send("/app/chat", {}, JSON.stringify(prepareAdminMessage(select, 'kick')));
-        /* {
-             sender: 'admin',
-             type: 'kick',
-             content: `${select} was kicked out by admin!`,
-             sendTo: select,
-             date: actDate()
-         })*/
-
+       
         removeUserFromSelect(select, onlineUsers);
     }
 
@@ -212,13 +207,7 @@ function banUser() {
     if (select != "0") {
 
         stompClient.send("/app/chat", {}, JSON.stringify(prepareAdminMessage(select, 'BAN')));
-        /* {
-             sender: 'admin',
-             type: 'BAN',
-             content: `${select} was BANNED by admin!`,
-             sendTo: select,
-             date: actDate()
-         }));*/
+      
         addUserToSelect(select, bannedUsers);
         removeUserFromSelect(select, onlineUsers);
     };
@@ -229,13 +218,7 @@ function unBanUser() {
     if (select != "0") {
 
         stompClient.send("/app/chat", {}, JSON.stringify(prepareAdminMessage(select, 'UNBAN')));
-        /* {
-             sender: 'admin',
-             type: 'UNBAN',
-             content: select + ' was set free by admin!',
-             sendTo: select,
-             date: actDate()
-         }));*/
+        
     }
 }
 
@@ -260,7 +243,7 @@ function prepareAdminMessage(targetName, msgType) {
         {
             sender: 'admin',
             type: msgType,
-            content: `${targetName} was BANNED by admin!`,
+            content: banDuration(),
             sendTo: targetName,
             date: actDate()
         }

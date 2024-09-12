@@ -17,17 +17,17 @@ public class AdminController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/banned/{userName}")
-    public void banUser(@PathVariable String userName) {
-        LocalDateTime banExp = LocalDateTime.now().plusMinutes(1);
-        /*System.out.println("RESTCONTROLLER DEBUG METHOD");*/
+    @PutMapping("/banned/{userName}-{banDuration}")
+    public void banUser(@PathVariable String userName,@PathVariable int banDuration) {
+        LocalDateTime banExp = LocalDateTime.now().plusMinutes(banDuration);
+
         userStorageService.banUser(userName, banExp);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/unban/{userName}")
     public void unBanUser(@PathVariable String userName) {
-        /*System.out.println("RESTCONTROLLER UNBAN DEBUG METHOD");*/
+
         userStorageService.unBanUser(userName);
     }
 
