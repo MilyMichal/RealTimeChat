@@ -24,7 +24,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE messages SET sender = CASE WHEN sender = :oldName AND type != 'update' THEN :newName ELSE sender END, send_to = CASE WHEN send_to = :oldName AND type != 'update' THEN :newName ELSE send_to END WHERE sender = :oldName OR send_to = :oldName " +
+    @Query(value = "UPDATE messages SET sender = CASE WHEN sender = :oldName AND type != 'update-name' THEN :newName ELSE sender END, send_to = CASE WHEN send_to = :oldName AND type != 'update-name' THEN :newName ELSE send_to END WHERE sender = :oldName OR send_to = :oldName " +
             ";UPDATE online_users SET nickname = :newName WHERE nickname = :oldName",nativeQuery = true)
     void updateHistory (@Param("oldName") String oldName, @Param("newName") String newName);
 
