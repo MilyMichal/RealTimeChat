@@ -98,7 +98,7 @@
             <select id="ban-duration" class="form-select select-basic PO-ss-400 rnd-brd-10r">
                 <option value="30"> 30 min</option>
                 <option value="60"> 1 h</option>
-                <option value="86400">1 day</option>
+                <option value="1440">1 day</option>
 
             </select>
 
@@ -245,6 +245,7 @@
 </div>
 
 <div id="user-data" th:data-user="${user}"></div>
+<div id="serverURL" th:data-URL="${serverURL}"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"
         integrity="sha512-aHuAnb+FZ/yM5zYvdiA8q0sxLdsBQ3PRwO8D/08qsenCLQ2gWsosB43Cn1X8esAz0IpaC7Ns5cAPyKIdJQ0hNw=="

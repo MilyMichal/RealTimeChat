@@ -1,5 +1,5 @@
 
-const serverURL = "http://localhost:28852/";
+const serverURL = document.getElementById("serverURL").getAttribute("data-URL");
 let inputContainer = document.querySelector(".inputContainer");
 let chatScreen = document.querySelector(".chat");
 let msgInputWindow = document.getElementById("input-msg");
@@ -26,6 +26,7 @@ register();
 
 var userNameElement = document.getElementById("user-data");
 var userName = userNameElement.getAttribute("data-user");
+
 
 
 //event listener for logout user from list after closing chat page
@@ -525,6 +526,7 @@ window.onclick = function (event) {
                 modal.style.display = "none";
             }
         });
+        historyContainer.innerHTML = "";
         clearUpdateForm();
 
     }
