@@ -154,10 +154,10 @@ function onMessageReceived(payload) {
 
             if (userName === message.sender) {
 
-                if (message.sender !== message.content) {
+              // if (message.sender !== message.content) {
                     userName = message.content;
 
-                }
+              //  }
             } else {
                 let onUserbtn = document.querySelector(`.${message.sender}`);
                 let name = onUserbtn.querySelector(`.user`);
