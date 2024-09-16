@@ -105,6 +105,7 @@ function send() {
         }
         stompClient.send("/app/chat", {}, JSON.stringify(finalMsg));
     }
+    msgInputWindow.innerHTML = "";
 }
 
 //function for getting messages and online users from server
@@ -207,7 +208,7 @@ function onMessageReceived(payload) {
         if (chatWithElement.innerHTML === "Public chat" && message.sendTo === "public") {
 
             messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
-            msgInputWindow.value = "";
+            //msgInputWindow.value = "";
         }
 
         if (chatWithElement.innerHTML === "Public chat" && message.sendTo === userName) {
@@ -229,7 +230,7 @@ function onMessageReceived(payload) {
             (message.sendTo == privateChatWith && message.sender == userName)) {
 
             messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
-            msgInputWindow.value = "";
+            //msgInputWindow.value = "";
 
         }
         clearOldMsg();
