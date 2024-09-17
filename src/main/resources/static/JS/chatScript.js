@@ -20,7 +20,8 @@ let isScrolledToBottom = true;
 var actDate = () => new Date().toLocaleString();
 
 let stompClient = null;
-let sock = new SockJS(`${serverURL}chat`);
+let sock = new SockJS(`${serverURL}chat`, null, {
+    debug: false});
 
 register();
 
@@ -71,6 +72,7 @@ function register() {
     // establishing connection
 
     stompClient = Stomp.over(sock);
+    stompClient.debug = null;
     stompClient.connect({}, onConnectedSuccessfully, (error) => {
         console.log('unable to connect' + error);
     });
