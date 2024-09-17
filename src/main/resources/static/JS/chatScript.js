@@ -156,10 +156,10 @@ function onMessageReceived(payload) {
 
             if (userName === message.sender) {
 
-              // if (message.sender !== message.content) {
-                    userName = message.content;
+                // if (message.sender !== message.content) {
+                userName = message.content;
 
-              //  }
+                //  }
             } else {
                 let onUserbtn = document.querySelector(`.${message.sender}`);
                 let name = onUserbtn.querySelector(`.user`);
@@ -242,36 +242,57 @@ function onMessageReceived(payload) {
 
     // displaying new user in chat and online user panel
     if (message.type === 'newUser') {
-        let welcomeMsg = `<div class='event-message-container'> <div class='event-message login-event'>${message.content}</div></div>`;
-        messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
+        //let welcomeMsg = `<div class='event-message-container'> <div class='event-message login-event'>${message.content}</div></div>`;
+        // messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
+        messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
+        fetch(`${serverURL}users`)
+            .then(response => response.json())
+            .then(data => {
+                showOnlineUsers(data);
+                /* if (usersContainer.querySelectorAll("*").length === 0) {
+                     fetch(`${serverURL}users`)
+                         .then(response => response.json())
+                         .then(data => {
+         
+                             data.forEach(onlineUser => {
+                                 updateOnlineUserList(onlineUser);
+         
+                             });
+         
+                         });
+         
+         
+                 } else {
+         
+                     fetch(`${serverURL}users`)
+                         .then(response => response.json())
+                         .then(data => {
+                             let lastUser = data[data.length - 1];
+                             updateOnlineUserList(lastUser);
+         
+                         });
+         
+         
+                 }*/
+            });
 
-        if (usersContainer.querySelectorAll("*").length === 0) {
-            fetch(`${serverURL}users`)
-                .then(response => response.json())
-                .then(data => {
-
-                    data.forEach(onlineUser => {
-                        updateOnlineUserList(onlineUser);
-
-                    });
-
-                });
-
-
-        } else {
-
-            fetch(`${serverURL}users`)
-                .then(response => response.json())
-                .then(data => {
-                    let lastUser = data[data.length - 1];
-                    updateOnlineUserList(lastUser);
-
-                });
-
-
-        }
     }
+}
 
+function showOnlineUsers(usersList) {
+   /* fetch(`${serverURL}users`)
+        .then(response => response.json())
+        .then(data => {*/
+            if (usersContainer.querySelectorAll("*").length === 0) {
+                usersList.forEach(onlineUser => {
+                    updateOnlineUserList(onlineUser);
+
+                });
+            } else {
+                let lastUser = usersList[usersList.length - 1];
+                updateOnlineUserList(lastUser);
+            }
+       // });
 }
 
 
@@ -283,8 +304,10 @@ function onConnectedSuccessfully() {
     fetch(`${serverURL}users`)
         .then(response => response.json())
         .then(data => {
-            if (!data.includes(userName)) {
-
+            let info = JSON.stringify(data);
+            console.log(`DEBUG onConnectionSuccesfully method : ${info}`);
+            if (!info.includes(userName)) {
+                console.log(`DEBUG onConnectionSuccesfully NOT INCLUDED: ${userName}`);
                 stompClient.send("/app/user", {}, JSON.stringify(
                     {
                         sender: userName,
@@ -293,6 +316,8 @@ function onConnectedSuccessfully() {
                         sendTo: "public",
                         date: actDate()
                     }));
+            } else {
+                showOnlineUsers(data);
             }
         });
 }
