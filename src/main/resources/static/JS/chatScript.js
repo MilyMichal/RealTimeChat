@@ -104,8 +104,9 @@ function send() {
 
         }
         stompClient.send("/app/chat", {}, JSON.stringify(finalMsg));
+        msgInputWindow.value = "";
     }
-    msgInputWindow.innerHTML = "";
+    
 }
 
 //function for getting messages and online users from server
