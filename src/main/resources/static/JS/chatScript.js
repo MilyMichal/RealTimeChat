@@ -55,8 +55,8 @@ if (!sessionStorage.getItem('chatVisited')) {
 
 
 //event listener for sending msg by pressing Enter
-msgInputWindow.addEventListener("keypress", (event) => {
-    if (event.code === "Enter") {
+msgInputWindow.addEventListener("keydown", (event) => {
+    if (event.altKey && event.code === "Enter") {
         send();
     }
 });
@@ -104,7 +104,7 @@ function send() {
 
         }
         stompClient.send("/app/chat", {}, JSON.stringify(finalMsg));
-        msgInputWindow.value = "";
+        msgInputWindow.value ="";
     }
     
 }
@@ -186,7 +186,7 @@ function onMessageReceived(payload) {
             }
 
 
-            messageContainer.innerHTML = "";
+            messageContainer.innerHTML ="";
             getLatestHistory();
         }
 

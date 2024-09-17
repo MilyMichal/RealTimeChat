@@ -23,7 +23,7 @@ public class AppUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findUserByUserName(username)
                 .map(SecuredUser::new)
-                .orElseThrow(() -> new UsernameNotFoundException("There is no user with username \"" + username + "\""));
+                .orElseThrow(() -> new UsernameNotFoundException("There is no user with nickname \"" + username + "\""));
     }
 
     @Override

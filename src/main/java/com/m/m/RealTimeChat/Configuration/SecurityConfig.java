@@ -51,21 +51,14 @@ public class SecurityConfig {
                         .permitAll()
                         .failureUrl("/login-error")
                 )
-
                 .authenticationProvider(customAuthenticationProvider)
                 .userDetailsService(appUserDetailService)
-                /* .sessionManagement(session -> session
-                                 //.invalidSessionUrl("/session-expired")
-                                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).maximumSessions(1)*/
-
-                /*.maximumSessions(1)
-                .maxSessionsPreventsLogin(true)
-                .expiredUrl("/sessionError")*/
                 .logout(logout -> logout.logoutSuccessUrl("/").permitAll()
 
                         .addLogoutHandler(customLogoutHandler())
                         .logoutSuccessUrl("/")
                         .deleteCookies("JSESSIONID").invalidateHttpSession(true)
+
 
                 )
 

@@ -142,6 +142,8 @@ public class ProfileSettingsService {
                     message.put("message", "New username must be different from the current one");
                 }
             }
+        } else {
+            message.put("message","Incorrect password");
         }
         return message;
     }
