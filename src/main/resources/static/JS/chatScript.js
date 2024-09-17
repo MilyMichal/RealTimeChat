@@ -76,7 +76,7 @@ function register() {
     });
 
     // loading chat history for new user
-    getLatestHistory();
+   // getLatestHistory();
 }
 
 //function for sending msg to server
@@ -299,6 +299,11 @@ function showOnlineUsers(usersList) {
 //connecting new user
 function onConnectedSuccessfully() {
 
+    //
+    messageContainer.innerHTML = "";
+    getLatestHistory();
+    //
+
     stompClient.subscribe("/topic/chat", onMessageReceived);
 
     fetch(`${serverURL}users`)
@@ -367,7 +372,6 @@ function getLatestHistory() {
 }
 
 function getFullPublicHistory() {
-
 
     historyContainer.innerHTML = "";
     fetch(`${serverURL}history/public`)
