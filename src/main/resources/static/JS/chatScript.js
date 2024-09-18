@@ -56,11 +56,27 @@ if (!sessionStorage.getItem('chatVisited')) {
 
 
 //event listener for sending msg by pressing Enter
-msgInputWindow.addEventListener("keydown", (event) => {
-    if (event.altKey && event.code === "Enter") {
+msgInputWindow.addEventListener("keypress", (event) => {
+    if (event.code === "Enter") {
+        event.preventDefault();
         send();
     }
 });
+
+msgInputWindow.addEventListener("keydown", (event) => {
+    if (event.shiftKey && event.code === "Enter") {
+        event.preventDefault();
+        const start = msgInputWindow.selectionStart;
+        const end = msgInputWindow.selectionEnd;
+
+
+        msgInputWindow.value = msgInputWindow.value.substring(0, start) + '\n' + msgInputWindow.value.substring(end);
+
+
+        msgInputWindow.selectionStart = msgInputWindow.selectionEnd = start + 1;
+    }
+});
+
 
 messageContainer.addEventListener('scroll', () => {
     isScrolledToBottom = messageContainer.scrollHeight - messageContainer.clientHeight <= messageContainer.scrollTop + 1;
