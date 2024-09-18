@@ -778,10 +778,10 @@ emoji-picker {
 }
 
 .emoji-window {
-    top: -307px;
-    left: -215px;
-    width: 250px;
-    height: 250px;
+    top: -398px;
+    left: -317px;
+    width: 350px;
+    height: 350px;
     position: relative;
     display: block;
 }
