@@ -373,24 +373,44 @@ function getLatestHistory() {
             .then(message => {
                 message.forEach((msg) => {
                     prepareMessage(messageContainer, msg);
-                   // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
+                    // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
                 });
             });
 
     } else {
         fetch(`${serverURL}history/${privateChatWith}-${userName}/latest`)
-            .then(response => response.json())
-            .then(message => {
-                message.forEach((msg) => {
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error("Acces DENIED!");
+                }
+
+            }).then(data => {
+                data.forEach((msg) => {
                     prepareMessage(messageContainer, msg);
-                   // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
-
                 });
+            })
+            .catch(error => {
+                console.log(`Nastala chyba: ${error}`);
+
+
+                /* fetch(`${serverURL}history/${privateChatWith}-${userName}/latest`)
+                    .then(response => response.json())
+                    .then(message => {
+                        message.forEach((msg) => {
+                            prepareMessage(messageContainer, msg);
+                           // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
+        
+                        });
+                    });*/
+
             });
-
     }
-
 }
+
+
+
 
 function getFullPublicHistory() {
 

@@ -3,8 +3,10 @@ package com.m.m.RealTimeChat.Controllers;
 
 import com.m.m.RealTimeChat.Models.Message;
 import com.m.m.RealTimeChat.Services.MessageHistoryService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -40,8 +42,8 @@ public class MessageHistoryController {
 
     @GetMapping("/history/{sendTo}-{sender}/latest")
     @ResponseBody
-    public List<Message> distributeLatestPrivateMessageHistory(@PathVariable String sendTo, @PathVariable String sender) {
-        return messageHistoryService.getLatestPrivateHistory(sendTo, sender);
+    public ResponseEntity<?> distributeLatestPrivateMessageHistory(@PathVariable String sendTo, @PathVariable String sender, Principal principal) {
+        return messageHistoryService.getLatestPrivateHistory(sendTo, sender, principal);
     }
 
     @PutMapping("history/update")
