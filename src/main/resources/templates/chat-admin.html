@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <!-- <meta charset="utf-8">-->
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" th:href="@{CSS/chat_style.css}">
     <!--<link rel="stylesheet" type="text/css" href="/static/CSS/chat_style.css">-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
@@ -104,9 +104,7 @@
 
 
         </div>
-        <!--<div class="admin-feat" id="ban-option">
 
-        </div>-->
 
         <div class="admin-feat-bannedUsers" id="unBan-option">
             <select id="banned-users" class="form-select select-basic PO-ss-400 rnd-brd-10l"
@@ -127,31 +125,12 @@
 
     <div class="chat-main-windows">
 
-        <!--<div class="chat">-->
-        <div class="online-user-panel">
+           <div class="online-user-panel">
             <div class="online-users-header head-font rnd-brd-15t">
                 Online users
             </div>
             <div id="users">
 
-                <!--  <button class="user-container" type="button" >
-                      <img class="profile-img-online" src="/ProfilePic/defaultPic.jpg" alt="profile pic">
-                      <span class="user"> Azrael </span>
-                      <span class="new-message-counter"></span>
-
-                  </button>
-                  <button class="user-container" type="button" >
-                      <img class="profile-img-online" src="/ProfilePic/defaultPic.jpg" alt="profile pic">
-                      <span class="user"> Azrael </span>
-                      <span class="new-message-counter"></span>
-
-                  </button>
-                  <button class="user-container" type="button" >
-                      <img class="profile-img-online" src="/ProfilePic/defaultPic.jpg" alt="profile pic">
-                      <span class="user"> Azrael </span>
-                      <span class="new-message-counter"></span>
-
-                  </button>-->
 
             </div>
             <button id="public-chat-btn" class="rnd-brd-15b" type="button" onclick="switchToPublic()" disabled>Public
@@ -161,44 +140,6 @@
         <div class="chat-window">
             <div id="chat-with" class="head-font rnd-brd-15t">Public chat</div>
             <div id="messages">
-
-
-                <!-- <div class="message-container revert ">
-                     <div class="sender"> Askir
-                         <img class="profile-img" src="/ProfilePic/defaultPic.jpg" alt="avatar">
-                     </div>
-                     <div class="message right-msg">
-                         <div class="date" onmouseup="showDate()">22.1.2024</div>
-                         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
-                         laboriosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
-                         in
-                         molestias officia sed sint ullam.
-
-                     </div>
-                 </div>
-
-                 <div class="message-container">
-                     <div class="sender"> Askir
-                         <img class="profile-img" src="/ProfilePic/Azrael/profileImg.jpg" alt="avatar">
-                         &lt;!&ndash;<div class="new-date">22.1.2024</div>&ndash;&gt;</div>
-                     <div class="message left-msg">
-                         <div class="date">22.1.2024</div>
-                         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut dignissimos distinctio id illum
-                         laboriosam libero maiores necessitatibus quas quidem totam? Adipisci aperiam asperiores beatae
-                         in
-                         molestias officia sed sint ullam.
-
-                     </div>
-                 </div>
-                 &lt;!&ndash;<div class="event-message-container">&ndash;&gt;
-                 <div class='event-message logout-event'>
-                     Skaman just logged out.
-                 </div>
-                 &lt;!&ndash;            </div>&ndash;&gt;
-                 &lt;!&ndash;<div class="event-message-container">&ndash;&gt;
-                 <div class='event-message login-event'>
-                     Skaman just enter the chat.
-                 </div>-->
 
 
             </div>

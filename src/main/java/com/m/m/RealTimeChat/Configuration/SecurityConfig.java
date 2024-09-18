@@ -5,11 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.AnonymousConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 import org.springframework.security.web.authentication.logout.LogoutHandler;
@@ -56,14 +56,13 @@ public class SecurityConfig {
                 .logout(logout -> logout.logoutSuccessUrl("/").permitAll()
 
                         .addLogoutHandler(customLogoutHandler())
-                        .logoutSuccessUrl("/")
+                        //.logoutSuccessUrl("/")
                         .deleteCookies("JSESSIONID").invalidateHttpSession(true)
 
 
                 )
 
-
-
+                .anonymous(AnonymousConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .build();
     }
