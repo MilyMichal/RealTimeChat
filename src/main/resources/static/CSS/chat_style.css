@@ -247,6 +247,7 @@ body {
     width: fit-content;
     height: auto;
     overflow-wrap: anywhere;
+    white-space:pre-wrap;
     /*overflow-y: auto;*/
     flex-grow: 4;
     order: 1;
