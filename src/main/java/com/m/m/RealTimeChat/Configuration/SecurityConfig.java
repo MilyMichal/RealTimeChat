@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers("/", "Images/**", "/CSS/**", "/register", "logout", "/ProfilePic/**","/error").permitAll()
+                        .requestMatchers("/history/**").hasAnyRole("ADMIN","user")
                        /* .requestMatchers(HttpMethod.DELETE,"/delete").authenticated()*/
                         .anyRequest().authenticated()
 

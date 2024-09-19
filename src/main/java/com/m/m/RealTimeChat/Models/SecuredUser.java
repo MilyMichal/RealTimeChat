@@ -20,7 +20,7 @@ public class SecuredUser implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Arrays.stream(user.getRoles()
                 .split(","))
-                .map(SimpleGrantedAuthority::new)
+                .map(role -> new SimpleGrantedAuthority("ROLE_"+role.trim()))
                 .toList();
     }
 
