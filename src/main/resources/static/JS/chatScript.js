@@ -1,5 +1,9 @@
 
 const serverURL = document.getElementById("serverURL").getAttribute("data-URL");
+
+const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
 let inputContainer = document.querySelector(".inputContainer");
 let chatScreen = document.querySelector(".chat");
 let msgInputWindow = document.getElementById("input-msg");
@@ -21,7 +25,8 @@ var actDate = () => new Date().toLocaleString();
 
 let stompClient = null;
 let sock = new SockJS(`${serverURL}chat`, null, {
-    debug: false});
+    debug: false
+});
 
 register();
 
@@ -94,7 +99,7 @@ function register() {
     });
 
     // loading chat history for new user
-   // getLatestHistory();
+    // getLatestHistory();
 }
 
 //function for sending msg to server
@@ -122,9 +127,9 @@ function send() {
 
         }
         stompClient.send("/app/chat", {}, JSON.stringify(finalMsg));
-        msgInputWindow.value ="";
+        msgInputWindow.value = "";
     }
-    
+
 }
 
 //function for getting messages and online users from server
@@ -135,7 +140,7 @@ function onMessageReceived(payload) {
 
     if (message.type) {
         if (message.type === "Leave") {
-            prepareMessage(messageContainer,message);
+            prepareMessage(messageContainer, message);
             //messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
             if (usersContainer.querySelector(`.${message.sender}`)) {
                 usersContainer.querySelector(`.${message.sender}`).remove();
@@ -204,7 +209,7 @@ function onMessageReceived(payload) {
             }
 
 
-            messageContainer.innerHTML ="";
+            messageContainer.innerHTML = "";
             getLatestHistory();
         }
 
@@ -216,7 +221,7 @@ function onMessageReceived(payload) {
 
             }
             prepareMessage(messageContainer, message);
-           // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
+            // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
         }
 
     }
@@ -224,11 +229,11 @@ function onMessageReceived(payload) {
 
     // displaying newest message
     if (message.type === 'message') {
-       // let html;
+        // let html;
         if (chatWithElement.innerHTML === "Public chat" && message.sendTo === "public") {
 
             prepareMessage(messageContainer, message);
-           // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
+            // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
             //msgInputWindow.value = "";
         }
 
@@ -250,7 +255,7 @@ function onMessageReceived(payload) {
         if ((userName == message.sendTo && message.sender == privateChatWith) ||
             (message.sendTo == privateChatWith && message.sender == userName)) {
             prepareMessage(messageContainer, message);
-           // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
+            // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
             //msgInputWindow.value = "";
 
         }
@@ -265,7 +270,7 @@ function onMessageReceived(payload) {
         //let welcomeMsg = `<div class='event-message-container'> <div class='event-message login-event'>${message.content}</div></div>`;
         // messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
         prepareMessage(messageContainer, message);
-       // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
+        // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
         fetch(`${serverURL}users`)
             .then(response => response.json())
             .then(data => {
@@ -301,19 +306,19 @@ function onMessageReceived(payload) {
 }
 
 function showOnlineUsers(usersList) {
-   /* fetch(`${serverURL}users`)
-        .then(response => response.json())
-        .then(data => {*/
-            if (usersContainer.querySelectorAll("*").length === 0) {
-                usersList.forEach(onlineUser => {
-                    updateOnlineUserList(onlineUser);
+    /* fetch(`${serverURL}users`)
+         .then(response => response.json())
+         .then(data => {*/
+    if (usersContainer.querySelectorAll("*").length === 0) {
+        usersList.forEach(onlineUser => {
+            updateOnlineUserList(onlineUser);
 
-                });
-            } else {
-                let lastUser = usersList[usersList.length - 1];
-                updateOnlineUserList(lastUser);
-            }
-       // });
+        });
+    } else {
+        let lastUser = usersList[usersList.length - 1];
+        updateOnlineUserList(lastUser);
+    }
+    // });
 }
 
 
@@ -360,6 +365,8 @@ function switchToPublic() {
             activeBtn.classList.remove("active");
         }
         getLatestHistory();
+
+        messageContainer.scrollTop = messageContainer.scrollHeight;
         privateChatWith = "";
         publicBtn.disabled = true;
         publicBtn.style.setProperty("color", "darkgrey");
@@ -419,7 +426,7 @@ function getFullPublicHistory() {
         .then(response => response.json())
         .then(message => {
             message.forEach((msg) => {
-                prepareMessage(historyContainer,msg);
+                prepareMessage(historyContainer, msg);
                 //historyContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
             });
         });
@@ -504,40 +511,40 @@ function prepareMessage(container, messageData) {
         }
         container.appendChild(newMessageContainer);
 
-    } else { 
+    } else {
 
-          
 
-    if (messageData.type === "newUser") {
-        
-        
-       /* eventMessageContainer.querySelector(".event-message").classList.add("login-event");
-        eventMessageContainer.querySelector(".event-message").innerHTML = messageData.content;
-        
-        messageContainer.appendChild(eventMessageContainer);*/
-       completedMessage = `<div class='event-message-container'><div class='event-message  login-event'>${messageData.content}</div></div>`;
-    }
-    if (messageData.type === "Leave" || messageData.type === "kick" /*|| messageData.type === "BAN"*/) {
-        //eventMessageContainer.querySelector(".event-message").classList.add("logout-event");
-       // eventMessageContainer.querySelector(".event-message").appendChild(rawText);
-       completedMessage = `<div class='event-message-container'> <div class='event-message  logout-event'>${messageData.content}</div></div>`;
-    }
-    
-    if (messageData.type === "BAN") {
-        completedMessage = `<div class='event-message-container'> <div class='event-message  logout-event'>${messageData.sendTo} was banned by admin for ${messageData.content} minutes! </div></div>`;
-    }
-    
-    if (messageData.type === "update-name") {
-        completedMessage = `<div class='event-message-container'> <div class='event-message  login-event'>${messageData.sender} changed his name to: ${messageData.content}</div></div>`;
-    }
 
-    if (messageData.type === "update-profilePic") {
-        completedMessage = `<div class='event-message-container'> <div class='event-message  login-event'>${messageData.sender} changed his profile picture</div></div>`;
+        if (messageData.type === "newUser") {
+
+
+            /* eventMessageContainer.querySelector(".event-message").classList.add("login-event");
+             eventMessageContainer.querySelector(".event-message").innerHTML = messageData.content;
+             
+             messageContainer.appendChild(eventMessageContainer);*/
+            completedMessage = `<div class='event-message-container'><div class='event-message  login-event'>${messageData.content}</div></div>`;
+        }
+        if (messageData.type === "Leave" || messageData.type === "kick" /*|| messageData.type === "BAN"*/) {
+            //eventMessageContainer.querySelector(".event-message").classList.add("logout-event");
+            // eventMessageContainer.querySelector(".event-message").appendChild(rawText);
+            completedMessage = `<div class='event-message-container'> <div class='event-message  logout-event'>${messageData.content}</div></div>`;
+        }
+
+        if (messageData.type === "BAN") {
+            completedMessage = `<div class='event-message-container'> <div class='event-message  logout-event'>${messageData.sendTo} was banned by admin for ${messageData.content} minutes! </div></div>`;
+        }
+
+        if (messageData.type === "update-name") {
+            completedMessage = `<div class='event-message-container'> <div class='event-message  login-event'>${messageData.sender} changed his name to: ${messageData.content}</div></div>`;
+        }
+
+        if (messageData.type === "update-profilePic") {
+            completedMessage = `<div class='event-message-container'> <div class='event-message  login-event'>${messageData.sender} changed his profile picture</div></div>`;
         }
         container.insertAdjacentHTML("beforeend", completedMessage);
 
     }
-   
+
 }
 
 function updateOnlineUserList(userData) {
@@ -599,10 +606,16 @@ function setUpOnlineUserBtn(btn) {
 
 
 function logOutUser() {
+    /*const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');*/
+
     loggedOutByButton = true;
     try {
         fetch(`${serverURL}logout`, {
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                [csrfHeader]: csrfToken
+            }
         }).then(response => {
             if (response.ok) {
                 window.location.href = serverURL;
@@ -730,7 +743,15 @@ if (userName !== "Admin") {
         let deleteResponse = document.querySelector('.delete-response');
         deleteResponse.innerHTML = "";
 
-        fetch(`${serverURL}profile/delete`, { method: 'POST', body: formData })
+        
+
+
+        fetch(`${serverURL}profile/delete`, {
+            method: 'POST',
+            headers: {
+                [csrfHeader]: csrfToken },
+            body: formData
+        })
             .then(response => {
 
                 if (response.ok) {
@@ -784,7 +805,9 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                         fetch(`${serverURL}history/update`, {
                             method: 'PUT',
                             headers: {
-                                'Content-Type': 'application/json'
+                                'Content-Type': 'application/json',
+                                [csrfHeader]: csrfToken
+                                
                             },
                             body: JSON.stringify({
                                 'prevName': userName,
@@ -833,6 +856,9 @@ function clearUpdateForm() {
     document.getElementById("name-input").value = "";
     document.getElementById("fileData").value = null;
     document.getElementById("drop").innerHTML = "Drag your profile picture HERE <br> Max size of picture: 2MB";
+    if (document.querySelector(".response")) {
+        document.querySelector(".response").innerHTML = "";
+    }
 }
 
 function clearOldMsg() {
