@@ -2,6 +2,8 @@ package com.m.m.RealTimeChat.Services;
 
 import com.m.m.RealTimeChat.Repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.apache.el.stream.Stream;
+import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.data.domain.Example;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.m.m.RealTimeChat.Models.User;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -39,8 +42,9 @@ public class UserStorageService {
         }
     }
 
-    public List<String> getUsersList(String user) {
-        return userRepository.findRawUsernameList(user);
+    public List<String> getNicknameList(String user) {
+        return userRepository.findAll().stream().map(User::getNickname).toList();
+        //return userRepository.findRawUsernameList(user);
     }
 
     public List<String> getAllUsers() {

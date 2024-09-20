@@ -20,10 +20,12 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(unique = true)
+    @Column(length = 20, unique = true)
     String userName;
 
     String password;
+    @Column(length = 20)
+    String nickname;
 
     @Column(unique = true)
     String email;

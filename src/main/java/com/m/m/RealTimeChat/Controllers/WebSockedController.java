@@ -40,7 +40,7 @@ public class WebSockedController {
     @MessageMapping("/user")
     @SendTo("/topic/chat")
     public Message newUser(@Payload Message message, SimpMessageHeaderAccessor headerAccessor) {
-        /*System.out.println("DEBUG USERS SESSION ID: " + headerAccessor.getSessionId());*/
+
         Objects.requireNonNull(headerAccessor.getSessionAttributes()).put("sender", message.getSender());
         messageHistoryService.saveMessage(message);
         if (onlineUserService.findOnlineUser(message.getSender()).isEmpty()) {

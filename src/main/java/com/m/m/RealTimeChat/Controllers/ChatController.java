@@ -28,8 +28,8 @@ public class ChatController {
 
     @GetMapping
     public String openChat(Model model, Authentication authentication) {
-        model.addAttribute("user", authentication.getName());
-        model.addAttribute("usersList",userStorageService.getUsersList(authentication.getName()));
+        model.addAttribute("user", userStorageService.getUser(authentication.getName()).getNickname()); // zd evložit nickname míst username!!
+        model.addAttribute("usersList",userStorageService.getNicknameList(authentication.getName()));
         model.addAttribute("serverURL",serverURL);
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equalsIgnoreCase("admin"))) {
             model.addAttribute("users", onlineUserService.getAllOnlineUsers());
