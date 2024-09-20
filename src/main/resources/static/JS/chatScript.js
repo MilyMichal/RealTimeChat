@@ -30,8 +30,8 @@ let sock = new SockJS(`${serverURL}chat`, null, {
 
 register();
 
-var userNameElement = document.getElementById("user-data");
-var userName = userNameElement.getAttribute("data-user");
+var nicknameElement = document.getElementById("user-data");
+var nickname = nicknameElement.getAttribute("data-user");
 
 
 
@@ -110,7 +110,7 @@ function send() {
         if (chatWithElement.innerHTML === "Public chat") {
             finalMsg = {
                 "content": msgInputWindow.value,
-                "sender": userName,
+                "sender": nickname,
                 "date": actDate(),
                 "type": 'message',
                 "sendTo": "public"
@@ -119,7 +119,7 @@ function send() {
         } else {
             finalMsg = {
                 "content": msgInputWindow.value,
-                "sender": userName,
+                "sender": nickname,
                 "date": actDate(),
                 "type": 'message',
                 "sendTo": privateChatWith
@@ -148,7 +148,7 @@ function onMessageReceived(payload) {
         }
 
         if (message.type === "kick") {
-            if (userName === message.sendTo) {
+            if (nickname === message.sendTo) {
                 logOutUser();
                 alert("You have been kicked out by admin!");
             }
@@ -157,7 +157,7 @@ function onMessageReceived(payload) {
         }
 
         if (message.type === "BAN") {
-            if (userName === message.sendTo) {
+            if (nickname === message.sendTo) {
                 fetch(`${serverURL}admin/banned/${message.sendTo}-${message.content}`, {
                     method: 'PUT'
                 }).then(response => {
@@ -177,10 +177,10 @@ function onMessageReceived(payload) {
 
         if (message.type === "update-name") {
 
-            if (userName === message.sender) {
+            if (nickname === message.sender) {
 
                 // if (message.sender !== message.content) {
-                userName = message.content;
+                nickname = message.content;
 
                 //  }
             } else {
@@ -214,7 +214,7 @@ function onMessageReceived(payload) {
         }
 
         if (message.type === "update-profilePic") {
-            if (userName !== message.sender) {
+            if (nickname !== message.sender) {
                 let onUserbtn = document.querySelector(`.${message.sender}`);
 
                 setProfilePicture(onUserbtn, message.sender);
@@ -237,7 +237,7 @@ function onMessageReceived(payload) {
             //msgInputWindow.value = "";
         }
 
-        if (chatWithElement.innerHTML === "Public chat" && message.sendTo === userName) {
+        if (chatWithElement.innerHTML === "Public chat" && message.sendTo === nickname ) {
             let incomingMsgUser = document.querySelector(`.${message.sender}`);
             let msgCounterContainer = incomingMsgUser.querySelector(".message-counter-container");
             let msgCounter = incomingMsgUser.querySelector(".message-counter");
@@ -252,8 +252,8 @@ function onMessageReceived(payload) {
 
         }
 
-        if ((userName == message.sendTo && message.sender == privateChatWith) ||
-            (message.sendTo == privateChatWith && message.sender == userName)) {
+        if ((nickname == message.sendTo && message.sender == privateChatWith) ||
+            (message.sendTo == privateChatWith && message.sender == nickname )) {
             prepareMessage(messageContainer, message);
             // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
             //msgInputWindow.value = "";
@@ -337,13 +337,13 @@ function onConnectedSuccessfully() {
         .then(data => {
             let info = JSON.stringify(data);
             console.log(`DEBUG onConnectionSuccesfully method : ${info}`);
-            if (!info.includes(userName)) {
-                console.log(`DEBUG onConnectionSuccesfully NOT INCLUDED: ${userName}`);
+            if (!info.includes(nickname)) {
+                console.log(`DEBUG onConnectionSuccesfully NOT INCLUDED: ${nickname}`);
                 stompClient.send("/app/user", {}, JSON.stringify(
                     {
-                        sender: userName,
+                        sender: nickname,
                         type: 'newUser',
-                        content: `${userName} just joined chatroom. Welcome!`,
+                        content: `${nickname} just joined chatroom. Welcome!`,
                         sendTo: "public",
                         date: actDate()
                     }));
@@ -385,7 +385,7 @@ function getLatestHistory() {
             });
 
     } else {
-        fetch(`${serverURL}history/${privateChatWith}-${userName}/latest`)
+        fetch(`${serverURL}history/${privateChatWith}-${nickname}/latest`)
             .then(response => {
                 if (response.ok) {
                     return response.json();
@@ -436,7 +436,7 @@ function getFullPersonalHistory() {
     historyContainer.innerHTML = "";
     let selectedUser = document.getElementById("user-to-find");
 
-    fetch(`${serverURL}history/${selectedUser.value}-${userName}`)
+    fetch(`${serverURL}history/${selectedUser.value}-${nickname}`)
         .then(response => response.json())
         .then(message => {
             message.forEach((msg) => {
@@ -476,7 +476,7 @@ function prepareMessage(container, messageData) {
 
     if (messageData.type === "message") {
 
-        if (messageData.sender === userName) {
+        if (messageData.sender === nickname) {
             //
             newMessageContainer.classList.add("revert");
             messageContent.classList.add("right-msg");
@@ -548,7 +548,7 @@ function prepareMessage(container, messageData) {
 }
 
 function updateOnlineUserList(userData) {
-    if (userData.nickname !== userName) {
+    if (userData.nickname !== nickname ) {
 
         let user = `<button class='user-container ${userData.nickname}' type='button'>
                                     <img class='profile-img-online' src= '' alt='Profile Picture'>
@@ -596,7 +596,7 @@ function setUpOnlineUserBtn(btn) {
             btn.querySelector(".message-counter").innerHTML = "0";
         }
 
-        var btnUserName = btn.querySelector(".user").innerHTML;
+        var btnUserName= btn.querySelector(".user").innerHTML;
         chatWithElement.innerHTML = `Private chat with: ${btnUserName}`;
 
         privateChatWith = btnUserName;
@@ -736,7 +736,7 @@ function handleFiles(files) {
 //#endregion
 
 //#region DeleteProfileUpdate
-if (userName !== "Admin") {
+if (nickname !== "Admin") {
     document.getElementById("delete-profile-form").addEventListener("submit", function (event) {
         event.preventDefault();
         const formData = new FormData(this);
@@ -795,7 +795,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
 
                         updateMsg =
                         {
-                            "sender": userName,
+                            "sender": nickname,
                             "content": data["newUserName"],
                             "date": actDate(),
                             "type": 'update-name',
@@ -810,7 +810,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                                 
                             },
                             body: JSON.stringify({
-                                'prevName': userName,
+                                'prevName': nickname,
                                 'actName': data["newUserName"]
                             })
                         })
@@ -824,8 +824,8 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
 
                         updateMsg =
                         {
-                            "sender": userName,
-                            "content": userName,
+                            "sender": nickname,
+                            "content": nickname,
                             "date": actDate(),
                             "type": 'update-profilePic',
                             "sendTo": "public"
@@ -868,9 +868,9 @@ function clearOldMsg() {
 
 }
 
-function setProfilePicture(button, nickname) {
+function setProfilePicture(button, btnNickname) {
 
-    fetch(`${serverURL}profile/get/${nickname}`)
+    fetch(`${serverURL}profile/get/${btnNickname}`)
         .then(response => {
             if (response.ok) {
                 return response.blob();
