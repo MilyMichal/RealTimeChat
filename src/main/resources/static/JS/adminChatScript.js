@@ -26,7 +26,10 @@ function onMessageReceived(payload) {
 
         if (message.type === "UNBAN") {
             fetch(`${serverURL}admin/unban/${message.sendTo}`, {
-                method: 'PUT'
+                method: 'PUT',
+                headers: {
+                    [csrfHeader]: csrfToken
+                }
             });
             removeUserFromSelect(message.sendTo, bannedUsers);
 
@@ -36,12 +39,12 @@ function onMessageReceived(payload) {
             removeUserFromSelect(message.sendTo, bannedUsers);
         }
 
-        if (message.type === "update-name") {
+        if (message.type === "update-nick") {
 
-            if (userName === message.sender) {
+            if (nickname === message.sender) {
 
                 //  if (message.sender !== message.content) {
-                userName = message.content;
+                nickname = message.content;
 
                 // }
             } else {
@@ -75,7 +78,7 @@ function onMessageReceived(payload) {
         }
 
         if (message.type === "update-profilePic") {
-            if (userName !== message.sender) {
+            if (nickname !== message.sender) {
                 let onUserbtn = document.querySelector(`.${message.sender}`);
 
                 setProfilePicture(onUserbtn, message.sender);
@@ -97,7 +100,7 @@ function onMessageReceived(payload) {
                  msgInputWindow.value = "";*/
             }
 
-            if (chatWithElement.innerHTML === "Public chat" && message.sendTo === userName) {
+            if (chatWithElement.innerHTML === "Public chat" && message.sendTo === nickname) {
                 let incomingMsgUser = document.querySelector(`.${message.sender}`);
                 let msgCounterContainer = incomingMsgUser.querySelector(".message-counter-container");
                 let msgCounter = incomingMsgUser.querySelector(".message-counter");
@@ -112,8 +115,8 @@ function onMessageReceived(payload) {
 
             }
 
-            if ((userName == message.sendTo && message.sender == privateChatWith) ||
-                (message.sendTo == privateChatWith && message.sender == userName)) {
+            if ((nickname == message.sendTo && message.sender == privateChatWith) ||
+                (message.sendTo == privateChatWith && message.sender == nickname)) {
                 prepareMessage(messageContainer, message);
                 /* messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
                  msgInputWindow.value = "";*/
@@ -130,7 +133,7 @@ function onMessageReceived(payload) {
             /* let welcomeMsg = `<div class='event-message-container'><div class='event-message login-event'> ${message.content}</div></div>`;
              messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);*/
 
-            if (message.sender != userName) {
+            if (message.sender != nickname) {
                 addUserToSelect(message.sender, onlineUsers);
             }
             prepareMessage(messageContainer, message);

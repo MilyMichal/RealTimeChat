@@ -16,7 +16,7 @@ public class AdminController {
         this.userStorageService = userStorageService;
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/banned/{userName}-{banDuration}")
     public void banUser(@PathVariable String userName,@PathVariable int banDuration) {
         LocalDateTime banExp = LocalDateTime.now().plusMinutes(banDuration);
@@ -24,7 +24,7 @@ public class AdminController {
         userStorageService.banUser(userName, banExp);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/unban/{userName}")
     public void unBanUser(@PathVariable String userName) {
 

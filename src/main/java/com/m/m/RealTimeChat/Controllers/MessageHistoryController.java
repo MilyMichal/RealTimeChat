@@ -5,9 +5,9 @@ import com.m.m.RealTimeChat.Models.Message;
 import com.m.m.RealTimeChat.Services.MessageHistoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -35,23 +35,25 @@ public class MessageHistoryController {
     public List<Message> distributeLatestMessageHistory() {
         return messageHistoryService.getLatestPublicHistory();
     }
-
+    @PreAuthorize("@userStorage.validateRequestUser(authentication.name,#sender,#sendTo)")
     @GetMapping("/{sendTo}-{sender}")
     @ResponseBody
     public List<Message> distributeFullPrivateMessageHistory(@PathVariable String sendTo, @PathVariable String sender) {
         return messageHistoryService.getFullPrivateHistory(sendTo, sender);
     }
-
+    @PreAuthorize("@userStorage.validateRequestUser(authentication.name,#sender,#sendTo)")
     @GetMapping("/{sendTo}-{sender}/latest")
     @ResponseBody
-    public ResponseEntity<?> distributeLatestPrivateMessageHistory(@PathVariable String sendTo, @PathVariable String sender, Principal principal) {
-        return messageHistoryService.getLatestPrivateHistory(sendTo, sender, principal);
+    public ResponseEntity<?> distributeLatestPrivateMessageHistory(@PathVariable String sendTo, @PathVariable String sender) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("DEBUG GET HISTORY: authentication=" + authentication.getName() +  "\nSendTo= " + sendTo +"\nsender= " + sender);
+        return messageHistoryService.getLatestPrivateHistory(sendTo, sender);
     }
 
     @PutMapping("/update")
     @ResponseBody
     public void updateMessageHistory(@RequestBody Map<String, String> request) {
-        messageHistoryService.updateHistory(request.get("prevName"), request.get("actName"));
+        messageHistoryService.updateHistory(request.get("prevNick"), request.get("actNick"));
     }
 
 

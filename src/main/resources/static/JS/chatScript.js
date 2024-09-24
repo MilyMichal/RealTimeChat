@@ -49,6 +49,7 @@ window.addEventListener('popstate', function (event) {
 
     if (!event.state) {
         logOutUser();
+        window.location.href = serverURL; //
 
     }
 });
@@ -151,6 +152,7 @@ function onMessageReceived(payload) {
             if (nickname === message.sendTo) {
                 logOutUser();
                 alert("You have been kicked out by admin!");
+                window.location.href = serverURL;
             }
             prepareMessage(messageContainer, message);
             //messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
@@ -159,11 +161,17 @@ function onMessageReceived(payload) {
         if (message.type === "BAN") {
             if (nickname === message.sendTo) {
                 fetch(`${serverURL}admin/banned/${message.sendTo}-${message.content}`, {
-                    method: 'PUT'
+                    method: 'PUT',
+                    headers: {
+                        [csrfHeader]: csrfToken
+                    }
                 }).then(response => {
                     if (response.ok) {
                         fetch(`${serverURL}logout`, {
-                            method: 'POST'
+                            method: 'POST',
+                            headers: {
+                                [csrfHeader]: csrfToken
+                            }
                         });
                         stompClient.disconnect();
                         window.location.href = serverURL;
@@ -175,7 +183,7 @@ function onMessageReceived(payload) {
             //messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
         }
 
-        if (message.type === "update-name") {
+        if (message.type === "update-nick") {
 
             if (nickname === message.sender) {
 
@@ -534,7 +542,7 @@ function prepareMessage(container, messageData) {
             completedMessage = `<div class='event-message-container'> <div class='event-message  logout-event'>${messageData.sendTo} was banned by admin for ${messageData.content} minutes! </div></div>`;
         }
 
-        if (messageData.type === "update-name") {
+        if (messageData.type === "update-nick") {
             completedMessage = `<div class='event-message-container'> <div class='event-message  login-event'>${messageData.sender} changed his name to: ${messageData.content}</div></div>`;
         }
 
@@ -616,15 +624,20 @@ function logOutUser() {
             headers: {
                 [csrfHeader]: csrfToken
             }
-        }).then(response => {
+       /* }).then(response => {
             if (response.ok) {
-                window.location.href = serverURL;
-            }
+                alert("you have been logged out");// window.location.href = serverURL;
+            }*/
         });
     } catch (error) {
         console.error('Error while logout:', error);
     }
     stompClient.disconnect();
+}
+
+function logOutButton() {
+    logOutUser();
+    window.location.href = serverURL;
 }
 
 /* When the user clicks on the button,
@@ -742,10 +755,8 @@ if (nickname !== "Admin") {
         const formData = new FormData(this);
         let deleteResponse = document.querySelector('.delete-response');
         deleteResponse.innerHTML = "";
-
-        
-
-
+        logOutUser();
+       
         fetch(`${serverURL}profile/delete`, {
             method: 'POST',
             headers: {
@@ -756,7 +767,7 @@ if (nickname !== "Admin") {
 
                 if (response.ok) {
                     alert("Your profile was succesfully deleted!");
-                    logOutUser();
+                    window.location.href = serverURL;
                 } else {
                     response.text()
                         .then(errorText => {
@@ -782,6 +793,8 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
     let response = document.querySelector(".response");
     fetch(`${serverURL}profile/update`, {
         method: 'POST',
+        [csrfHeader]: csrfToken,
+    
         body: formData
     })
         .then(response => response.json())
@@ -791,14 +804,14 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                 if (Object.keys(data).length == 2 && data.hasOwnProperty("pass")) {
 
                 } else {
-                    if (data.hasOwnProperty("newUserName")) {
+                    if (data.hasOwnProperty("newNickname")) {
 
                         updateMsg =
                         {
                             "sender": nickname,
-                            "content": data["newUserName"],
+                            "content": data["newNickname"],
                             "date": actDate(),
-                            "type": 'update-name',
+                            "type": 'update-nick',
                             "sendTo": "public"
                         }
 
@@ -810,8 +823,8 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                                 
                             },
                             body: JSON.stringify({
-                                'prevName': nickname,
-                                'actName': data["newUserName"]
+                                'prevNick': nickname,
+                                'actNick': data["newNickname"]
                             })
                         })
                             .then(() => {

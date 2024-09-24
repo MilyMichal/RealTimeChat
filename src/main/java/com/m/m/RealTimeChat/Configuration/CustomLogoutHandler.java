@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.m.m.RealTimeChat.Models.Message;
 import com.m.m.RealTimeChat.Services.MessageHistoryService;
 import com.m.m.RealTimeChat.Services.OnlineUserService;
+import com.m.m.RealTimeChat.Services.UserStorageService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -25,6 +28,9 @@ public class CustomLogoutHandler implements LogoutHandler {
 
     @Autowired
     private MessageHistoryService messageHistoryService;
+
+    @Autowired
+    private UserStorageService userStorageService;
 
     private final SimpMessagingTemplate messagingTemplate;
 
@@ -41,7 +47,7 @@ public class CustomLogoutHandler implements LogoutHandler {
 
             /*System.out.println("DEBUG CUSTOM LOGOUT");*/
             if (authentication != null) {
-                String user = authentication.getName();
+                String user = userStorageService.getUser(authentication.getName()).getNickname();
                 Map<String, String> message = new HashMap<>();
                 message.put("type", "Leave");
                 message.put("sender", user);

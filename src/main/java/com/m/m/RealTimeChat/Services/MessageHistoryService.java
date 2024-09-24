@@ -36,17 +36,17 @@ public class MessageHistoryService {
         return messageRepository.findAllPrivateMessages(sendTo, sender);
     }
 
-    public ResponseEntity<?> getLatestPrivateHistory(String sendTo, String sender, Principal principal) {
-        if (principal.getName().equals(sender) || principal.getName().equals(sendTo)) {
+    public ResponseEntity<?> getLatestPrivateHistory(String sendTo, String sender) {
+       // if (principal.getName().equals(sender) || principal.getName().equals(sendTo)) {
 
             return new ResponseEntity<>(messageRepository.findLatestPrivateMessages(sendTo, sender), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+       // }
+       // return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
 
-    public void updateHistory(String oldName, String newName) {
+    public void updateHistory(String oldNick, String newNick) {
         System.out.println("HISTORY UPDATE RUN");
-        messageRepository.updateHistory(oldName, newName);
+        messageRepository.updateHistory(oldNick, newNick);
     }
 }
