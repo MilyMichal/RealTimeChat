@@ -30,9 +30,10 @@ public class ProfileSettingsController {
     public ResponseEntity<?> updateUserProfile(Authentication auth, @RequestParam(required = false) MultipartFile file,
                                                @RequestParam(required = false) String nickname,
                                                @RequestParam(required = false) String newPass,
+                                               @RequestParam(required = false) String reTypedPass,
                                                @RequestParam String actualPass) {
 
-        return new ResponseEntity<>(profileSettingsService.updateUserProfile(auth, file, nickname, newPass, actualPass), HttpStatus.OK);
+        return new ResponseEntity<>(profileSettingsService.updateUserProfile(auth, file, nickname, newPass,reTypedPass, actualPass), HttpStatus.OK);
     }
 
     @GetMapping("get/{nickname}")

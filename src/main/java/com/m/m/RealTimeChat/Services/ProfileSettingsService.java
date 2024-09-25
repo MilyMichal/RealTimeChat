@@ -49,6 +49,7 @@ public class ProfileSettingsService {
                                                  MultipartFile file,
                                                  String nickname,
                                                  String newPass,
+                                                 String reTypedPass,
                                                  String actualPass) {
 
 
@@ -67,77 +68,82 @@ public class ProfileSettingsService {
                     if (isNewNicknameTaken(nickname)) {
                         message.put("message", "Nickname is already taken");
                     } else {
-                        if (!newPass.isEmpty() && userStorageService.isNewPassNotDifferent(newPass, actualPass)) {
-                            message.put("message", "new password must be different from actual");
-                        } else {
-                            if (!newPass.isEmpty()) {
-                                message.put("pass", "changed");
-                            }
-                            if (auth.isAuthenticated()) {
+                        if(!newPass.isEmpty() && reTypedPass.equals(newPass)) {
 
-                                UserDetails currentUserDetails = (UserDetails) auth.getPrincipal();
-                                UserDetails updatedUserDetails = User.builder()
-                                        .username(auth.getName())
-                                        .password(newPass.isEmpty() ? currentUserDetails.getPassword() : passwordEncoder.encode(newPass))
-                                        .authorities(currentUserDetails.getAuthorities())
-                                        .build();
-
-                                if (!nickname.isEmpty()) {
-                                    if (!userStorageService.getUser(auth.getName()).getProfilePic().contains("defaultPic")) {
-                                        File currentFolder = new File(IMAGE_FOLDER + "/" + userStorageService.getUser(auth.getName()).getNickname());
-                                        String currPic = Objects.requireNonNull(currentFolder.listFiles())[0].getName();
-                                        File newFolder = new File(currentFolder.getParent(), nickname);
-
-                                        if (currentFolder.exists()) {
-                                            renamed = currentFolder.renameTo(newFolder);
-
-                                            Path newPath = Paths.get(newFolder.getPath(), currPic);
-
-                                            pathForDatabase = newPath.toString();
-                                        }
-
-                                    }
-                                    message.put("newNickname", nickname);
+                            if (!newPass.isEmpty() && userStorageService.isNewPassNotDifferent(newPass, actualPass)) {
+                                message.put("message", "new password must be different from actual");
+                            } else {
+                                if (!newPass.isEmpty()) {
+                                    message.put("pass", "changed");
                                 }
-                                if (!file.isEmpty()) {
-                                    try {
+                                if (auth.isAuthenticated()) {
 
-                                        byte[] bytes = file.getBytes();
-                                        Path path = Paths.get(IMAGE_FOLDER, renamed ? nickname : userStorageService.getUser(auth.getName()).getNickname(), file.getOriginalFilename());
-                                        Files.createDirectories(path.getParent());
+                                    UserDetails currentUserDetails = (UserDetails) auth.getPrincipal();
+                                    UserDetails updatedUserDetails = User.builder()
+                                            .username(auth.getName())
+                                            .password(newPass.isEmpty() ? currentUserDetails.getPassword() : passwordEncoder.encode(newPass))
+                                            .authorities(currentUserDetails.getAuthorities())
+                                            .build();
 
-                                        File userDirectory = new File(String.valueOf(path.toFile().getParent()));
+                                    if (!nickname.isEmpty()) {
+                                        if (!userStorageService.getUser(auth.getName()).getProfilePic().contains("defaultPic")) {
+                                            File currentFolder = new File(IMAGE_FOLDER + "/" + userStorageService.getUser(auth.getName()).getNickname());
+                                            String currPic = Objects.requireNonNull(currentFolder.listFiles())[0].getName();
+                                            File newFolder = new File(currentFolder.getParent(), nickname);
+
+                                            if (currentFolder.exists()) {
+                                                renamed = currentFolder.renameTo(newFolder);
+
+                                                Path newPath = Paths.get(newFolder.getPath(), currPic);
+
+                                                pathForDatabase = newPath.toString();
+                                            }
+
+                                        }
+                                        message.put("newNickname", nickname);
+                                    }
+                                    if (!file.isEmpty()) {
+                                        try {
+
+                                            byte[] bytes = file.getBytes();
+                                            Path path = Paths.get(IMAGE_FOLDER, renamed ? nickname : userStorageService.getUser(auth.getName()).getNickname(), file.getOriginalFilename());
+                                            Files.createDirectories(path.getParent());
+
+                                            File userDirectory = new File(String.valueOf(path.toFile().getParent()));
 
 
-                                        if (userDirectory.exists() && userDirectory.isDirectory()) {
-                                            File[] files = userDirectory.listFiles();
-                                            if (files != null) {
-                                                for (File picture : files) {
+                                            if (userDirectory.exists() && userDirectory.isDirectory()) {
+                                                File[] files = userDirectory.listFiles();
+                                                if (files != null) {
+                                                    for (File picture : files) {
 
-                                                    if (!picture.delete()) {
-                                                        throw new FileSystemException(picture.getName() + " cannot be deleted!");
+                                                        if (!picture.delete()) {
+                                                            throw new FileSystemException(picture.getName() + " cannot be deleted!");
+                                                        }
                                                     }
                                                 }
                                             }
+
+                                            Files.write(path, bytes);
+                                            pathForDatabase = path.toString();
+
+                                        } catch (IOException e) {
+                                            message.put("message", e.getMessage());
+
                                         }
-
-                                        Files.write(path, bytes);
-                                        pathForDatabase = path.toString();
-
-                                    } catch (IOException e) {
-                                        message.put("message", e.getMessage());
-
+                                        message.put("profPic", "changed");
                                     }
-                                    message.put("profPic", "changed");
+                                    message.put("message", "Profile was successfully updated!");
+                                    //message.forEach((k, v) -> System.out.println("DEBUG MAP: \n Key: " + k + "\n" + "value: " + v));
+                                    userStorageService.updateUserInfo(auth.getName(), pathForDatabase, newPass, nickname);
+
+                                    Authentication newAuthentication = new UsernamePasswordAuthenticationToken(updatedUserDetails, auth.getCredentials(), updatedUserDetails.getAuthorities());
+                                    SecurityContextHolder.getContext().setAuthentication(newAuthentication);
+
                                 }
-                                message.put("message", "Profile was successfully updated!");
-                                message.forEach((k, v) -> System.out.println("DEBUG MAP: \n Key: " + k + "\n" + "value: " + v));
-                                userStorageService.updateUserInfo(auth.getName(), pathForDatabase, newPass, nickname);
-
-                                Authentication newAuthentication = new UsernamePasswordAuthenticationToken(updatedUserDetails, auth.getCredentials(), updatedUserDetails.getAuthorities());
-                                SecurityContextHolder.getContext().setAuthentication(newAuthentication);
-
                             }
+                        } else {
+                            message.put("message", "Retyped password doesn'ť match new password");
                         }
                     }
                 } else {

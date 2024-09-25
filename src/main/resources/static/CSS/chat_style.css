@@ -700,7 +700,7 @@ option {
     top: 3px;
 }
 
-#new-pass-input, #name-input, #act-pass-input, #pass-confirm-input {
+#new-pass-input, #name-input, #act-pass-input, #pass-confirm-input, #re-type-new-pass-input {
     padding: 3px 6px;
     background-color: #2a414a;
     border: none;
