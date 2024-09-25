@@ -84,7 +84,7 @@ public class UserStorageService {
     }
 
     public User getUserByNickname(String nickname) {
-        return userRepository.findAll().stream().filter(user -> user.getNickname().equals(nickname)).toList().getFirst();
+        return userRepository.findAll().stream().filter(user -> user.getNickname().equals(nickname)).toList().get(0);
     }
 
 

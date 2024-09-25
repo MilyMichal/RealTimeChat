@@ -558,7 +558,53 @@ function prepareMessage(container, messageData) {
 function updateOnlineUserList(userData) {
     if (userData.nickname !== nickname ) {
 
-        let user = `<button class='user-container ${userData.nickname}' type='button'>
+        //
+        let userButton = document.createElement("button");
+        userButton.className = "user-container";
+        userButton.classList.add(userData.nickname);
+        userButton.type = "button";
+
+        let img = document.createElement("img");
+        img.className = "profile-img-online";
+        img.src = "";
+        img.alt = "Profile picture";
+
+        let user = document.createElement("span");
+        user.className = "user";
+        var plainNick = document.createTextNode(userData.nickname);
+        user.appendChild(plainNick);
+
+        let counterContainer = document.createElement("span");
+        counterContainer.className = "message-counter-container";
+
+        let counterBg = document.createElement("span");
+        counterBg.className = "msg-counter-bg";
+
+        let svgElem = `<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" width="17px"
+                                    height="17px" viewBox="0 0 64 64"
+                                    xml:space="preserve">
+                                    <g>
+	                                    <rect x="1" y="13" fill="none" stroke="#C6AC8E" stroke-width="2" stroke-miterlimit="10" width="62" height="37"/>
+	                                    <polyline fill="none" stroke="#C6AC8E" stroke-width="2" stroke-miterlimit="10" points="1,13 32,33 63,13"/>
+                                    </g>
+                                    </svg>`;
+        counterBg.innerHTML = svgElem;
+
+        let counter = document.createElement("span");
+        counter.className = "message-counter";
+        counter.innerHTML = 0;
+
+        //counterBg.insertAdjacentHTML(svgElem);
+        counterContainer.appendChild(counterBg);
+        counterContainer.appendChild(counter);
+
+        userButton.appendChild(img);
+        userButton.appendChild(user);
+        userButton.appendChild(counterContainer);
+
+        //
+
+       /* let user = `<button class='user-container ${userData.nickname}' type='button'>
                                     <img class='profile-img-online' src= '' alt='Profile Picture'>
                                     <span class='user'>${userData.nickname}</span>
                                     <span class="message-counter-container">
@@ -575,13 +621,18 @@ function updateOnlineUserList(userData) {
                                     <span class="message-counter">0</span>
                                     </span>
                                                                        
-                                    </button >`;
+                                    </button >`;*/
 
-        usersContainer.insertAdjacentHTML("beforeend", user);
-        let userBtn = document.querySelector(`.${userData.nickname}`);
+        /* usersContainer.insertAdjacentHTML("beforeend", user);*/
+        
+        //let userBtn = document.querySelector(`.${userData.nickname}`);
 
-        setUpOnlineUserBtn(userBtn);
-        setProfilePicture(userBtn, userData.nickname);
+        setProfilePicture(userButton, userData.nickname);
+        setUpOnlineUserBtn(userButton);
+       /* setProfilePicture(userBtn, userData.nickname);
+        setUpOnlineUserBtn(userBtn);*/
+
+        usersContainer.insertAdjacentElement("beforeend", userButton);
     }
 }
 
