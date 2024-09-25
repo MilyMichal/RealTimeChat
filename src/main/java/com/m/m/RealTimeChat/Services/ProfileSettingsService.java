@@ -68,20 +68,19 @@ public class ProfileSettingsService {
                     if (isNewNicknameTaken(nickname)) {
                         message.put("message", "Nickname is already taken");
                     } else {
-                        if(!newPass.isEmpty() && reTypedPass.equals(newPass)) {
+                        if (!newPass.isEmpty() && reTypedPass.equals(newPass)) {
 
-                            if (!newPass.isEmpty() && userStorageService.isNewPassNotDifferent(newPass, actualPass)) {
+                            if (userStorageService.isNewPassNotDifferent(newPass, actualPass)) {
                                 message.put("message", "new password must be different from actual");
                             } else {
-                                if (!newPass.isEmpty()) {
-                                    message.put("pass", "changed");
-                                }
+                                message.put("pass", "changed");
+
                                 if (auth.isAuthenticated()) {
 
                                     UserDetails currentUserDetails = (UserDetails) auth.getPrincipal();
                                     UserDetails updatedUserDetails = User.builder()
                                             .username(auth.getName())
-                                            .password(newPass.isEmpty() ? currentUserDetails.getPassword() : passwordEncoder.encode(newPass))
+                                            .password(passwordEncoder.encode(newPass))
                                             .authorities(currentUserDetails.getAuthorities())
                                             .build();
 
@@ -151,7 +150,7 @@ public class ProfileSettingsService {
                 }
             }
         } else {
-            message.put("message","Incorrect password");
+            message.put("message", "Incorrect password");
         }
         return message;
     }

@@ -915,7 +915,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
             }
             response.innerHTML = `${data["message"]}`;
         });
-    clearUpdateForm();
+    //clearUpdateForm();
 
     /*});*/
 });
