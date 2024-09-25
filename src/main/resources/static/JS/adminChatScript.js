@@ -210,9 +210,20 @@ function onMessageReceived(payload) {
     // BAN selected user
     function banUser() {
         var select = document.getElementById("online-users").value;
+
         if (select != "0") {
 
-            stompClient.send("/app/chat", {}, JSON.stringify(prepareAdminMessage(select, 'BAN')));
+            fetch(`${serverURL}admin/banned/${select}-${banDuration()}`, {
+                method: 'PUT',
+                headers: {
+                    [csrfHeader]: csrfToken
+                }
+            }).then(response => {
+                if (response.ok) {
+                    stompClient.send("/app/chat", {}, JSON.stringify(prepareAdminMessage(select, 'BAN')));
+                }
+            });
+            /*stompClient.send("/app/chat", {}, JSON.stringify(prepareAdminMessage(select, 'BAN')));*/
 
             addUserToSelect(select, bannedUsers);
             removeUserFromSelect(select, onlineUsers);

@@ -160,7 +160,14 @@ function onMessageReceived(payload) {
 
         if (message.type === "BAN") {
             if (nickname === message.sendTo) {
-                fetch(`${serverURL}admin/banned/${message.sendTo}-${message.content}`, {
+                fetch(`${serverURL}logout`, {
+                    method: 'POST',
+                    headers: {
+                        [csrfHeader]: csrfToken
+                    }
+                });
+
+                /*fetch(`${serverURL}admin/banned/${message.sendTo}-${message.content}`, {
                     method: 'PUT',
                     headers: {
                         [csrfHeader]: csrfToken
@@ -172,13 +179,13 @@ function onMessageReceived(payload) {
                             headers: {
                                 [csrfHeader]: csrfToken
                             }
-                        });
+                        });*/
                         stompClient.disconnect();
                         window.location.href = serverURL;
                         alert("Admin banned you")
                     }
-                });
-            }
+                //});
+            //}
             prepareMessage(messageContainer, message);
             //messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
         }
@@ -344,9 +351,9 @@ function onConnectedSuccessfully() {
         .then(response => response.json())
         .then(data => {
             let info = JSON.stringify(data);
-            console.log(`DEBUG onConnectionSuccesfully method : ${info}`);
+            //console.log(`DEBUG onConnectionSuccesfully method : ${info}`);
             if (!info.includes(nickname)) {
-                console.log(`DEBUG onConnectionSuccesfully NOT INCLUDED: ${nickname}`);
+              //  console.log(`DEBUG onConnectionSuccesfully NOT INCLUDED: ${nickname}`);
                 stompClient.send("/app/user", {}, JSON.stringify(
                     {
                         sender: nickname,
