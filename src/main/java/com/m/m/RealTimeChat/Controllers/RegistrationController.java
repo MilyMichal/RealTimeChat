@@ -24,6 +24,7 @@ public class RegistrationController {
         return "Register";
     }
 
+    @Validated
     @PostMapping
     public String registerNerUser(Model model, @Validated User user, @RequestParam("retypedPass") String pass) {
         if (pass.equals(user.getPassword())) {
