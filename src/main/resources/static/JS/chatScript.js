@@ -909,9 +909,12 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
             }
             if (data["message"].includes("successfully")) {
                 response.style.color = "#345635";
-
+                clearUpdateForm();
             } else {
                 response.style.color = "#7E102C";
+                document.getElementById("act-pass-input").value = "";
+                document.getElementById("new-pass-input").value = "";
+                document.getElementById("re-type-new-pass-input").value = "";
             }
             response.innerHTML = `${data["message"]}`;
         });
@@ -924,6 +927,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
 function clearUpdateForm() {
     document.getElementById("act-pass-input").value = "";
     document.getElementById("new-pass-input").value = "";
+    document.getElementById("re-type-new-pass-input").value = "";
     document.getElementById("name-input").value = "";
     document.getElementById("fileData").value = null;
     document.getElementById("drop").innerHTML = "Drag your profile picture HERE <br> Max size of picture: 2MB";

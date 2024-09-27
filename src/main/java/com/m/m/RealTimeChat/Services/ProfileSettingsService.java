@@ -142,7 +142,7 @@ public class ProfileSettingsService {
                                 }
                             }
                         } else {
-                            message.put("message", "Retyped password doesn'ť match new password");
+                            message.put("message", "Retyped password doesn't match new password");
                         }
                     }
                 } else {
