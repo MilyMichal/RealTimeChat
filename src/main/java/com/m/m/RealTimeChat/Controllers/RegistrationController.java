@@ -3,8 +3,10 @@ package com.m.m.RealTimeChat.Controllers;
 import com.m.m.RealTimeChat.Models.User;
 import com.m.m.RealTimeChat.Services.UserStorageService;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
