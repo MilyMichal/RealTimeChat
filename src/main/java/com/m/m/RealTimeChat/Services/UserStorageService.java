@@ -111,7 +111,10 @@ public class UserStorageService {
         return newPassword.equals(actualPassword);
     }
 
-
+    public boolean validateRequestUser(String requestUser, String sender, String sendTo) {
+        String nickname = getUser(requestUser).getNickname();
+        return nickname.equals(sender) || nickname.equals(sendTo);
+    }
 }
 
 
