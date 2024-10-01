@@ -13,6 +13,7 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.security.Principal;
 import java.util.Objects;
 
 
@@ -37,7 +38,15 @@ public class WebSockedController {
 
     @MessageMapping("/chat/public")
     @SendTo("/queue/public")
-    public Message sendMsg(@Payload Message msg) {
+    public Message sendMsg(@Payload Message msg, Principal principal) {
+        if (msg.getType().equals("kick") || msg.getType().equals("BAN")) {
+            if(principal.getName().equals("Admin")) {
+                messageHistoryService.saveMessage(msg);
+                return msg;
+            } else {
+                return null;
+            }
+        }
         messageHistoryService.saveMessage(msg);
         return msg;
     }
