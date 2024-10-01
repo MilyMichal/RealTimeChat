@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -52,7 +51,7 @@ public class CustomLogoutHandler implements LogoutHandler {
                 message.put("type", "Leave");
                 message.put("sender", user);
                 message.put("sendTo", "public");
-                message.put("date", LocalDateTime.now().format(DateTimeFormatter.ofPattern("d. M. yyyy HH:mm:ss")));
+                message.put("date", LocalDateTime.now().format(DateTimeFormatter.ofPattern("d. M. yyyy H:mm:ss")));
                 message.put("content", user + " just left the chatroom");
                 ObjectMapper mapper = new ObjectMapper();
 
@@ -64,7 +63,7 @@ public class CustomLogoutHandler implements LogoutHandler {
                     throw new RuntimeException(e);
                 }
 
-                messagingTemplate.convertAndSend("/topic/chat", message);
+                messagingTemplate.convertAndSend("/queue/public", message);
                 if (onlineUserService.findOnlineUser(user).isPresent()) {
                     onlineUserService.removeOnlineUser(user);
                 }

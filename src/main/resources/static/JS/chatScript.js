@@ -70,7 +70,7 @@ msgInputWindow.addEventListener("keypress", (event) => {
         send();
     }
 });
-
+//event listener for adding new line to message window
 msgInputWindow.addEventListener("keydown", (event) => {
     if (event.shiftKey && event.code === "Enter") {
         event.preventDefault();
@@ -343,10 +343,12 @@ function showOnlineUsers(usersList) {
 
 //connecting new user
 function onConnectedSuccessfully() {
-
+    console.log("CONNECTED");
     //
     messageContainer.innerHTML = "";
+    console.log("CLEARED MESSAGE WINDOW");
     getLatestHistory();
+    console.log("HISTORY FETCHED!");
     //
 
     stompClient.subscribe("/queue/public", onMessageReceived);
