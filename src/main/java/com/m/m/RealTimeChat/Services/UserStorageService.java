@@ -79,6 +79,7 @@ public class UserStorageService {
 
 
     public User getUser(String name) {
+        //System.out.println("DELETE PROFILE DEBUG: name = " + name);
         return userRepository.findUserByUserName(name).orElseThrow(() -> new UsernameNotFoundException("Username doesn't exist"));
     }
 
