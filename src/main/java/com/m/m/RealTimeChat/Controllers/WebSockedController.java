@@ -5,10 +5,14 @@ import com.m.m.RealTimeChat.Models.Message;
 
 import com.m.m.RealTimeChat.Services.MessageHistoryService;
 import com.m.m.RealTimeChat.Services.OnlineUserService;
+import com.m.m.RealTimeChat.Services.UserStorageService;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
 import java.util.Objects;
@@ -22,13 +26,19 @@ public class WebSockedController {
 
     private final OnlineUserService onlineUserService;
 
-    public WebSockedController(MessageHistoryService messageHistoryService, OnlineUserService onlineUserService) {
+    private final SimpMessagingTemplate simpMessagingTemplate;
+
+    private final UserStorageService userStorageService;
+
+    public WebSockedController(MessageHistoryService messageHistoryService, OnlineUserService onlineUserService, SimpMessagingTemplate simpMessagingTemplate, UserStorageService userStorageService) {
         this.messageHistoryService = messageHistoryService;
         this.onlineUserService = onlineUserService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
+        this.userStorageService = userStorageService;
     }
 
-    @MessageMapping("/chat")
-    @SendTo("/topic/chat")
+    @MessageMapping("/chat/public")
+    @SendTo("/queue/public")
     public Message sendMsg(@Payload Message msg) {
         /*System.out.println("RECEIVED MSG DEBUG:" + msg);*/
         messageHistoryService.saveMessage(msg);
@@ -36,9 +46,20 @@ public class WebSockedController {
         return msg;
     }
 
+    @MessageMapping("/chat/private")
+    public void sendPrivateMessage(@Payload Message msg) {
+        messageHistoryService.saveMessage(msg);
+
+    String recipient = userStorageService.getUserByNickname(msg.getSendTo()).getUserName();
+    String sender = userStorageService.getUserByNickname(msg.getSender()).getUserName();
+
+        simpMessagingTemplate.convertAndSendToUser(recipient,"/queue/private",msg);
+        simpMessagingTemplate.convertAndSendToUser(sender,"/queue/private",msg);
+    }
+
 
     @MessageMapping("/user")
-    @SendTo("/topic/chat")
+    @SendTo("/queue/public")
     public Message newUser(@Payload Message message, SimpMessageHeaderAccessor headerAccessor) {
 
         Objects.requireNonNull(headerAccessor.getSessionAttributes()).put("sender", message.getSender());

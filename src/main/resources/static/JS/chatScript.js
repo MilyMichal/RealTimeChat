@@ -28,6 +28,8 @@ let sock = new SockJS(`${serverURL}chat`, null, {
     debug: false
 });
 
+
+
 register();
 
 var nicknameElement = document.getElementById("user-data");
@@ -116,6 +118,7 @@ function send() {
                 "type": 'message',
                 "sendTo": "public"
             }
+            stompClient.send("/app/chat/public", {}, JSON.stringify(finalMsg));
 
         } else {
             finalMsg = {
@@ -125,9 +128,10 @@ function send() {
                 "type": 'message',
                 "sendTo": privateChatWith
             }
+            stompClient.send(`/app/chat/private`, {}, JSON.stringify(finalMsg));
 
         }
-        stompClient.send("/app/chat", {}, JSON.stringify(finalMsg));
+        //stompClient.send("/app/chat", {}, JSON.stringify(finalMsg));
         msgInputWindow.value = "";
     }
 
@@ -345,7 +349,8 @@ function onConnectedSuccessfully() {
     getLatestHistory();
     //
 
-    stompClient.subscribe("/topic/chat", onMessageReceived);
+    stompClient.subscribe("/queue/public", onMessageReceived);
+    stompClient.subscribe(`/user/queue/private`, onMessageReceived);
 
     fetch(`${serverURL}users`)
         .then(response => response.json())
