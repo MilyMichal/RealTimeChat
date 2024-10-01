@@ -30,7 +30,6 @@ public class AdminService {
             AuthenticationException exception = (AuthenticationException) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
 
             if (exception != null) {
-               // System.out.println("DEBUG LOGIN: \n" + exception.getMessage());
                 return exception.getMessage();
             }
         }
@@ -39,14 +38,13 @@ public class AdminService {
 
     @Scheduled(cron = "0 * * * * *")
     public void checkBanExpired() {
-        /*System.out.println("BAN SCHEDULED CHECK");*/
         userStorageService.getBannedUsers().forEach(bannedUser -> {
             if (bannedUser.getBanExpiration().isBefore(LocalDateTime.now())) {
                 userStorageService.unBanUser(bannedUser.getUserName());
                 Map<String, String> message = new HashMap<>();
                 message.put("type", "BanExpired");
                 message.put("sendTo", bannedUser.getUserName());
-                messagingTemplate.convertAndSend("/topic/chat", message);
+                messagingTemplate.convertAndSend("/queue/public", message);
             }
         });
 

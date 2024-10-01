@@ -1,13 +1,10 @@
 package com.m.m.RealTimeChat.Controllers;
 
 import com.m.m.RealTimeChat.Services.ProfileSettingsService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,7 +30,7 @@ public class ProfileSettingsController {
                                                @RequestParam(required = false) String reTypedPass,
                                                @RequestParam String actualPass) {
 
-        return new ResponseEntity<>(profileSettingsService.updateUserProfile(auth, file, nickname, newPass,reTypedPass, actualPass), HttpStatus.OK);
+        return new ResponseEntity<>(profileSettingsService.updateUserProfile(auth, file, nickname, newPass, reTypedPass, actualPass), HttpStatus.OK);
     }
 
     @GetMapping("get/{nickname}")

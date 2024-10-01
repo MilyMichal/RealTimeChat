@@ -49,7 +49,6 @@ public class MessageHistoryController {
     @ResponseBody
     public ResponseEntity<?> distributeLatestPrivateMessageHistory(@PathVariable String sendTo, @PathVariable String sender) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("DEBUG GET HISTORY: authentication=" + authentication.getName() + "\nSendTo= " + sendTo + "\nsender= " + sender);
         return messageHistoryService.getLatestPrivateHistory(sendTo, sender);
     }
 

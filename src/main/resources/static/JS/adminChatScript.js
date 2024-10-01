@@ -9,11 +9,11 @@ function onMessageReceived(payload) {
 
     var message = JSON.parse(payload.body);
 
-    /*console.log("\n\n ! DEBUG ! MESSAGE TYPE:\n" + message.type);*/
+
     if (message.type) {
         if (message.type === "Leave") {
             prepareMessage(messageContainer, message);
-            //messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
+
             if (usersContainer.querySelector(`.${message.sender}`)) {
                 usersContainer.querySelector(`.${message.sender}`).remove();
             }
@@ -43,10 +43,9 @@ function onMessageReceived(payload) {
 
             if (nickname === message.sender) {
 
-                //  if (message.sender !== message.content) {
+
                 nickname = message.content;
 
-                // }
             } else {
                 let onUserbtn = document.querySelector(`.${message.sender}`);
                 let name = onUserbtn.querySelector(`.user`);
@@ -85,7 +84,7 @@ function onMessageReceived(payload) {
 
             }
             prepareMessage(messageContainer, message);
-            // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
+            
         }
 
 
@@ -96,8 +95,7 @@ function onMessageReceived(payload) {
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === "public") {
 
                 prepareMessage(messageContainer, message);
-                /* messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
-                 msgInputWindow.value = "";*/
+               
             }
 
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === nickname) {
@@ -118,9 +116,7 @@ function onMessageReceived(payload) {
             if ((nickname == message.sendTo && message.sender == privateChatWith) ||
                 (message.sendTo == privateChatWith && message.sender == nickname)) {
                 prepareMessage(messageContainer, message);
-                /* messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
-                 msgInputWindow.value = "";*/
-
+               
             }
             clearOldMsg();
             if (isScrolledToBottom) {
@@ -130,39 +126,18 @@ function onMessageReceived(payload) {
 
         // displaying new user in chat and online user panel
         if (message.type === 'newUser') {
-            /* let welcomeMsg = `<div class='event-message-container'><div class='event-message login-event'> ${message.content}</div></div>`;
-             messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);*/
+            
 
             if (message.sender != nickname) {
                 addUserToSelect(message.sender, onlineUsers);
             }
             prepareMessage(messageContainer, message);
-            /* if (usersContainer.querySelectorAll("*").length === 0) {*/
-            /*console.log(" var 1 triggered num of users " + usersContainer.querySelectorAll("*").length);*/
+            
             fetch(`${serverURL}users`)
                 .then(response => response.json())
                 .then(data => {
                     showOnlineUsers(data);
-                    /* data.forEach(onlineUser => {
-                         updateOnlineUserList(onlineUser);
- 
-                     });
- 
-                 });
- 
- 
-         } else {
-             
-             fetch(`${serverURL}users`)
-                 .then(response => response.json())
-                 .then(data => {
-                     let lastUser = data[data.length - 1];
-                     updateOnlineUserList(lastUser);
- 
-                 });
- 
- 
-         }*/
+                   
                 });
 
         }
@@ -174,111 +149,111 @@ function onMessageReceived(payload) {
 
 
 
-    // admin features:
+// admin features:
 
-    //Kick selected user from chat
-    function kickUser() {
-        var select = document.getElementById("online-users").value;
-        if (select != 0) {
+//Kick selected user from chat
+function kickUser() {
+    var select = document.getElementById("online-users").value;
+    if (select != 0) {
 
-            stompClient.send("/app/chat", {}, JSON.stringify(prepareAdminMessage(select, 'kick')));
+        stompClient.send("/app/chat/public", {}, JSON.stringify(prepareAdminMessage(select, 'kick')));
 
-            removeUserFromSelect(select, onlineUsers);
-        }
-
+        removeUserFromSelect(select, onlineUsers);
     }
 
-    // remove kicked user from option list
-    function removeUserFromSelect(user, options) {
+}
 
-        for (var i = 0; i < options.length; i++) {
-            if (options[i].value === user) {
-                options.remove(i);
-                break;
+// remove kicked user from option list
+function removeUserFromSelect(user, options) {
+
+    for (var i = 0; i < options.length; i++) {
+        if (options[i].value === user) {
+            options.remove(i);
+            break;
+        }
+    }
+}
+
+// add incoming user to option list
+function addUserToSelect(user, options) {
+    var newOption = document.createElement("option");
+    newOption.text = user;
+    newOption.value = user;
+    options.add(newOption);
+}
+
+// BAN selected user
+function banUser() {
+    var select = document.getElementById("online-users").value;
+
+    if (select != "0") {
+
+        fetch(`${serverURL}admin/banned/${select}-${banDuration()}`, {
+            method: 'PUT',
+            headers: {
+                [csrfHeader]: csrfToken
             }
-        }
-    }
-
-    // add incoming user to option list
-    function addUserToSelect(user, options) {
-        var newOption = document.createElement("option");
-        newOption.text = user;
-        newOption.value = user;
-        options.add(newOption);
-    }
-
-    // BAN selected user
-    function banUser() {
-        var select = document.getElementById("online-users").value;
-
-        if (select != "0") {
-
-            fetch(`${serverURL}admin/banned/${select}-${banDuration()}`, {
-                method: 'PUT',
-                headers: {
-                    [csrfHeader]: csrfToken
-                }
-            }).then(response => {
-                if (response.ok) {
-                    stompClient.send("/app/chat", {}, JSON.stringify(prepareAdminMessage(select, 'BAN')));
-                }
-            });
-            /*stompClient.send("/app/chat", {}, JSON.stringify(prepareAdminMessage(select, 'BAN')));*/
-
-            addUserToSelect(select, bannedUsers);
-            removeUserFromSelect(select, onlineUsers);
-        };
-    }
-
-    function unBanUser() {
-        var select = document.getElementById("banned-users").value;
-        if (select != "0") {
-
-            stompClient.send("/app/chat", {}, JSON.stringify(prepareAdminMessage(select, 'UNBAN')));
-
-        }
-    }
-
-    function prepareAdminMessage(targetName, msgType) {
-        let adminmsg;
-
-        if (msgType == 'UNBAN') {
-
-            adminmsg =
-
-            {
-                sender: 'admin',
-                type: msgType,
-                content: `${targetName} was set free by admin!`,
-                sendTo: targetName,
-                date: actDate()
+        }).then(response => {
+            if (response.ok) {
+                stompClient.send("/app/chat/public", {}, JSON.stringify(prepareAdminMessage(select, 'BAN')));
             }
-        }
-        if (msgType == 'BAN') {
-            adminmsg =
+        });
+        
 
-            {
-                sender: 'admin',
-                type: msgType,
-                content: banDuration(),
-                sendTo: targetName,
-                date: actDate()
-            }
-        }
+        addUserToSelect(select, bannedUsers);
+        removeUserFromSelect(select, onlineUsers);
+    };
+}
 
-        if (msgType == 'kick') {
-            adminmsg =
+function unBanUser() {
+    var select = document.getElementById("banned-users").value;
+    if (select != "0") {
 
-            {
-                sender: 'admin',
-                type: msgType,
-                content: `${targetName} was kicked out by admin!`,
-                sendTo: targetName,
-                date: actDate()
-            }
-        }
-        return adminmsg;
+        stompClient.send("/app/chat/public", {}, JSON.stringify(prepareAdminMessage(select, 'UNBAN')));
+
     }
+}
+
+function prepareAdminMessage(targetName, msgType) {
+    let adminmsg;
+
+    if (msgType == 'UNBAN') {
+
+        adminmsg =
+
+        {
+            sender: 'admin',
+            type: msgType,
+            content: `${targetName} was set free by admin!`,
+            sendTo: targetName,
+            date: actDate()
+        }
+    }
+    if (msgType == 'BAN') {
+        adminmsg =
+
+        {
+            sender: 'admin',
+            type: msgType,
+            content: banDuration(),
+            sendTo: targetName,
+            date: actDate()
+        }
+    }
+
+    if (msgType == 'kick') {
+        adminmsg =
+
+        {
+            sender: 'admin',
+            type: msgType,
+            content: `${targetName} was kicked out by admin!`,
+            sendTo: targetName,
+            date: actDate()
+        }
+    }
+    return adminmsg;
+}
 
 
 

@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.List;
 
 @Service
@@ -37,16 +36,11 @@ public class MessageHistoryService {
     }
 
     public ResponseEntity<?> getLatestPrivateHistory(String sendTo, String sender) {
-       // if (principal.getName().equals(sender) || principal.getName().equals(sendTo)) {
-
-            return new ResponseEntity<>(messageRepository.findLatestPrivateMessages(sendTo, sender), HttpStatus.OK);
-       // }
-       // return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(messageRepository.findLatestPrivateMessages(sendTo, sender), HttpStatus.OK);
     }
 
 
     public void updateHistory(String oldNick, String newNick) {
-        System.out.println("HISTORY UPDATE RUN");
         messageRepository.updateHistory(oldNick, newNick);
     }
 }

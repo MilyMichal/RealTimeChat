@@ -79,7 +79,6 @@ public class UserStorageService {
 
 
     public User getUser(String name) {
-        //System.out.println("DELETE PROFILE DEBUG: name = " + name);
         return userRepository.findUserByUserName(name).orElseThrow(() -> new UsernameNotFoundException("Username doesn't exist"));
     }
 
@@ -111,10 +110,7 @@ public class UserStorageService {
         return newPassword.equals(actualPassword);
     }
 
-    public boolean validateRequestUser(String requestUser, String sender, String sendTo) {
-        String nickname = getUser(requestUser).getNickname();
-        return nickname.equals(sender) || nickname.equals(sendTo);
-    }
+
 }
 
 

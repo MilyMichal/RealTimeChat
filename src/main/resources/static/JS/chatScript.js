@@ -51,7 +51,7 @@ window.addEventListener('popstate', function (event) {
 
     if (!event.state) {
         logOutUser();
-        window.location.href = serverURL; //
+        window.location.href = serverURL;
 
     }
 });
@@ -101,8 +101,6 @@ function register() {
         console.log('unable to connect' + error);
     });
 
-    // loading chat history for new user
-    // getLatestHistory();
 }
 
 //function for sending msg to server
@@ -131,7 +129,6 @@ function send() {
             stompClient.send(`/app/chat/private`, {}, JSON.stringify(finalMsg));
 
         }
-        //stompClient.send("/app/chat", {}, JSON.stringify(finalMsg));
         msgInputWindow.value = "";
     }
 
@@ -146,7 +143,7 @@ function onMessageReceived(payload) {
     if (message.type) {
         if (message.type === "Leave") {
             prepareMessage(messageContainer, message);
-            //messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
+
             if (usersContainer.querySelector(`.${message.sender}`)) {
                 usersContainer.querySelector(`.${message.sender}`).remove();
             }
@@ -159,7 +156,7 @@ function onMessageReceived(payload) {
                 window.location.href = serverURL;
             }
             prepareMessage(messageContainer, message);
-            //messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
+
         }
 
         if (message.type === "BAN") {
@@ -171,37 +168,23 @@ function onMessageReceived(payload) {
                     }
                 });
 
-                /*fetch(`${serverURL}admin/banned/${message.sendTo}-${message.content}`, {
-                    method: 'PUT',
-                    headers: {
-                        [csrfHeader]: csrfToken
-                    }
-                }).then(response => {
-                    if (response.ok) {
-                        fetch(`${serverURL}logout`, {
-                            method: 'POST',
-                            headers: {
-                                [csrfHeader]: csrfToken
-                            }
-                        });*/
-                        stompClient.disconnect();
-                        window.location.href = serverURL;
-                        alert("Admin banned you")
-                    }
-                //});
-            //}
+                stompClient.disconnect();
+                window.location.href = serverURL;
+                alert("Admin banned you")
+            }
+
             prepareMessage(messageContainer, message);
-            //messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
+
         }
 
         if (message.type === "update-nick") {
 
             if (nickname === message.sender) {
 
-                // if (message.sender !== message.content) {
+
                 nickname = message.content;
 
-                //  }
+
             } else {
                 let onUserbtn = document.querySelector(`.${message.sender}`);
                 let name = onUserbtn.querySelector(`.user`);
@@ -240,7 +223,7 @@ function onMessageReceived(payload) {
 
             }
             prepareMessage(messageContainer, message);
-            // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
+
         }
 
     }
@@ -248,15 +231,13 @@ function onMessageReceived(payload) {
 
     // displaying newest message
     if (message.type === 'message') {
-        // let html;
+
         if (chatWithElement.innerHTML === "Public chat" && message.sendTo === "public") {
 
             prepareMessage(messageContainer, message);
-            // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
-            //msgInputWindow.value = "";
         }
 
-        if (chatWithElement.innerHTML === "Public chat" && message.sendTo === nickname ) {
+        if (chatWithElement.innerHTML === "Public chat" && message.sendTo === nickname) {
             let incomingMsgUser = document.querySelector(`.${message.sender}`);
             let msgCounterContainer = incomingMsgUser.querySelector(".message-counter-container");
             let msgCounter = incomingMsgUser.querySelector(".message-counter");
@@ -272,10 +253,9 @@ function onMessageReceived(payload) {
         }
 
         if ((nickname == message.sendTo && message.sender == privateChatWith) ||
-            (message.sendTo == privateChatWith && message.sender == nickname )) {
+            (message.sendTo == privateChatWith && message.sender == nickname)) {
             prepareMessage(messageContainer, message);
-            // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
-            //msgInputWindow.value = "";
+
 
         }
         clearOldMsg();
@@ -286,48 +266,21 @@ function onMessageReceived(payload) {
 
     // displaying new user in chat and online user panel
     if (message.type === 'newUser') {
-        //let welcomeMsg = `<div class='event-message-container'> <div class='event-message login-event'>${message.content}</div></div>`;
-        // messageContainer.insertAdjacentHTML("beforeend", welcomeMsg);
+
         prepareMessage(messageContainer, message);
-        // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(message));
+
         fetch(`${serverURL}users`)
             .then(response => response.json())
             .then(data => {
                 showOnlineUsers(data);
-                /* if (usersContainer.querySelectorAll("*").length === 0) {
-                     fetch(`${serverURL}users`)
-                         .then(response => response.json())
-                         .then(data => {
-         
-                             data.forEach(onlineUser => {
-                                 updateOnlineUserList(onlineUser);
-         
-                             });
-         
-                         });
-         
-         
-                 } else {
-         
-                     fetch(`${serverURL}users`)
-                         .then(response => response.json())
-                         .then(data => {
-                             let lastUser = data[data.length - 1];
-                             updateOnlineUserList(lastUser);
-         
-                         });
-         
-         
-                 }*/
+
             });
 
     }
 }
 
 function showOnlineUsers(usersList) {
-    /* fetch(`${serverURL}users`)
-         .then(response => response.json())
-         .then(data => {*/
+
     if (usersContainer.querySelectorAll("*").length === 0) {
         usersList.forEach(onlineUser => {
             updateOnlineUserList(onlineUser);
@@ -337,19 +290,19 @@ function showOnlineUsers(usersList) {
         let lastUser = usersList[usersList.length - 1];
         updateOnlineUserList(lastUser);
     }
-    // });
+
 }
 
 
 //connecting new user
 function onConnectedSuccessfully() {
     console.log("CONNECTED");
-    //
+
     messageContainer.innerHTML = "";
     console.log("CLEARED MESSAGE WINDOW");
     getLatestHistory();
     console.log("HISTORY FETCHED!");
-    //
+
 
     stompClient.subscribe("/queue/public", onMessageReceived);
     stompClient.subscribe(`/user/queue/private`, onMessageReceived);
@@ -358,9 +311,9 @@ function onConnectedSuccessfully() {
         .then(response => response.json())
         .then(data => {
             let info = JSON.stringify(data);
-            //console.log(`DEBUG onConnectionSuccesfully method : ${info}`);
+
             if (!info.includes(nickname)) {
-              //  console.log(`DEBUG onConnectionSuccesfully NOT INCLUDED: ${nickname}`);
+
                 stompClient.send("/app/user", {}, JSON.stringify(
                     {
                         sender: nickname,
@@ -402,7 +355,7 @@ function getLatestHistory() {
             .then(message => {
                 message.forEach((msg) => {
                     prepareMessage(messageContainer, msg);
-                    // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
+
                 });
             });
 
@@ -423,17 +376,6 @@ function getLatestHistory() {
             .catch(error => {
                 console.log(`Nastala chyba: ${error}`);
 
-
-                /* fetch(`${serverURL}history/${privateChatWith}-${userName}/latest`)
-                    .then(response => response.json())
-                    .then(message => {
-                        message.forEach((msg) => {
-                            prepareMessage(messageContainer, msg);
-                           // messageContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
-        
-                        });
-                    });*/
-
             });
     }
 }
@@ -449,7 +391,7 @@ function getFullPublicHistory() {
         .then(message => {
             message.forEach((msg) => {
                 prepareMessage(historyContainer, msg);
-                //historyContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
+
             });
         });
 }
@@ -463,7 +405,6 @@ function getFullPersonalHistory() {
         .then(message => {
             message.forEach((msg) => {
                 prepareMessage(historyContainer, msg);
-                //historyContainer.insertAdjacentHTML("beforeend", prepareMessage(msg));
 
             });
         });
@@ -474,14 +415,7 @@ function getFullPersonalHistory() {
 function prepareMessage(container, messageData) {
     let completedMessage;
     const rawText = document.createTextNode(messageData.content);
-    //
-    /*const eventMessageContainer = document.createElement("div");
-    eventMessageContainer.className = "event-message-container";
-    const eventMessage = document.createElement("div");
-    eventMessage.className = "event-message";
-    eventMessageContainer.appendChild(eventMessage);*/
 
-    //
     const newMessageContainer = document.createElement("div");
     newMessageContainer.className = "message-container";
 
@@ -493,13 +427,13 @@ function prepareMessage(container, messageData) {
 
     const messageContent = document.createElement("div");
     messageContent.className = "message";
-    //
+
 
 
     if (messageData.type === "message") {
 
         if (messageData.sender === nickname) {
-            //
+
             newMessageContainer.classList.add("revert");
             messageContent.classList.add("right-msg");
             messageContent.appendChild(rawText);
@@ -507,17 +441,13 @@ function prepareMessage(container, messageData) {
             dateContainer.innerHTML = messageData.date;
             senderContainer.appendChild(dateContainer);
             newMessageContainer.appendChild(senderContainer);
-            //newMessageContainer.appendChild(dateContainer);
             newMessageContainer.appendChild(messageContent);
 
 
-            //
 
-            /*completedMessage = `<div class='message-container revert'><div class='sender'> ${messageData.sender}<div class='date'>${messageData.date}</div></div>
-                        <div class='message right-msg'> ${messageData.content}</div></div>`;*/
 
         } else {
-            //
+
 
             messageContent.classList.add("left-msg");
             messageContent.appendChild(rawText);
@@ -525,11 +455,8 @@ function prepareMessage(container, messageData) {
             dateContainer.innerHTML = messageData.date;
             senderContainer.appendChild(dateContainer);
             newMessageContainer.appendChild(senderContainer);
-            //newMessageContainer.appendChild(dateContainer);
+
             newMessageContainer.appendChild(messageContent);
-            //
-            /* completedMessage = `<div class='message-container'><div class='sender'> ${messageData.sender}<div class='date'> ${messageData.date}</div></div>
-                         <div class='message left-msg'> ${messageData.content}</div></div>`;*/
         }
         container.appendChild(newMessageContainer);
 
@@ -540,15 +467,11 @@ function prepareMessage(container, messageData) {
         if (messageData.type === "newUser") {
 
 
-            /* eventMessageContainer.querySelector(".event-message").classList.add("login-event");
-             eventMessageContainer.querySelector(".event-message").innerHTML = messageData.content;
-             
-             messageContainer.appendChild(eventMessageContainer);*/
+
             completedMessage = `<div class='event-message-container'><div class='event-message  login-event'>${messageData.content}</div></div>`;
         }
-        if (messageData.type === "Leave" || messageData.type === "kick" /*|| messageData.type === "BAN"*/) {
-            //eventMessageContainer.querySelector(".event-message").classList.add("logout-event");
-            // eventMessageContainer.querySelector(".event-message").appendChild(rawText);
+        if (messageData.type === "Leave" || messageData.type === "kick") {
+
             completedMessage = `<div class='event-message-container'> <div class='event-message  logout-event'>${messageData.content}</div></div>`;
         }
 
@@ -570,9 +493,9 @@ function prepareMessage(container, messageData) {
 }
 
 function updateOnlineUserList(userData) {
-    if (userData.nickname !== nickname ) {
+    if (userData.nickname !== nickname) {
 
-        //
+
         let userButton = document.createElement("button");
         userButton.className = "user-container";
         userButton.classList.add(userData.nickname);
@@ -608,7 +531,7 @@ function updateOnlineUserList(userData) {
         counter.className = "message-counter";
         counter.innerHTML = 0;
 
-        //counterBg.insertAdjacentHTML(svgElem);
+
         counterContainer.appendChild(counterBg);
         counterContainer.appendChild(counter);
 
@@ -616,35 +539,9 @@ function updateOnlineUserList(userData) {
         userButton.appendChild(user);
         userButton.appendChild(counterContainer);
 
-        //
-
-       /* let user = `<button class='user-container ${userData.nickname}' type='button'>
-                                    <img class='profile-img-online' src= '' alt='Profile Picture'>
-                                    <span class='user'>${userData.nickname}</span>
-                                    <span class="message-counter-container">
-                                    <span class="msg-counter-bg">
-                                    <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" width="17px"
-                                    height="17px" viewBox="0 0 64 64"
-                                    xml:space="preserve">
-                                    <g>
-	                                    <rect x="1" y="13" fill="none" stroke="#C6AC8E" stroke-width="2" stroke-miterlimit="10" width="62" height="37"/>
-	                                    <polyline fill="none" stroke="#C6AC8E" stroke-width="2" stroke-miterlimit="10" points="1,13 32,33 63,13"/>
-                                    </g>
-                                    </svg>
-                                    </span>
-                                    <span class="message-counter">0</span>
-                                    </span>
-                                                                       
-                                    </button >`;*/
-
-        /* usersContainer.insertAdjacentHTML("beforeend", user);*/
-        
-        //let userBtn = document.querySelector(`.${userData.nickname}`);
-
         setProfilePicture(userButton, userData.nickname);
         setUpOnlineUserBtn(userButton);
-       /* setProfilePicture(userBtn, userData.nickname);
-        setUpOnlineUserBtn(userBtn);*/
+
 
         usersContainer.insertAdjacentElement("beforeend", userButton);
     }
@@ -669,7 +566,7 @@ function setUpOnlineUserBtn(btn) {
             btn.querySelector(".message-counter").innerHTML = "0";
         }
 
-        var btnUserName= btn.querySelector(".user").innerHTML;
+        var btnUserName = btn.querySelector(".user").innerHTML;
         chatWithElement.innerHTML = `Private chat with: ${btnUserName}`;
 
         privateChatWith = btnUserName;
@@ -679,8 +576,7 @@ function setUpOnlineUserBtn(btn) {
 
 
 function logOutUser() {
-    /*const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');*/
+
 
     loggedOutByButton = true;
     try {
@@ -689,10 +585,7 @@ function logOutUser() {
             headers: {
                 [csrfHeader]: csrfToken
             }
-       /* }).then(response => {
-            if (response.ok) {
-                alert("you have been logged out");// window.location.href = serverURL;
-            }*/
+
         });
     } catch (error) {
         console.error('Error while logout:', error);
@@ -821,11 +714,12 @@ if (nickname !== "Admin") {
         let deleteResponse = document.querySelector('.delete-response');
         deleteResponse.innerHTML = "";
         logOutUser();
-       
+
         fetch(`${serverURL}profile/delete`, {
             method: 'POST',
             headers: {
-                [csrfHeader]: csrfToken },
+                [csrfHeader]: csrfToken
+            },
             body: formData
         })
             .then(response => {
@@ -859,7 +753,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
     fetch(`${serverURL}profile/update`, {
         method: 'POST',
         [csrfHeader]: csrfToken,
-    
+
         body: formData
     })
         .then(response => response.json())
@@ -885,7 +779,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                             headers: {
                                 'Content-Type': 'application/json',
                                 [csrfHeader]: csrfToken
-                                
+
                             },
                             body: JSON.stringify({
                                 'prevNick': nickname,
@@ -925,9 +819,10 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
             }
             response.innerHTML = `${data["message"]}`;
         });
-    //clearUpdateForm();
 
-    /*});*/
+
+
+
 });
 //#endregion
 

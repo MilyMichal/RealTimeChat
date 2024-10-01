@@ -29,17 +29,16 @@ public class ChatController {
     @GetMapping
     public String openChat(Model model, Authentication authentication) {
         model.addAttribute("user", userStorageService.getUser(authentication.getName()).getNickname());
-        model.addAttribute("usersList",userStorageService.getOtherNicknamesList(authentication));
-        model.addAttribute("serverURL",serverURL);
+        model.addAttribute("usersList", userStorageService.getOtherNicknamesList(authentication));
+        model.addAttribute("serverURL", serverURL);
 
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equalsIgnoreCase("role_admin"))) {
             model.addAttribute("users", onlineUserService.getAllOnlineUsers());
-            model.addAttribute("bannedUsers",userStorageService.getBannedNicknames());
+            model.addAttribute("bannedUsers", userStorageService.getBannedNicknames());
             return "chat-admin";
         }
         return "ChatPage";
     }
-
 
 
 }

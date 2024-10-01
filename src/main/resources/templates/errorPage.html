@@ -10,15 +10,15 @@
 <body>
 <h2>OOPS! Looks like we have error here!</h2><br>
 <p>You have been logged out for security.</p>
-   <div class="error-window">
-<p>Error status code</p>
+<div class="error-window">
+    <p>Error status code</p>
     <p id="status" th:text="${errorCode}">404</p>
-<p>Error message</p>
-    <p  id="err-message" th:text="${errorMessage}">Page not found</p>
+    <p>Error message</p>
+    <p id="err-message" th:text="${errorMessage}">Page not found</p>
 
-       <form th:action="@{/}" method="get">
-           <input class="back-btn" type="submit" value="Back main page">
-       </form>
-   </div>
+    <form th:action="@{/}" method="get">
+        <input class="back-btn" type="submit" value="Back main page">
+    </form>
+</div>
 </body>
 </html>

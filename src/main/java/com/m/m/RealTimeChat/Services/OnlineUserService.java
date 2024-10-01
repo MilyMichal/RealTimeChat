@@ -24,7 +24,6 @@ public class OnlineUserService {
 
     public void addOnlineUser(String user) {
         OnlineUser newUser = new OnlineUser(user);
-        System.out.println("DEBUG : added online user to DB " + user);
         onlineUserRepository.save(newUser);
     }
 

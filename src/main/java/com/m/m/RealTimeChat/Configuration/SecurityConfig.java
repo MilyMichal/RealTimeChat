@@ -10,7 +10,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AnonymousConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -44,9 +43,8 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/", "Images/**", "/CSS/**", "/register", "logout", "/ProfilePic/**","/error").permitAll()
-                        .requestMatchers("/history/**").hasAnyRole("ADMIN","user")
-                       /* .requestMatchers(HttpMethod.DELETE,"/delete").authenticated()*/
+                        .requestMatchers("/", "Images/**", "/CSS/**", "/register", "logout", "/ProfilePic/**", "/error").permitAll()
+                        .requestMatchers("/history/**").hasAnyRole("ADMIN", "user")
                         .anyRequest().authenticated()
 
                 )
@@ -60,7 +58,6 @@ public class SecurityConfig {
                 .logout(logout -> logout.logoutSuccessUrl("/").permitAll()
 
                         .addLogoutHandler(customLogoutHandler())
-                        //.logoutSuccessUrl("/")
                         .deleteCookies("JSESSIONID").invalidateHttpSession(true)
 
 
@@ -76,12 +73,6 @@ public class SecurityConfig {
     public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
         return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
     }
-
-/*    @Bean
-    public SessionRegistry sessionRegistry() {
-        return new SessionRegistryImpl();
-    }*/
-
 
     @Bean
     public LogoutHandler customLogoutHandler() {

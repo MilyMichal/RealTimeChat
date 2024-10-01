@@ -133,7 +133,6 @@ public class ProfileSettingsService {
                                         message.put("profPic", "changed");
                                     }
                                     message.put("message", "Profile was successfully updated!");
-                                    //message.forEach((k, v) -> System.out.println("DEBUG MAP: \n Key: " + k + "\n" + "value: " + v));
                                     userStorageService.updateUserInfo(auth.getName(), pathForDatabase, newPass, nickname);
 
                                     Authentication newAuthentication = new UsernamePasswordAuthenticationToken(updatedUserDetails, auth.getCredentials(), updatedUserDetails.getAuthorities());
@@ -158,11 +157,8 @@ public class ProfileSettingsService {
     public Resource loadImage(String nickname) throws IOException {
         String picURL = userStorageService.getUserByNickname(nickname).getProfilePic();
         Path path = Path.of(picURL);
-        /*System.out.println("PATH DEBUG: " + path);*/
         if (Files.exists(path)) {
-            /*System.out.println("FOUND DEBUG: " + Files.exists(path));*/
             return new UrlResource(path.toUri());
-
         }
         return null;
     }

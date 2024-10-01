@@ -11,12 +11,11 @@ import java.util.Objects;
 public class RegisterExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-        public ModelAndView handleNotAllowedNicknameRegistration (MethodArgumentNotValidException ex) {
-            ModelAndView modelAndView = new ModelAndView("Register");
-            System.out.println("DEBUG VALIDATION: " + ex.getMessage());
-            modelAndView.addObject("message", Objects.requireNonNull(Objects.requireNonNull(ex.getFieldError()).getDefaultMessage()));
-            return modelAndView;
-        }
-
+    public ModelAndView handleNotAllowedNicknameRegistration(MethodArgumentNotValidException ex) {
+        ModelAndView modelAndView = new ModelAndView("Register");
+        modelAndView.addObject("message", Objects.requireNonNull(Objects.requireNonNull(ex.getFieldError()).getDefaultMessage()));
+        return modelAndView;
     }
+
+}
 

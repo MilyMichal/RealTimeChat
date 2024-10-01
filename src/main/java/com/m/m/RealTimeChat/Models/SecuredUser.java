@@ -19,8 +19,8 @@ public class SecuredUser implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Arrays.stream(user.getRoles()
-                .split(","))
-                .map(role -> new SimpleGrantedAuthority("ROLE_"+role.trim()))
+                        .split(","))
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.trim()))
                 .toList();
     }
 

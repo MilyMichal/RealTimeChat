@@ -1,7 +1,6 @@
 package com.m.m.RealTimeChat.Controllers;
 
 
-
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
@@ -20,7 +19,6 @@ public class ServerErrorController implements ErrorController {
         String errorMessage = (String) request.getAttribute("jakarta.servlet.error.message");
         Throwable throwable = (Throwable) request.getAttribute("jakarta.servlet.error.exception");
 
-        /*String servletName = (String) request.getAttribute("jakarta.servlet.error.servlet_name");*/
         model.addAttribute("errorCode", statusCode);
         model.addAttribute("errorType", exceptionType);
         model.addAttribute("errorMessage", errorMessage);
