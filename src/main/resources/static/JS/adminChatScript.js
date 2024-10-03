@@ -41,40 +41,41 @@ function onMessageReceived(payload) {
 
         if (message.type === "update-nick") {
 
-            if (nickname === message.sender) {
+            /* if (nickname === message.sender) {
+ 
+ 
+                 nickname = message.content;
+ 
+             } else {*/
+            let onUserbtn = document.querySelector(`.${message.sender}`);
+            let name = onUserbtn.querySelector(`.user`);
 
+            Array.from(document.getElementById("user-to-find").options).forEach(option => {
 
-                nickname = message.content;
+                if (option.value === message.sender) {
+                    option.value = message.content;
+                    option.text = message.content;
 
-            } else {
-                let onUserbtn = document.querySelector(`.${message.sender}`);
-                let name = onUserbtn.querySelector(`.user`);
-
-                Array.from(document.getElementById("user-to-find").options).forEach(option => {
-
-                    if (option.value === message.sender) {
-                        option.value = message.content;
-                        option.text = message.content;
-
-                    }
-                });
-
-                onUserbtn.classList.replace(`${message.sender}`, `${message.content}`);
-
-                name.innerHTML = `${message.content}`;
-                name.classList.replace(`${message.sender}`, `${message.content}`);
-                setProfilePicture(onUserbtn, message.content);
-
-                if (chatWithElement.innerHTML !== "Public chat") {
-                    privateChatWith = message.content;
-                    chatWithElement.innerHTML = `Private chat with: ${message.content}`;
                 }
+            });
+
+            onUserbtn.classList.replace(`${message.sender}`, `${message.content}`);
+
+            name.innerHTML = `${message.content}`;
+            name.classList.replace(`${message.sender}`, `${message.content}`);
+            setProfilePicture(onUserbtn, message.content);
+
+            if (chatWithElement.innerHTML !== "Public chat") {
+                privateChatWith = message.content;
+                chatWithElement.innerHTML = `Private chat with: ${message.content}`;
             }
+
 
 
             messageContainer.innerHTML = "";
             getLatestHistory();
         }
+
 
         if (message.type === "update-profilePic") {
             if (nickname !== message.sender) {
@@ -84,7 +85,7 @@ function onMessageReceived(payload) {
 
             }
             prepareMessage(messageContainer, message);
-            
+
         }
 
 
@@ -95,7 +96,7 @@ function onMessageReceived(payload) {
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === "public") {
 
                 prepareMessage(messageContainer, message);
-               
+
             }
 
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === nickname) {
@@ -116,7 +117,7 @@ function onMessageReceived(payload) {
             if ((nickname == message.sendTo && message.sender == privateChatWith) ||
                 (message.sendTo == privateChatWith && message.sender == nickname)) {
                 prepareMessage(messageContainer, message);
-               
+
             }
             clearOldMsg();
             if (isScrolledToBottom) {
@@ -126,28 +127,28 @@ function onMessageReceived(payload) {
 
         // displaying new user in chat and online user panel
         if (message.type === 'newUser') {
-            
+
 
             if (message.sender != nickname) {
                 addUserToSelect(message.sender, onlineUsers);
             }
             prepareMessage(messageContainer, message);
-            
+
             fetch(`${serverURL}users`)
                 .then(response => response.json())
                 .then(data => {
                     showOnlineUsers(data);
-                   
+
                 });
 
         }
 
+
+
+
+
     }
 }
-
-
-
-
 
 // admin features:
 
@@ -198,7 +199,7 @@ function banUser() {
                 stompClient.send("/app/chat/public", {}, JSON.stringify(prepareAdminMessage(select, 'BAN')));
             }
         });
-        
+
 
         addUserToSelect(select, bannedUsers);
         removeUserFromSelect(select, onlineUsers);
@@ -222,7 +223,7 @@ function prepareAdminMessage(targetName, msgType) {
         adminmsg =
 
         {
-            sender: 'admin',
+            sender: nickname,
             type: msgType,
             content: `${targetName} was set free by admin!`,
             sendTo: targetName,
@@ -233,7 +234,7 @@ function prepareAdminMessage(targetName, msgType) {
         adminmsg =
 
         {
-            sender: 'admin',
+            sender: nickname,
             type: msgType,
             content: banDuration(),
             sendTo: targetName,
@@ -245,7 +246,7 @@ function prepareAdminMessage(targetName, msgType) {
         adminmsg =
 
         {
-            sender: 'admin',
+            sender: nickname,
             type: msgType,
             content: `${targetName} was kicked out by admin!`,
             sendTo: targetName,

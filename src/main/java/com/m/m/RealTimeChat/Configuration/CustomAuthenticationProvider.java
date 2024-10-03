@@ -43,7 +43,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new LockedException(String.format(
                     "Your account is BANNED! <br> BAN will expire on: %s", userStorageService.getUser(authentication.getName())
                             .getBanExpiration()
-                            .format(DateTimeFormatter.ofPattern("dd-M-yyyy HH:mm:ss"))));
+                            .format(DateTimeFormatter.ofPattern("dd-M-yyyy H:mm:ss"))));
         }
 
         if (onlineUserService.findOnlineUser(userDetails.getUsername()).isPresent()) {

@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -44,14 +45,13 @@ public class CustomLogoutHandler implements LogoutHandler {
 
         synchronized (lock) {
 
-            /*System.out.println("DEBUG CUSTOM LOGOUT");*/
             if (authentication != null) {
                 String user = userStorageService.getUser(authentication.getName()).getNickname();
                 Map<String, String> message = new HashMap<>();
                 message.put("type", "Leave");
                 message.put("sender", user);
                 message.put("sendTo", "public");
-                message.put("date", LocalDateTime.now().format(DateTimeFormatter.ofPattern("d. M. yyyy H:mm:ss")));
+                message.put("date", ZonedDateTime.now().format(DateTimeFormatter.ofPattern("d. M. yyyy H:mm:ss")));
                 message.put("content", user + " just left the chatroom");
                 ObjectMapper mapper = new ObjectMapper();
 
