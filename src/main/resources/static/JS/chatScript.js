@@ -40,13 +40,6 @@ var nickname = nicknameElement.getAttribute("data-user");
 
 
 
-//event listener for logout user from list after closing chat page
-/*window.addEventListener('unload', function (event) {
-    if (!loggedOutByButton) {
-        logOutUser();
-    }
-
-});*/
 
 //event listener for UNDO step from chat page
 
@@ -437,7 +430,13 @@ function prepareMessage(container, messageData) {
     const messageContent = document.createElement("div");
     messageContent.className = "message";
 
-
+    
+    var rawDate = messageData.date.replace(" ", "T");
+    
+    var formatedDate = DateTime.fromISO(rawDate, { setZone: true });
+    
+    var cleanDate = formatedDate.toFormat('d.M.yyyy H:mm:ss');
+    
 
     if (messageData.type === "message") {
 
@@ -447,7 +446,7 @@ function prepareMessage(container, messageData) {
             messageContent.classList.add("right-msg");
             messageContent.appendChild(rawText);
             senderContainer.innerHTML = messageData.sender;
-            dateContainer.innerHTML = cleanDate; //messageData.date;
+            dateContainer.innerHTML = cleanDate;
             senderContainer.appendChild(dateContainer);
             newMessageContainer.appendChild(senderContainer);
             newMessageContainer.appendChild(messageContent);
@@ -461,7 +460,7 @@ function prepareMessage(container, messageData) {
             messageContent.classList.add("left-msg");
             messageContent.appendChild(rawText);
             senderContainer.innerHTML = messageData.sender;
-            dateContainer.innerHTML = cleanDate;//messageData.date;
+            dateContainer.innerHTML = cleanDate;
             senderContainer.appendChild(dateContainer);
             newMessageContainer.appendChild(senderContainer);
 
