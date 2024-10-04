@@ -10,16 +10,16 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
-    @Query(value = "SELECT * FROM (SELECT * FROM messages WHERE send_to = 'public' ORDER BY date DESC LIMIT 15) subquery ORDER BY date ASC", nativeQuery = true)
+    @Query(value = "SELECT * FROM (SELECT * FROM messages WHERE (send_to = 'public' OR type IN ('BAN','UNBAN')) ORDER BY date DESC LIMIT 15) AS subquery ORDER BY date ASC", nativeQuery = true)
     List<Message> findLatestPublicMessages();
 
-    @Query(value = "SELECT * FROM messages WHERE send_to = 'public'", nativeQuery = true)
+    @Query(value = "SELECT * FROM messages WHERE (send_to = 'public' OR type IN ('BAN','UNBAN'))", nativeQuery = true)
     List<Message> findAllPublicMessages();
 
-    @Query(value = "SELECT * FROM messages WHERE send_to = :to AND sender = :from OR send_to = :from AND sender = :to", nativeQuery = true)
+    @Query(value = "SELECT * FROM messages WHERE ((send_to = :to AND sender = :from) OR (send_to = :from AND sender = :to)) AND type = 'message'", nativeQuery = true)
     List<Message> findAllPrivateMessages(@Param("to") String sendTo, @Param("from") String sender);
 
-    @Query(value = "SELECT * FROM (SELECT * FROM messages WHERE send_to = :to AND sender = :from OR send_to = :from AND sender = :to ORDER BY date DESC LIMIT 15) subquery ORDER BY date ASC ", nativeQuery = true)
+    @Query(value = "SELECT * FROM (SELECT * FROM messages WHERE ((send_to = :to AND sender = :from) OR (send_to = :from AND sender = :to)) ORDER BY date DESC LIMIT 15) AS subquery WHERE type = 'message' ORDER BY date ASC ", nativeQuery = true)
     List<Message> findLatestPrivateMessages(@Param("to") String sendTo, @Param("from") String sender);
 
     @Modifying

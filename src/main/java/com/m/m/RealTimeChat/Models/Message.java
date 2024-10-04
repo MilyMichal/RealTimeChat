@@ -1,9 +1,12 @@
 package com.m.m.RealTimeChat.Models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.ZonedDateTime;
 
 @Entity
 @Table(name = "Messages")
@@ -20,8 +23,8 @@ public class Message {
     String content;
     @Column
     String sender;
-    @Column
-    String date;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX",shape = JsonFormat.Shape.STRING,timezone = "Europe/Prague")
+    ZonedDateTime date;
     @Column
     String type;
     @Column

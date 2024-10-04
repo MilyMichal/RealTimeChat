@@ -17,11 +17,14 @@ let deleteProfileModal = document.querySelector('.modal.delete-mod');
 
 let emojiPicker = document.getElementById('emoji-win');
 
+const { DateTime } = luxon;
+
 let privateChatWith;
 var loggedOutByButton = false;
 let isScrolledToBottom = true;
 
-var actDate = () => new Date().toLocaleString();
+var actDate = () => DateTime.now().setZone('Europe/Prague');
+   
 
 let stompClient = null;
 let sock = new SockJS(`${serverURL}chat`, null, {
@@ -96,7 +99,7 @@ function register() {
     // establishing connection
 
     stompClient = Stomp.over(sock);
-    stompClient.debug = null;
+    // stompClient.debug = null;
     stompClient.connect({}, onConnectedSuccessfully, (error) => {
         console.log('unable to connect' + error);
     });
@@ -176,6 +179,12 @@ function onMessageReceived(payload) {
             prepareMessage(messageContainer, message);
 
         }
+
+        if (message.type === "UNBAN") {
+            prepareMessage(messageContainer, message);
+        }
+
+
 
         if (message.type === "update-nick") {
 
@@ -438,7 +447,7 @@ function prepareMessage(container, messageData) {
             messageContent.classList.add("right-msg");
             messageContent.appendChild(rawText);
             senderContainer.innerHTML = messageData.sender;
-            dateContainer.innerHTML = messageData.date;
+            dateContainer.innerHTML = cleanDate; //messageData.date;
             senderContainer.appendChild(dateContainer);
             newMessageContainer.appendChild(senderContainer);
             newMessageContainer.appendChild(messageContent);
@@ -452,7 +461,7 @@ function prepareMessage(container, messageData) {
             messageContent.classList.add("left-msg");
             messageContent.appendChild(rawText);
             senderContainer.innerHTML = messageData.sender;
-            dateContainer.innerHTML = messageData.date;
+            dateContainer.innerHTML = cleanDate;//messageData.date;
             senderContainer.appendChild(dateContainer);
             newMessageContainer.appendChild(senderContainer);
 
@@ -486,6 +495,12 @@ function prepareMessage(container, messageData) {
         if (messageData.type === "update-profilePic") {
             completedMessage = `<div class='event-message-container'> <div class='event-message  login-event'>${messageData.sender} changed his profile picture</div></div>`;
         }
+
+        if (messageData.type === "UNBAN") {
+            completedMessage = `<div class='event-message-container'> <div class='event-message  login-event'>${messageData.content}</div></div>`;
+        }
+
+
         container.insertAdjacentHTML("beforeend", completedMessage);
 
     }

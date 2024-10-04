@@ -10,6 +10,8 @@ import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +41,7 @@ public class AdminService {
     @Scheduled(cron = "0 * * * * *")
     public void checkBanExpired() {
         userStorageService.getBannedUsers().forEach(bannedUser -> {
-            if (bannedUser.getBanExpiration().isBefore(LocalDateTime.now())) {
+            if (bannedUser.getBanExpiration().isBefore(ChronoLocalDateTime.from(ZonedDateTime.now()))) {
                 userStorageService.unBanUser(bannedUser.getUserName());
                 Map<String, String> message = new HashMap<>();
                 message.put("type", "BanExpired");
