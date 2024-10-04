@@ -39,7 +39,8 @@ public class WebSockedController {
     @MessageMapping("/chat/public")
     @SendTo("/queue/public")
     public Message sendMsg(@Payload Message msg, Principal principal) {
-        if (msg.getType().equals("kick") || msg.getType().equals("BAN")) {
+        System.out.println("MESSAGE DEBUG:\n TYPE: " + msg.getType() + "\nSENDTO: " + msg.getSendTo() + "\nPRINCIPAL: " + principal.getName() + "\nDATE: " + msg.getDate() );
+        if (msg.getType().equals("kick") || msg.getType().equals("BAN") || msg.getType().equals("UNBAN")) {
             if(principal.getName().equals("Admin")) {
                 messageHistoryService.saveMessage(msg);
                 return msg;
