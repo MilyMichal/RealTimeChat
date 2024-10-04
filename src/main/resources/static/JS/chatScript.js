@@ -90,9 +90,8 @@ messageContainer.addEventListener('scroll', () => {
 function register() {
 
     // establishing connection
-
     stompClient = Stomp.over(sock);
-    // stompClient.debug = null;
+    stompClient.debug = null;
     stompClient.connect({}, onConnectedSuccessfully, (error) => {
         console.log('unable to connect' + error);
     });
