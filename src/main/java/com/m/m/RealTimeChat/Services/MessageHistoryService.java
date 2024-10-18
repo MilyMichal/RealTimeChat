@@ -35,7 +35,7 @@ public class MessageHistoryService {
         return messageRepository.findAllPrivateMessages(sendTo, sender);
     }
 
-    public ResponseEntity<?> getLatestPrivateHistory(String sendTo, String sender) {
+    public ResponseEntity<List<Message>> getLatestPrivateHistory(String sendTo, String sender) {
         return new ResponseEntity<>(messageRepository.findLatestPrivateMessages(sendTo, sender), HttpStatus.OK);
     }
 

@@ -24,7 +24,7 @@ var loggedOutByButton = false;
 let isScrolledToBottom = true;
 
 var actDate = () => DateTime.now().setZone('Europe/Prague');
-   
+
 
 let stompClient = null;
 let sock = new SockJS(`${serverURL}chat`, null, {
@@ -297,13 +297,10 @@ function showOnlineUsers(usersList) {
 
 //connecting new user
 function onConnectedSuccessfully() {
-    console.log("CONNECTED");
 
     messageContainer.innerHTML = "";
-    console.log("CLEARED MESSAGE WINDOW");
-    getLatestHistory();
-    console.log("HISTORY FETCHED!");
 
+    getLatestHistory();
 
     stompClient.subscribe("/queue/public", onMessageReceived);
     stompClient.subscribe(`/user/queue/private`, onMessageReceived);
@@ -429,13 +426,13 @@ function prepareMessage(container, messageData) {
     const messageContent = document.createElement("div");
     messageContent.className = "message";
 
-    
+
     var rawDate = messageData.date.replace(" ", "T");
-    
+
     var formatedDate = DateTime.fromISO(rawDate, { setZone: true });
-    
+
     var cleanDate = formatedDate.toFormat('d.M.yyyy H:mm:ss');
-    
+
 
     if (messageData.type === "message") {
 
@@ -771,13 +768,16 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
     })
         .then(response => response.json())
         .then(data => {
+            Object.keys(data).forEach(key => {
+
+            });
+
             let updateMsg;
             if (Object.keys(data).length > 1) {
                 if (Object.keys(data).length == 2 && data.hasOwnProperty("pass")) {
 
                 } else {
                     if (data.hasOwnProperty("newNickname")) {
-
                         updateMsg =
                         {
                             "sender": nickname,
@@ -801,7 +801,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                         })
                             .then(() => {
 
-                                stompClient.send("/app/chat", {}, JSON.stringify(updateMsg));
+                                stompClient.send("/app/chat/public", {}, JSON.stringify(updateMsg));
 
                             });
 
@@ -817,7 +817,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
 
                         }
 
-                        stompClient.send("/app/chat", {}, JSON.stringify(updateMsg));
+                        stompClient.send("/app/chat/public", {}, JSON.stringify(updateMsg));
                     }
                 }
             }
@@ -863,15 +863,14 @@ function setProfilePicture(button, btnNickname) {
     fetch(`${serverURL}profile/get/${btnNickname}`)
         .then(response => {
             if (response.ok) {
-                return response.blob();
+                return response.text();
             } else {
                 throw new Error('Image not found');
             }
         })
-        .then(blob => {
-            const imageUrl = URL.createObjectURL(blob);
+        .then(imageUrl => {
             const imgElement = button.querySelector('.profile-img-online');
-            imgElement.src = imageUrl;
+            imgElement.src = `${serverURL}${imageUrl}`;
         })
         .catch(error => {
             console.error('Error fetching image:', error);

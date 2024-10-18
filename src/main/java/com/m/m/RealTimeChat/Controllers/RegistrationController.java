@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/register")
 public class RegistrationController {
 
+    private final String teplate = "Register";
 
     private final UserStorageService userStorageService;
 
@@ -21,7 +22,7 @@ public class RegistrationController {
 
     @GetMapping
     public String registrationPage() {
-        return "Register";
+        return teplate;
     }
 
     @Validated
@@ -31,11 +32,11 @@ public class RegistrationController {
             userStorageService.saveUserToStorage(user);
             model.addAttribute("message", "Registration Succeed!");
             model.addAttribute("registrationSuccess", true);
-            return "Register";
+            return teplate;
         } else {
             model.addAttribute("message", "password doesn't match");
         }
-        return "Register";
+        return teplate;
 
     }
 

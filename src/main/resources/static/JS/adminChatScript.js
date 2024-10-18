@@ -11,11 +11,12 @@ function onMessageReceived(payload) {
 
 
     if (message.type) {
-        if (message.type === "Leave") {
+        if (message.type === "Leave" || message.type === "kick") {
             prepareMessage(messageContainer, message);
 
             if (usersContainer.querySelector(`.${message.sender}`)) {
                 usersContainer.querySelector(`.${message.sender}`).remove();
+                removeUserFromSelect(message.sender, onlineUsers);
             }
         }
 
@@ -40,13 +41,9 @@ function onMessageReceived(payload) {
         }
 
         if (message.type === "update-nick") {
-
-            /* if (nickname === message.sender) {
- 
- 
-                 nickname = message.content;
- 
-             } else {*/
+            removeUserFromSelect(message.sender, onlineUsers);
+            addUserToSelect(message.content, onlineUsers);
+          
             let onUserbtn = document.querySelector(`.${message.sender}`);
             let name = onUserbtn.querySelector(`.user`);
 

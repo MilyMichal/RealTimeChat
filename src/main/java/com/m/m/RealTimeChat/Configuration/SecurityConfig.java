@@ -27,14 +27,14 @@ public class SecurityConfig {
 
     private final AppUserDetailService appUserDetailService;
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplates;
+    private final SimpMessagingTemplate messagingTemplates;
 
 
     @Autowired
-    public SecurityConfig(CustomAuthenticationProvider customAuthenticationProvider, AppUserDetailService appUserDetailService) {
+    public SecurityConfig(CustomAuthenticationProvider customAuthenticationProvider, AppUserDetailService appUserDetailService, SimpMessagingTemplate messagingTemplates) {
         this.customAuthenticationProvider = customAuthenticationProvider;
         this.appUserDetailService = appUserDetailService;
+        this.messagingTemplates = messagingTemplates;
     }
 
     @Bean

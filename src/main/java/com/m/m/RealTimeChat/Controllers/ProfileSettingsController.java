@@ -1,18 +1,17 @@
 package com.m.m.RealTimeChat.Controllers;
 
 import com.m.m.RealTimeChat.Services.ProfileSettingsService;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/profile")
-public class ProfileSettingsController {
+public class    ProfileSettingsController {
 
     private final ProfileSettingsService profileSettingsService;
 
@@ -24,17 +23,17 @@ public class ProfileSettingsController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<?> updateUserProfile(Authentication auth, @RequestParam(required = false) MultipartFile file,
-                                               @RequestParam(required = false) String nickname,
-                                               @RequestParam(required = false) String newPass,
-                                               @RequestParam(required = false) String reTypedPass,
-                                               @RequestParam String actualPass) {
+    public ResponseEntity<Map<String,String>> updateUserProfile(Authentication auth, @RequestParam(required = false) MultipartFile file,
+                                                                @RequestParam(required = false) String nickname,
+                                                                @RequestParam(required = false) String newPass,
+                                                                @RequestParam(required = false) String reTypedPass,
+                                                                @RequestParam String actualPass) {
 
         return new ResponseEntity<>(profileSettingsService.updateUserProfile(auth, file, nickname, newPass, reTypedPass, actualPass), HttpStatus.OK);
     }
 
     @GetMapping("get/{nickname}")
-    public ResponseEntity<Resource> getProfilePic(@PathVariable String nickname) throws IOException {
+    public ResponseEntity<String> getProfilePic(@PathVariable String nickname) {
 
         if (profileSettingsService.loadImage(nickname) != null) {
 
@@ -44,7 +43,7 @@ public class ProfileSettingsController {
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<?> deleteUserProfile(Authentication auth, @RequestParam String actualPass) {
+    public ResponseEntity<String> deleteUserProfile(Authentication auth, @RequestParam String actualPass) {
         return profileSettingsService.deleteUserProfile(auth.getName(), actualPass);
     }
 }
