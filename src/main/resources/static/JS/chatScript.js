@@ -28,7 +28,7 @@ var actDate = () => DateTime.now().setZone('Europe/Prague');
 
 let stompClient = null;
 let sock = new SockJS(`${serverURL}chat`, null, {
-    debug: false
+    debug: true
 });
 
 
@@ -91,7 +91,7 @@ function register() {
 
     // establishing connection
     stompClient = Stomp.over(sock);
-    stompClient.debug = null;
+   // stompClient.debug = null;
     stompClient.connect({}, onConnectedSuccessfully, (error) => {
         console.log('unable to connect' + error);
     });
@@ -106,20 +106,22 @@ function send() {
         if (chatWithElement.innerHTML === "Public chat") {
             finalMsg = {
                 "content": msgInputWindow.value,
-                "sender": nickname,
-                "date": actDate(),
+               // "sender": nickname,
+                //"date": actDate(),
                 "type": 'message',
-                "sendTo": "public"
+                //"sendTo": "public"
+                "recipient" : 'public'
             }
             stompClient.send("/app/chat/public", {}, JSON.stringify(finalMsg));
 
         } else {
             finalMsg = {
                 "content": msgInputWindow.value,
-                "sender": nickname,
-                "date": actDate(),
+              //  "sender": nickname,
+                //"date": actDate(),
                 "type": 'message',
-                "sendTo": privateChatWith
+                //"sendTo": privateChatWith
+                "recipient": privateChatWith
             }
             stompClient.send(`/app/chat/private`, {}, JSON.stringify(finalMsg));
 
@@ -314,11 +316,12 @@ function onConnectedSuccessfully() {
 
                 stompClient.send("/app/user", {}, JSON.stringify(
                     {
-                        sender: nickname,
+                       // sender: nickname,
                         type: 'newUser',
                         content: `${nickname} just joined chatroom. Welcome!`,
-                        sendTo: "public",
-                        date: actDate()
+                        recipient : "public"
+                        //sendTo: "public",
+                        //date: actDate()
                     }));
             } else {
                 showOnlineUsers(data);
@@ -780,11 +783,13 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                     if (data.hasOwnProperty("newNickname")) {
                         updateMsg =
                         {
-                            "sender": nickname,
+                           // "sender": nickname,
                             "content": data["newNickname"],
-                            "date": actDate(),
+                            "oldNick": nickname,
+                            //"date": actDate(),
                             "type": 'update-nick',
-                            "sendTo": "public"
+                            "recipient" : 'public'
+                            //"sendTo": "public"
                         }
 
                         fetch(`${serverURL}history/update`, {
@@ -809,11 +814,12 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
 
                         updateMsg =
                         {
-                            "sender": nickname,
+                            //"sender": nickname,
                             "content": nickname,
-                            "date": actDate(),
+                           // "date": actDate(),
                             "type": 'update-profilePic',
-                            "sendTo": "public"
+                            "recipient": 'public'
+                            //"sendTo": "public"
 
                         }
 

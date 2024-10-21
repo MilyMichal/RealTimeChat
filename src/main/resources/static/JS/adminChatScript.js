@@ -220,22 +220,24 @@ function prepareAdminMessage(targetName, msgType) {
         adminmsg =
 
         {
-            sender: nickname,
+            //sender: nickname,
             type: msgType,
             content: `${targetName} was set free by admin!`,
-            sendTo: targetName,
-            date: actDate()
+            //sendTo: targetName,
+            recipient: targetName
+            //date: actDate()
         }
     }
     if (msgType == 'BAN') {
         adminmsg =
 
         {
-            sender: nickname,
+           // sender: nickname,
             type: msgType,
             content: banDuration(),
-            sendTo: targetName,
-            date: actDate()
+            recipient: targetName
+           // sendTo: targetName,
+           // date: actDate()
         }
     }
 
@@ -243,11 +245,12 @@ function prepareAdminMessage(targetName, msgType) {
         adminmsg =
 
         {
-            sender: nickname,
+            //sender: nickname,
             type: msgType,
             content: `${targetName} was kicked out by admin!`,
-            sendTo: targetName,
-            date: actDate()
+            recipient: targetName
+           // sendTo: targetName,
+            //date: actDate()
         }
     }
     return adminmsg;
