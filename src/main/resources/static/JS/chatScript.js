@@ -768,9 +768,9 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
     })
         .then(response => response.json())
         .then(data => {
-            Object.keys(data).forEach(key => {
-
-            });
+            /* Object.keys(data).forEach(key => {
+ 
+             });*/
 
             let updateMsg;
             if (Object.keys(data).length > 1) {
@@ -820,17 +820,18 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                         stompClient.send("/app/chat/public", {}, JSON.stringify(updateMsg));
                     }
                 }
+
+                if (data["message"].includes("successfully")) {
+                    response.style.color = "#345635";
+                    clearUpdateForm();
+                } else {
+                    response.style.color = "#7E102C";
+                    document.getElementById("act-pass-input").value = "";
+                    document.getElementById("new-pass-input").value = "";
+                    document.getElementById("re-type-new-pass-input").value = "";
+                }
+                response.innerHTML = `${data["message"]}`;
             }
-            if (data["message"].includes("successfully")) {
-                response.style.color = "#345635";
-                clearUpdateForm();
-            } else {
-                response.style.color = "#7E102C";
-                document.getElementById("act-pass-input").value = "";
-                document.getElementById("new-pass-input").value = "";
-                document.getElementById("re-type-new-pass-input").value = "";
-            }
-            response.innerHTML = `${data["message"]}`;
         });
 
 
