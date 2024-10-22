@@ -28,7 +28,7 @@ var actDate = () => DateTime.now().setZone('Europe/Prague');
 
 let stompClient = null;
 let sock = new SockJS(`${serverURL}chat`, null, {
-    debug: true
+    debug: false
 });
 
 
@@ -91,7 +91,7 @@ function register() {
 
     // establishing connection
     stompClient = Stomp.over(sock);
-   // stompClient.debug = null;
+    stompClient.debug = null;
     stompClient.connect({}, onConnectedSuccessfully, (error) => {
         console.log('unable to connect' + error);
     });
@@ -106,21 +106,15 @@ function send() {
         if (chatWithElement.innerHTML === "Public chat") {
             finalMsg = {
                 "content": msgInputWindow.value,
-               // "sender": nickname,
-                //"date": actDate(),
                 "type": 'message',
-                //"sendTo": "public"
-                "recipient" : 'public'
+                "recipient": 'public'
             }
             stompClient.send("/app/chat/public", {}, JSON.stringify(finalMsg));
 
         } else {
             finalMsg = {
                 "content": msgInputWindow.value,
-              //  "sender": nickname,
-                //"date": actDate(),
                 "type": 'message',
-                //"sendTo": privateChatWith
                 "recipient": privateChatWith
             }
             stompClient.send(`/app/chat/private`, {}, JSON.stringify(finalMsg));
@@ -316,12 +310,10 @@ function onConnectedSuccessfully() {
 
                 stompClient.send("/app/user", {}, JSON.stringify(
                     {
-                       // sender: nickname,
                         type: 'newUser',
                         content: `${nickname} just joined chatroom. Welcome!`,
-                        recipient : "public"
-                        //sendTo: "public",
-                        //date: actDate()
+                        recipient: "public"
+
                     }));
             } else {
                 showOnlineUsers(data);
@@ -771,73 +763,64 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
     })
         .then(response => response.json())
         .then(data => {
-            /* Object.keys(data).forEach(key => {
- 
-             });*/
 
             let updateMsg;
-            if (Object.keys(data).length > 1) {
-                if (Object.keys(data).length == 2 && data.hasOwnProperty("pass")) {
 
-                } else {
-                    if (data.hasOwnProperty("newNickname")) {
-                        updateMsg =
-                        {
-                           // "sender": nickname,
-                            "content": data["newNickname"],
-                            "oldNick": nickname,
-                            //"date": actDate(),
-                            "type": 'update-nick',
-                            "recipient" : 'public'
-                            //"sendTo": "public"
-                        }
+            if (Object.keys(data).length == 2 && data.hasOwnProperty("pass")) {
 
-                        fetch(`${serverURL}history/update`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                [csrfHeader]: csrfToken
-
-                            },
-                            body: JSON.stringify({
-                                'prevNick': nickname,
-                                'actNick': data["newNickname"]
-                            })
-                        })
-                            .then(() => {
-
-                                stompClient.send("/app/chat/public", {}, JSON.stringify(updateMsg));
-
-                            });
-
-                    } else {
-
-                        updateMsg =
-                        {
-                            //"sender": nickname,
-                            "content": nickname,
-                           // "date": actDate(),
-                            "type": 'update-profilePic',
-                            "recipient": 'public'
-                            //"sendTo": "public"
-
-                        }
-
-                        stompClient.send("/app/chat/public", {}, JSON.stringify(updateMsg));
+            } else {
+                if (data.hasOwnProperty("newNickname")) {
+                    updateMsg =
+                    {
+                        "content": data["newNickname"],
+                        "oldNick": nickname,
+                        "type": 'update-nick',
+                        "recipient": 'public'
                     }
+
+                    fetch(`${serverURL}history/update`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            [csrfHeader]: csrfToken
+
+                        },
+                        body: JSON.stringify({
+                            'prevNick': nickname,
+                            'actNick': data["newNickname"]
+                        })
+                    })
+                        .then(() => {
+
+                            stompClient.send("/app/chat/public", {}, JSON.stringify(updateMsg));
+
+                        });
+
+                } else if (data.hasOwnProperty("profPic")) {
+
+                    updateMsg =
+                    {
+                        "content": nickname,
+                        "type": 'update-profilePic',
+                        "recipient": 'public'
+                    }
+                    stompClient.send("/app/chat/public", {}, JSON.stringify(updateMsg));
                 }
 
-                if (data["message"].includes("successfully")) {
-                    response.style.color = "#345635";
-                    clearUpdateForm();
-                } else {
-                    response.style.color = "#7E102C";
-                    document.getElementById("act-pass-input").value = "";
-                    document.getElementById("new-pass-input").value = "";
-                    document.getElementById("re-type-new-pass-input").value = "";
-                }
-                response.innerHTML = `${data["message"]}`;
             }
+
+
+            if (data["message"].includes("successfully")) {
+                response.style.color = "#345635";
+                clearUpdateForm();
+            } else {
+                response.style.color = "#7E102C";
+                document.getElementById("act-pass-input").value = "";
+                document.getElementById("new-pass-input").value = "";
+                document.getElementById("re-type-new-pass-input").value = "";
+            }
+            response.innerHTML = `${data["message"]}`;
+
         });
 
 

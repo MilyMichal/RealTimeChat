@@ -57,7 +57,6 @@ public class ProfileSettingsService {
 
         Map<String, String> message = new HashMap<>();
 
-
         if (userStorageService.confirmActualPassword(auth.getName(), actualPass)) {
 
             if (file.isEmpty() && nickname.isEmpty() && newPass.isEmpty()) {
@@ -68,9 +67,10 @@ public class ProfileSettingsService {
                 ) {
                     doProfileChanges(nickname, newPass, file, auth, message);
                 }
-
             }
 
+        } else {
+            message.put("message", "Wrong actual password");
         }
         return message;
     }
