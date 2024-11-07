@@ -4,6 +4,9 @@ const serverURL = document.getElementById("serverURL").getAttribute("data-URL");
 const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
+const activeUserName = document.querySelector(".active-user-name");
+let activeUserImage = document.querySelector(".active");
+
 let inputContainer = document.querySelector(".inputContainer");
 let chatScreen = document.querySelector(".chat");
 let msgInputWindow = document.getElementById("input-msg");
@@ -180,8 +183,9 @@ function onMessageReceived(payload) {
 
 
                 nickname = message.content;
-
-
+                //
+                updateActiveUserInfo(activeUserName, activeUserImage);
+                ///
             } else {
                 let onUserbtn = document.querySelector(`.${message.sender}`);
                 let name = onUserbtn.querySelector(`.user`);
@@ -218,6 +222,8 @@ function onMessageReceived(payload) {
 
                 setProfilePicture(onUserbtn, message.sender);
 
+            } else {
+                updateActiveUserInfo(activeUserName, activeUserImage);
             }
             prepareMessage(messageContainer, message);
 
@@ -297,6 +303,8 @@ function onConnectedSuccessfully() {
     messageContainer.innerHTML = "";
 
     getLatestHistory();
+
+    updateActiveUserInfo(activeUserName, activeUserImage);
 
     stompClient.subscribe("/queue/public", onMessageReceived);
     stompClient.subscribe(`/user/queue/private`, onMessageReceived);
@@ -886,7 +894,33 @@ function setProfilePicture(button, btnNickname) {
         });
 }
 
+function updateActiveUserInfo(nameElement,imgElement) {
+    fetch(`${serverURL}profile/get/${nickname}`)
+        .then(response => {
+            if (response.ok) {
+                return response.text();
+            } else {
+                throw new Error('Image not found');
+            }
+        })
+        .then(imageUrl => {
+            imgElement.src = `${serverURL}${imageUrl}`;
+        }).catch(error => {
+            console.error(`Error fetching image: `, error);
+        });
 
+   /* let usernameObj = document.createElement("div");
+    usernameObj.className = "active-user-name";*/
+    if (nameElement.innerHTML !== "") {
+        nameElement.innerHTML = "";
+    }
+    var plainUsername = document.createTextNode(nickname);
+    nameElement.appendChild(plainUsername);
+
+    /*user.className = "user";
+    var plainNick = document.createTextNode(userData.nickname);
+    user.appendChild(plainNick);*/
+}
 
 function showEmojiPicker() {
 
