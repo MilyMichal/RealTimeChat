@@ -1,9 +1,21 @@
 
 
 
+:root {
+    --TextColor: #edb085;
+    --BackGroundColor: linear-gradient(to right,#262e3b, #2e3a4a );
+    --inputBackgroundColor: #2e3a4a;
+    --ButtonsColor: linear-gradient(to bottom, #2e3a4a 5%, #262e3b 100%);
+    --ButtonsColorInverse: linear-gradient(to bottom, #262e3b 5%, #2e3a4a 100%);
+}
+
 body {
-    background-image: linear-gradient(to right, #22333B, #2a414b );
+    background-image: /*linear-gradient(to right,#262e3b, #2e3a4a );*/ var(--BackGroundColor);
     min-width: 650px;
+    margin: auto;
+    height: 100vh;
+    /*#22333B*/
+    /*2a414b*/
 }
 
 
@@ -78,12 +90,14 @@ body {
     justify-items: center;
     align-items: center;
     min-width: 650px;
+    height: 100vh;
 }
 
 .chat-window {
     display: flex;
     flex-direction: column;
     width: 100%;
+
 }
 
 .chat-headers {
@@ -97,6 +111,7 @@ body {
     align-content: flex-start;
     gap: 10px;
     width: 90%;
+    height: 95vh;
 }
 
 .online-users {
@@ -105,7 +120,7 @@ body {
 }
 /* Top chat header displaying name of current chat*/
 #chat-with {
-    height: 30px;
+    height: 38px;
     width: 100%;
     text-align: center;
     padding-top: 8px;
@@ -119,7 +134,8 @@ body {
     font-family: "Poetsen One", sans-serif;
     font-weight: 400;
     font-style: normal;
-    color: #C6AC8E;
+   /*color: #C6AC8E;-*/
+   color: var(--TextColor);
 }
 
 
@@ -131,7 +147,7 @@ body {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    height: 80vh;
+    height: 100%;
     Background-color: #00000045;
     border-color: #00000045;
 }
@@ -143,6 +159,30 @@ body {
     width: 25%;
     min-width: 150px;
     max-width: 250px;
+}
+
+.user-settings {
+    display: flex;
+    flex-direction: row;
+    flex-wrap:nowrap;
+    padding: 0px;
+    height: 39px;
+    width: 100%;
+    background-color: #00000045;
+    margin-bottom: 10px;
+    justify-content: flex-end;
+    align-items: center;
+    border-top-right-radius: 15px;
+}
+
+.active-user-name {
+    text-align: center;
+    margin-left: 10px;
+    flex-grow: 3;
+    overflow-wrap: anywhere;
+    font-family: "Poetsen One", sans-serif;
+    font-weight: 400;
+    font-size: 1em;
 }
 
 .online-users-header {
@@ -209,7 +249,7 @@ body {
 /* Main window for messages */
 #messages {
     overflow-y: auto;
-    height: 80vh;
+    height: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -241,13 +281,13 @@ body {
 }
 
 .message {
-    background-color: #a6a6a699;
+    background-color: #ca7a3b; /*#a6a6a699*/
     padding: 10px 10px 10px 15px;
     border-radius: 10px;
     width: fit-content;
     height: auto;
     overflow-wrap: anywhere;
-    white-space:pre-wrap;
+    white-space: pre-wrap;
     /*overflow-y: auto;*/
     flex-grow: 4;
     order: 1;
@@ -308,6 +348,17 @@ body {
     margin: 5px;
 }
 
+.profile-img-online.active {
+    border-radius: 30px;
+    width: 33px;
+    height: 33px;
+    margin: 0px 0px 0px 3px;
+    
+    /*left: -10px;
+    /*left: -10px;
+    top: 10px;*/
+}
+
 
 .event-message {
     font-family: "Caveat", sans-serif;
@@ -352,6 +403,10 @@ body {
     font-family: 'Noto Sans', sans-serif;
     font-size: 16px;
     color: #D0D0D0;
+    /*color: var(--TextColor);*/
+}
+#input-msg::placeholder {
+    color: var(--TextColor);
 }
 
     #input-msg:focus {
@@ -400,28 +455,39 @@ button img {
 .dropup {
     position: relative;
     display: inline-block;
-}
+    }
 
 .dropbtn {
-    height: 46px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+    align-content: flex-start;
+    height: inherit;
     cursor: pointer;
-    margin: 0px 0px 10px 10px;
-    border-bottom-left-radius: 15px;
-    width: 50px;
-    background-color: #00000025;
+    /*margin: 0px 0px 10px 10px;*/
+    /*border-bottom-left-radius: 15px;*/
+    width: 40px;
+    background: none;
+    /*background-color: #00000025;*/
     border: none;
-    padding: 0px 0px;
+    border-top-right-radius: inherit;
+    border-bottom-right-radius: inherit;
+    padding-left: 10px;
 }
 
     .dropbtn:hover, .send-msg-btn:hover {
         background-color: #00000045;
     }
+
+    
+
 /* Dropup content (Hidden by Default) */
 .dropup-content {
     display: none;
-    position: absolute;
-    bottom: 56px;
-    left: 10px;
+    position: relative;
+    bottom: -39px;
+    left: 12px;
     background-color: #00000095;
     min-width: 160px;
     z-index: 1;
@@ -440,6 +506,7 @@ button img {
         font-size: 12px;
         /*color: #C6AC8E;*/
         color: darkgrey;
+        height:39px;
     }
 
         /* Change color of dropup links on hover */
@@ -449,8 +516,13 @@ button img {
 
         /* Border setup for first choice in dropup*/
         .dropup-content > *:first-child {
-            border-top-left-radius: 15px;
+           /* border-top-left-radius: 15px;*/
             border-top-right-radius: 15px;
+        }
+
+        .dropup-content > *:last-child {
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
         }
 
 
@@ -487,7 +559,7 @@ button img {
     min-height: 450px;
     max-height: 550px;
     border-radius: 15px;
-    background-image: linear-gradient(to right, #22333B, #2a414b );
+    background-image: /*linear-gradient(to right, #22333B, #2a414b );*/ var(--BackGroundColor);
     margin: auto;
     padding: 5px;
     font-family: "Poetsen One", sans-serif;
@@ -506,13 +578,13 @@ button img {
     min-height: 50px;
     max-height: 200px;
     border-radius: 15px;
-    background-image: linear-gradient(to right, #22333B, #2a414b );
+    background-image: /*linear-gradient(to right, #22333B, #2a414b );*/ var(--BackGroundColor);
     margin: auto;
     padding: 5px;
     font-family: "Poetsen One", sans-serif;
     font-weight: 100;
     font-size: 14px;
-    color: darkgrey;
+    color: /*darkgrey;*/ var(--TextColor);
 }
 
 
@@ -524,7 +596,7 @@ button img {
     width: 90%;
     height: 60%;
     border-radius: 15px;
-    background-image: linear-gradient(to right, #22333B, #2a414b );
+    background-image: /*linear-gradient(to right, #22333B, #2a414b );*/ var(--BackGroundColor);
     margin: auto;
     padding: 10px;
 }
@@ -583,8 +655,8 @@ button img {
     padding: 3px 8px;
     text-decoration: none;
     text-shadow: 0px 0px 0px #0e7566;
-    background: linear-gradient(to bottom, #2c7373 5%, #102929 100%);
-    color: darkgray;
+    background: var(--ButtonsColor);/*linear-gradient(to bottom, #2c7373 5%, #102929 100%);*/
+    color:var(--TextColor); /*darkgray;*/
     box-shadow: 7px 8px 10px -3px #000000;
 }
 
@@ -593,7 +665,7 @@ button img {
     width: 120px;
     height: 120px;
     border: 2px dashed #2b5263;
-    background-color: rgb(47, 71, 82);
+    background-color:/* rgb(47, 71, 82);*/ var(--inputBackgroundColor);
     text-align: center;
     font-family: 'Noto Sans', sans-serif;
     font-size: 12px;
@@ -603,7 +675,7 @@ button img {
 
     .drop-area:hover {
         /* border: 3px dashed #2b5263;*/
-        background-color: rgb(47, 71, 82, 0.6);
+        background-color: /*rgb(47, 71, 82, 0.6);*/ #262e3b;
     }
 
 
@@ -644,26 +716,26 @@ button img {
 /* Public to USer chat switching button*/
 #public-chat-btn {
     width: 100%;
-    height: 55px;
+    height: 70px;
     cursor: pointer;
     background-color: #00000045;
     border-color: #00000045;
     font-family: "Poetsen One", sans-serif;
     font-weight: 400;
     font-size: 14px;
-    /*color: #C6AC8E;*/
-    color: darkgrey;
+    color: #edb085;
+    /*color: darkgrey;*/
 }
 
 
 .button-basic {
     box-shadow: 7px 8px 10px -3px #000000;
-    background: linear-gradient(to bottom, #2c7373 5%, #102929 100%);
-    background-color: #2c7373;
+    background: /*linear-gradient(to bottom, #2c7373 5%, #102929 100%);*/ var(--ButtonsColor);
+    background-color: var(--ButtonsColor); /*#2c7373;*/
     border: none;
     display: inline-block;
     cursor: pointer;
-    color: darkgrey;
+    color: /*darkgrey;*/ var(--TextColor);
     /* font-family: "Poetsen One", sans-serif;
     font-weight: 400;
     font-size: 12px;*/
@@ -682,16 +754,19 @@ select:focus {
 
 
 option {
-    background-color: #2c7373;
+    background-color: #2e3a4a; /*#2c7373;*/
     /* font-family: "Poetsen One", sans-serif;
     font-weight: 400;
     font-size: 12px;*/
     padding: 3px 8px;
     text-decoration: none;
+    color: var(--TextColor);
 }
 
+   
+
 .button-basic:hover {
-    background: linear-gradient(to bottom, #102929 5%, #2c7373 100%);
+    background:/* linear-gradient(to bottom, #102929 5%, #2c7373 100%);*/ var(--ButtonsColorInverse);
     background-color: #102929;
 }
 
@@ -702,19 +777,26 @@ option {
 
 #new-pass-input, #name-input, #act-pass-input, #pass-confirm-input, #re-type-new-pass-input {
     padding: 3px 6px;
-    background-color: #2a414a;
+    background-color: /*#2a414a;*/ var(--inputBackgroundColor);
     border: none;
 }
 
-/*#new-pass-input, #name-input, #act-pass-input {
+    #new-pass-input::placeholder,
+    #name-input::placeholder,
+    #act-pass-input::placeholder,
+    #pass-confirm-input::placeholder,
+    #re-type-new-pass-input::placeholder {
+        color: var(--TextColor);
+    }
+    /*#new-pass-input, #name-input, #act-pass-input {
     padding: 3px 6px;
     background-color: #2a414a;
     border: none;
 }*/
-
-label {
-    font-size: 13px;
-}
+    label {
+        font-size: 13px;
+        color: var(--TextColor);
+    }
 
 input:focus {
     outline: none;
@@ -736,8 +818,8 @@ input:focus {
     padding: 3px 8px;
     text-decoration: none;
     text-shadow: 0px 0px 0px #0e7566;
-    background: linear-gradient(to bottom, #2c7373 5%, #102929 100%);
-    color: darkgray;
+    background: var(--ButtonsColor);/* linear-gradient(to bottom, #d47b32 5%, #422c1e 100%);*/ /*#2c7373 5%,#102929 100% */
+    color: /*darkgray;*//* #efb98b;*/ var(--TextColor);
     box-shadow: 7px 8px 10px -3px #000000;
 }
 
@@ -766,6 +848,13 @@ input:focus {
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
 }
+.rnd-brd-15r {
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+.rnd-brd-15tr {
+    border-top-right-radius: 15px;
+}
 
 .PO-ss-400 {
     font-family: "Poetsen One", sans-serif;
@@ -780,7 +869,7 @@ emoji-picker {
 
 .emoji-window {
     top: -398px;
-    left: -317px;
+    left: 0px;
     width: 350px;
     height: 350px;
     position: relative;
@@ -797,9 +886,11 @@ emoji-picker {
 
 .emoji-btn-placeholder {
     height: 46px;
-    cursor: pointer;
+    
     margin-bottom: 10px;
-    width: 35px;
+    margin-left: 10px;
+    width: 50px;
+    
 }
 
 .emoji-btn {
@@ -811,6 +902,8 @@ emoji-picker {
     border-bottom: none;
     border-left: none;
     border-right-color: #00000045;
+    border-bottom-left-radius: 15px;
+    cursor: pointer;
 }
 
     .emoji-btn:hover {

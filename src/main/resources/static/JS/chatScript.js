@@ -606,7 +606,20 @@ function logOutButton() {
 /* When the user clicks on the button,
 toggle between hiding and showing the dropdown content */
 function show() {
-    document.getElementById("dropupMenu").classList.toggle("show");
+    let dropMenu = document.getElementById("dropupMenu");
+    let userSett = document.querySelector('.user-settings');
+    let dropBtn = document.querySelector('.dropbtn');
+    dropMenu.classList.toggle("show");
+    if (window.getComputedStyle(dropBtn).borderRadius !== "0px") {
+        dropBtn.style.backgroundColor = '#00000045';
+        userSett.style.borderBottomRightRadius = "0px";
+        userSett.style.borderTopRightRadius = "0px";
+    } else {
+        userSett.style.borderBottomRightRadius = "";
+        userSett.style.borderTopRightRadius = "";
+        dropBtn.style.backgroundColor = '';
+    }
+
 }
 /* Modals open/close settings*/
 //#region ModalsDisplay
@@ -632,12 +645,18 @@ window.onclick = function (event) {
     /* close dropUp menu when click outside */
     if (!event.target.matches('.dropbtn')) {
         var dropupMenu = document.getElementById("dropupMenu");
-
+        var userSett = document.querySelector('.user-settings');
+        var dropBtn = document.querySelector('.dropbtn');
+        userSett.style.borderRadius = "";
+        dropBtn.style.backgroundColor = "";
 
         if (dropupMenu.classList.contains('show')) {
             dropupMenu.classList.remove('show');
+
         }
     }
+
+
 
     /* close any other current open modal */
     if (event.target.matches('.modal') && !event.target.matches('.modal.delete-mod')) {
