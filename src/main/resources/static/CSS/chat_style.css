@@ -760,6 +760,7 @@ option {
     padding: 3px 6px;
     background-color: var(--inputBackgroundColor);
     border: none;
+    color: var(--TextColorLight);
 }
 
     #new-pass-input::placeholder,

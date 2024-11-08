@@ -952,3 +952,7 @@ emojiPicker.addEventListener('emoji-click', event => {
     msgInputWindow.selectionEnd = start + emoji.length;
 
 });
+
+function encode(nick) {
+    return encodeURIComponent(nick);
+}
