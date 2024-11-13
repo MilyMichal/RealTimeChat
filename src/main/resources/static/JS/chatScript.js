@@ -138,8 +138,8 @@ function onMessageReceived(payload) {
         if (message.type === "Leave") {
             prepareMessage(messageContainer, message);
 
-            if (usersContainer.querySelector(`.${message.sender}`)) {
-                usersContainer.querySelector(`.${message.sender}`).remove();
+            if (usersContainer.querySelector(`.${rawNick}`)) {
+                usersContainer.querySelector(`.${rawNick}`).remove();
             }
         }
 
@@ -182,12 +182,13 @@ function onMessageReceived(payload) {
             if (nickname === message.sender) {
 
 
+
                 nickname = message.content;
                 //
                 updateActiveUserInfo(activeUserName, activeUserImage);
                 ///
             } else {
-                let onUserbtn = document.querySelector(`.${message.sender}`);
+                let onUserbtn = document.querySelector(`.${rawNick}`);
                 let name = onUserbtn.querySelector(`.user`);
 
                 Array.from(document.getElementById("user-to-find").options).forEach(option => {
@@ -199,10 +200,10 @@ function onMessageReceived(payload) {
                     }
                 });
 
-                onUserbtn.classList.replace(`${message.sender}`, `${message.content}`);
+                onUserbtn.classList.replace(`${rawNick}`, `${message.content}`);
 
                 name.innerHTML = `${message.content}`;
-                name.classList.replace(`${message.sender}`, `${message.content}`);
+                name.classList.replace(`${rawNick}`, `${message.content}`);
                 setProfilePicture(onUserbtn, message.content);
 
                 if (chatWithElement.innerHTML !== "Public chat") {
@@ -218,7 +219,7 @@ function onMessageReceived(payload) {
 
         if (message.type === "update-profilePic") {
             if (nickname !== message.sender) {
-                let onUserbtn = document.querySelector(`.${message.sender}`);
+                let onUserbtn = document.querySelector(`.${rawNick}`);
 
                 setProfilePicture(onUserbtn, message.sender);
 
@@ -235,13 +236,15 @@ function onMessageReceived(payload) {
     // displaying newest message
     if (message.type === 'message') {
 
+
         if (chatWithElement.innerHTML === "Public chat" && message.sendTo === "public") {
 
             prepareMessage(messageContainer, message);
         }
 
         if (chatWithElement.innerHTML === "Public chat" && message.sendTo === nickname) {
-            let incomingMsgUser = document.querySelector(`.${message.sender}`);
+            let sender = CSS.escape(message.sender);
+            let incomingMsgUser = document.querySelector(`.${sender}`);
             let msgCounterContainer = incomingMsgUser.querySelector(".message-counter-container");
             let msgCounter = incomingMsgUser.querySelector(".message-counter");
 
@@ -361,7 +364,16 @@ function getLatestHistory() {
             });
 
     } else {
-        fetch(`${serverURL}history/${privateChatWith}-${nickname}/latest`)
+        fetch(`${serverURL}history/private-latest`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            }, body: JSON.stringify({
+                'sendTo': privateChatWith,
+                'sender': nickname
+            })
+        })
             .then(response => {
                 if (response.ok) {
                     return response.json();
@@ -401,24 +413,40 @@ function getFullPersonalHistory() {
     historyContainer.innerHTML = "";
     let selectedUser = document.getElementById("user-to-find");
 
-    fetch(`${serverURL}history/${selectedUser.value}-${nickname}`)
-        .then(response => response.json())
-        .then(message => {
-            message.forEach((msg) => {
-                prepareMessage(historyContainer, msg);
+    fetch(`${serverURL}history/private`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            [csrfHeader]: csrfToken
+        }, body: JSON.stringify({
+            'sendTo': selectedUser.value,
+            'sender': nickname
+        })
+    })
+            .then(response => response.json())
+            .then(message => {
+                message.forEach((msg) => {
+                    prepareMessage(historyContainer, msg);
 
+                });
             });
-        });
-
 }
 
 // function for creating message to display
 function prepareMessage(container, messageData) {
-    let completedMessage;
+
+    //#region messageVariables
     const rawText = document.createTextNode(messageData.content);
 
+    const rawNick = document.createTextNode(messageData.sender);
     const newMessageContainer = document.createElement("div");
     newMessageContainer.className = "message-container";
+
+    const eventMessageContainer = document.createElement("div");
+    eventMessageContainer.className = "event-message-container";
+
+    const eventMessage = document.createElement("div");
+    eventMessage.className = "event-message";
 
     const senderContainer = document.createElement("div");
     senderContainer.className = "sender";
@@ -429,77 +457,80 @@ function prepareMessage(container, messageData) {
     const messageContent = document.createElement("div");
     messageContent.className = "message";
 
-
     var rawDate = messageData.date.replace(" ", "T");
 
     var formatedDate = DateTime.fromISO(rawDate, { setZone: true });
 
     var cleanDate = formatedDate.toFormat('d.M.yyyy H:mm:ss');
 
+    //#endregion
 
     if (messageData.type === "message") {
+
+        messageContent.appendChild(rawText);
+
+        senderContainer.appendChild(rawNick);
+
+        dateContainer.innerHTML = cleanDate;
+        senderContainer.appendChild(dateContainer);
+        newMessageContainer.appendChild(senderContainer);
+        newMessageContainer.appendChild(messageContent);
 
         if (messageData.sender === nickname) {
 
             newMessageContainer.classList.add("revert");
             messageContent.classList.add("right-msg");
-            messageContent.appendChild(rawText);
-            senderContainer.innerHTML = messageData.sender;
-            dateContainer.innerHTML = cleanDate;
-            senderContainer.appendChild(dateContainer);
-            newMessageContainer.appendChild(senderContainer);
-            newMessageContainer.appendChild(messageContent);
-
-
 
 
         } else {
 
-
             messageContent.classList.add("left-msg");
-            messageContent.appendChild(rawText);
-            senderContainer.innerHTML = messageData.sender;
-            dateContainer.innerHTML = cleanDate;
-            senderContainer.appendChild(dateContainer);
-            newMessageContainer.appendChild(senderContainer);
 
-            newMessageContainer.appendChild(messageContent);
         }
+
         container.appendChild(newMessageContainer);
 
     } else {
 
+        if (messageData.type === "newUser" || messageData.type === "UNBAN") {
 
+            eventMessage.classList.add("login-event");
+            eventMessage.appendChild(rawText);
 
-        if (messageData.type === "newUser") {
-
-
-
-            completedMessage = `<div class='event-message-container'><div class='event-message  login-event'>${messageData.content}</div></div>`;
         }
         if (messageData.type === "Leave" || messageData.type === "kick") {
 
-            completedMessage = `<div class='event-message-container'> <div class='event-message  logout-event'>${messageData.content}</div></div>`;
+            eventMessage.classList.add("logout-event");
+            eventMessage.appendChild(rawText);
+
         }
 
         if (messageData.type === "BAN") {
-            completedMessage = `<div class='event-message-container'> <div class='event-message  logout-event'>${messageData.sendTo} was banned by admin for ${messageData.content} minutes! </div></div>`;
+
+            eventMessage.classList.add("logout-event");
+            let banMessage = document.createTextNode(`${messageData.sendTo} was banned by admin for ${messageData.content} minutes!`)
+            eventMessage.appendChild(banMessage);
         }
 
         if (messageData.type === "update-nick") {
-            completedMessage = `<div class='event-message-container'> <div class='event-message  login-event'>${messageData.sender} changed his name to: ${messageData.content}</div></div>`;
+
+            eventMessage.classList.add("login-event");
+            let updateMessage = document.createTextNode(`${messageData.sender} changed his name to: ${messageData.content}`)
+            eventMessage.appendChild(updateMessage);
+
         }
 
         if (messageData.type === "update-profilePic") {
-            completedMessage = `<div class='event-message-container'> <div class='event-message  login-event'>${messageData.sender} changed his profile picture</div></div>`;
+            eventMessage.classList.add("login-event");
+            let updateMessage = document.createTextNode(`${messageData.sender} changed his profile picture`)
+            eventMessage.appendChild(updateMessage);
+
         }
 
-        if (messageData.type === "UNBAN") {
-            completedMessage = `<div class='event-message-container'> <div class='event-message  login-event'>${messageData.content}</div></div>`;
-        }
+        eventMessageContainer.appendChild(eventMessage);
 
+        container.appendChild(eventMessageContainer);
 
-        container.insertAdjacentHTML("beforeend", completedMessage);
 
     }
 
@@ -565,7 +596,7 @@ function updateOnlineUserList(userData) {
 function setUpOnlineUserBtn(btn) {
 
     btn.addEventListener("click", () => {
-        if (chatWithElement.innerHTML !== "Public chat") {
+        if (chatWithElement.textContent !== "Public chat") {
 
             document.querySelector(".user-container.active").classList.remove("active");
         }
@@ -573,15 +604,14 @@ function setUpOnlineUserBtn(btn) {
 
         publicBtn.disabled = false;
         publicBtn.style.setProperty("color", "#C6AC8E");
-        messageContainer.innerHTML = "";
-        if (btn.querySelector(".message-counter").innerHTML !== "0") {
+        messageContainer.textContent = "";
+        if (btn.querySelector(".message-counter").textContent !== "0") {
             btn.querySelector(".message-counter-container").style.setProperty("visibility", "hidden");
-            btn.querySelector(".message-counter").innerHTML = "0";
+            btn.querySelector(".message-counter").textContent = "0";
         }
 
-        var btnUserName = btn.querySelector(".user").innerHTML;
-        chatWithElement.innerHTML = `Private chat with: ${btnUserName}`;
-
+        var btnUserName = btn.querySelector(".user").textContent;
+        chatWithElement.textContent = `Private chat with: ${btnUserName}`;
         privateChatWith = btnUserName;
         getLatestHistory();
     });
@@ -877,7 +907,7 @@ function clearOldMsg() {
 
 function setProfilePicture(button, btnNickname) {
 
-    fetch(`${serverURL}profile/get/${btnNickname}`)
+    fetch(`${serverURL}profile/get?nickname=${encode(btnNickname)}`)
         .then(response => {
             if (response.ok) {
                 return response.text();
@@ -894,8 +924,8 @@ function setProfilePicture(button, btnNickname) {
         });
 }
 
-function updateActiveUserInfo(nameElement,imgElement) {
-    fetch(`${serverURL}profile/get/${nickname}`)
+function updateActiveUserInfo(nameElement, imgElement) {
+    fetch(`${serverURL}profile/get?nickname=${encode(nickname)}`)
         .then(response => {
             if (response.ok) {
                 return response.text();
@@ -909,17 +939,13 @@ function updateActiveUserInfo(nameElement,imgElement) {
             console.error(`Error fetching image: `, error);
         });
 
-   /* let usernameObj = document.createElement("div");
-    usernameObj.className = "active-user-name";*/
     if (nameElement.innerHTML !== "") {
         nameElement.innerHTML = "";
     }
     var plainUsername = document.createTextNode(nickname);
     nameElement.appendChild(plainUsername);
 
-    /*user.className = "user";
-    var plainNick = document.createTextNode(userData.nickname);
-    user.appendChild(plainNick);*/
+
 }
 
 function showEmojiPicker() {

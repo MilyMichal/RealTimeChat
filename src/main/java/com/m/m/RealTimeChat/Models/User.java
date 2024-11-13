@@ -4,6 +4,7 @@ package com.m.m.RealTimeChat.Models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
@@ -24,7 +25,7 @@ public class User implements Serializable {
     Long id;
 
     @NotBlank(message = "Username cannot be empty!")
-    //@Pattern(regexp = "[A-Za-z0-9]{2,}", message = "Username contains not allowed characters")
+    @Pattern(regexp = "[A-Za-z0-9]{2,}", message = "Username contains not allowed characters (\\, /, :, *, ?, \", <, >, |)")
     @Length(min = 2, max = 20, message = "Nickname must be at least 2 and max 20 characters long")
     @Column(length = 20, unique = true, nullable = false)
     String userName;
@@ -35,7 +36,7 @@ public class User implements Serializable {
 
     @NotBlank(message = "Nickname cannot be empty!")
     @Length(min = 2, max = 20, message = "Nickname must be at least 2 and max 20 characters long")
-    //@Pattern(regexp = "[A-Za-z0-9_-]{2,}", message = "Nickname contains not allowed characters")
+    @Pattern(regexp = "[A-Za-z0-9_-]{2,}", message = "Nickname contains not allowed characters (\\, /, :, *, ?, \", <, >, |)")
     @Column(length = 20, nullable = false)
     String nickname;
 

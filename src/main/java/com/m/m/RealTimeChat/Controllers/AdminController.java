@@ -5,6 +5,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
@@ -17,18 +18,18 @@ public class AdminController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/banned/{userName}-{banDuration}")
-    public void banUser(@PathVariable String userName,@PathVariable int banDuration) {
-        LocalDateTime banExp = LocalDateTime.now().plusMinutes(banDuration);
+    @PutMapping("/banned")
+    public void banUser(@RequestBody Map<String,String> banInfo) {
+        LocalDateTime banExp = LocalDateTime.now().plusMinutes(Long.parseLong(banInfo.get("banDuration")));
 
-        userStorageService.banUser(userName, banExp);
+        userStorageService.banUser(banInfo.get("nickname"), banExp);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/unban/{userName}")
-    public void unBanUser(@PathVariable String userName) {
+    @PutMapping("/unban")
+    public void unBanUser(@RequestBody Map<String,String> userInfo) {
 
-        userStorageService.unBanUser(userName);
+        userStorageService.unBanUser(userInfo.get("nickname"));
     }
 
 }

@@ -8,14 +8,14 @@ var banDuration = () => document.getElementById("ban-duration").value;
 function onMessageReceived(payload) {
 
     var message = JSON.parse(payload.body);
-
+    var rawNick = CSS.escape(message.sender);
 
     if (message.type) {
         if (message.type === "Leave" || message.type === "kick") {
             prepareMessage(messageContainer, message);
 
-            if (usersContainer.querySelector(`.${message.sender}`)) {
-                usersContainer.querySelector(`.${message.sender}`).remove();
+            if (usersContainer.querySelector(`.${rawNick}`)) {
+                usersContainer.querySelector(`.${rawNick}`).remove();
                 removeUserFromSelect(message.sender, onlineUsers);
             }
         }
@@ -26,12 +26,19 @@ function onMessageReceived(payload) {
 
 
         if (message.type === "UNBAN") {
-            fetch(`${serverURL}admin/unban/${message.sendTo}`, {
+            fetch(`${serverURL}admin/unban`, {
                 method: 'PUT',
                 headers: {
+                    'Content-Type': 'application/json',
                     [csrfHeader]: csrfToken
-                }
+                },
+                body:
+                    JSON.stringify({
+                        'nickname': message.sendTo
+                    })
+                
             });
+
             removeUserFromSelect(message.sendTo, bannedUsers);
 
         }
@@ -43,8 +50,8 @@ function onMessageReceived(payload) {
         if (message.type === "update-nick") {
             removeUserFromSelect(message.sender, onlineUsers);
             addUserToSelect(message.content, onlineUsers);
-          
-            let onUserbtn = document.querySelector(`.${message.sender}`);
+
+            let onUserbtn = document.querySelector(`.${rawNick}`);
             let name = onUserbtn.querySelector(`.user`);
 
             Array.from(document.getElementById("user-to-find").options).forEach(option => {
@@ -56,7 +63,7 @@ function onMessageReceived(payload) {
                 }
             });
 
-            onUserbtn.classList.replace(`${message.sender}`, `${message.content}`);
+            onUserbtn.classList.replace(`${rawNick}`, `${message.content}`);
 
             name.innerHTML = `${message.content}`;
             name.classList.replace(`${message.sender}`, `${message.content}`);
@@ -76,7 +83,7 @@ function onMessageReceived(payload) {
 
         if (message.type === "update-profilePic") {
             if (nickname !== message.sender) {
-                let onUserbtn = document.querySelector(`.${message.sender}`);
+                let onUserbtn = document.querySelector(`.${rawNick}`);
 
                 setProfilePicture(onUserbtn, message.sender);
 
@@ -97,7 +104,7 @@ function onMessageReceived(payload) {
             }
 
             if (chatWithElement.innerHTML === "Public chat" && message.sendTo === nickname) {
-                let incomingMsgUser = document.querySelector(`.${message.sender}`);
+                let incomingMsgUser = document.querySelector(`.${rawNick}`);
                 let msgCounterContainer = incomingMsgUser.querySelector(".message-counter-container");
                 let msgCounter = incomingMsgUser.querySelector(".message-counter");
 
@@ -186,11 +193,16 @@ function banUser() {
 
     if (select != "0") {
 
-        fetch(`${serverURL}admin/banned/${select}-${banDuration()}`, {
+        fetch(`${serverURL}admin/banned`, {
             method: 'PUT',
             headers: {
+                'Content-Type': 'application/json',
                 [csrfHeader]: csrfToken
-            }
+            }, body: JSON.stringify({
+                'nickname': select,
+                'banDuration': banDuration()
+            })
+
         }).then(response => {
             if (response.ok) {
                 stompClient.send("/app/chat/public", {}, JSON.stringify(prepareAdminMessage(select, 'BAN')));
@@ -232,12 +244,12 @@ function prepareAdminMessage(targetName, msgType) {
         adminmsg =
 
         {
-           // sender: nickname,
+            // sender: nickname,
             type: msgType,
             content: banDuration(),
             recipient: targetName
-           // sendTo: targetName,
-           // date: actDate()
+            // sendTo: targetName,
+            // date: actDate()
         }
     }
 
@@ -249,7 +261,7 @@ function prepareAdminMessage(targetName, msgType) {
             type: msgType,
             content: `${targetName} was kicked out by admin!`,
             recipient: targetName
-           // sendTo: targetName,
+            // sendTo: targetName,
             //date: actDate()
         }
     }

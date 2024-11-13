@@ -32,8 +32,8 @@ public class    ProfileSettingsController {
         return new ResponseEntity<>(profileSettingsService.updateUserProfile(auth, file, nickname, newPass, reTypedPass, actualPass), HttpStatus.OK);
     }
 
-    @GetMapping("get/{nickname}")
-    public ResponseEntity<String> getProfilePic(@PathVariable String nickname) {
+    @GetMapping("/get")
+    public ResponseEntity<String> getProfilePic(@RequestParam String nickname) {
 
         if (profileSettingsService.loadImage(nickname) != null) {
 

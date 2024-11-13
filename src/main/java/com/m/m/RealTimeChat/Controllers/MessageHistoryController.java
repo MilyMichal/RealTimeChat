@@ -33,16 +33,16 @@ public class MessageHistoryController {
         return messageHistoryService.getLatestPublicHistory();
     }
 
-    @PreAuthorize("@userStorage.validateRequestUser(authentication.name,#sender,#sendTo)")
-    @GetMapping("/{sendTo}-{sender}")
-       public List<Message> distributeFullPrivateMessageHistory(@PathVariable String sendTo, @PathVariable String sender) {
-        return messageHistoryService.getFullPrivateHistory(sendTo, sender);
+    @PreAuthorize("@userStorage.validateRequestUser(authentication.name,#historyData['sender'],#historyData['sendTo'])")
+    @PostMapping("/private")
+       public List<Message> distributeFullPrivateMessageHistory(@RequestBody Map<String, String> historyData) {
+        return messageHistoryService.getFullPrivateHistory(historyData.get("sendTo"),historyData.get("sender"));
     }
 
-    @PreAuthorize("@userStorage.validateRequestUser(authentication.name,#sender,#sendTo)")
-    @GetMapping("/{sendTo}-{sender}/latest")
-     public ResponseEntity<List<Message>> distributeLatestPrivateMessageHistory(@PathVariable String sendTo, @PathVariable String sender) {
-        return messageHistoryService.getLatestPrivateHistory(sendTo, sender);
+    @PreAuthorize("@userStorage.validateRequestUser(authentication.name,#historyData['sender'],#historyData['sendTo'])")
+    @PostMapping("/private-latest")
+     public ResponseEntity<List<Message>> distributeLatestPrivateMessageHistory(@RequestBody Map<String, String> historyData) {
+        return messageHistoryService.getLatestPrivateHistory(historyData.get("sendTo"),historyData.get("sender"));
     }
 
     @PutMapping("/update")

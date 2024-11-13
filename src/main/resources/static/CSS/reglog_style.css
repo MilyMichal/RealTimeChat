@@ -1,0 +1,57 @@
+:root {
+    --TextColor: #f6924c;
+    --TextColorLight: #f6caab;
+    --ButtonsColor: linear-gradient(to bottom, #2e3a4a 5%, #262e3b 100%);
+    --ButtonsColorInverse: linear-gradient(to bottom, #262e3b 5%, #2e3a4a 100%);
+
+}
+
+.button {
+        box-shadow: 7px 8px 10px -3px #000000;
+background: var(--ButtonsColor);
+background-color: var(--ButtonsColor);
+border: none;
+display: inline-block;
+cursor: pointer;
+color: var(--TextColor);
+font-family: "Poetsen One", sans-serif;
+font-weight: 100;
+font-size: 0.9em;
+padding: 3px 8px;
+text-decoration: none;
+
+        }
+
+        .button:hover {
+    background: var(--ButtonsColorInverse);
+    color: var(--TextColorLight);
+}
+
+.button:active {
+    position: relative;
+    top: 3px;
+    color: var(--TextColorLight) !important;
+
+}
+
+input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active  {
+
+    -webkit-text-fill-color: #f6caab !important;
+    -webkit-box-shadow: 0 0 0 1000px rgb(28,30,31) inset !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+  }
+       input::-webkit-spelling-error,
+input::spelling-error {
+    color: var(--TextColorLight) !important;
+    background-color: inherit !important;
+
+}
+
+input {
+    color: var(--TextColorLight) !important;
+    background-color: rgb(28,30,31) !important;
+}
