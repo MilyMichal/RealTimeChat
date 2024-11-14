@@ -63,7 +63,7 @@ public class WebSockedController {
         messageHistoryService.saveMessage(message);
 
         String recipient = userStorageService.getUserByNickname(incomingMsg.getRecipient()).getUserName();
-        String sender = principal.getName();/*userStorageService.getUserByNickname(incomingMsg.getSender()).getUserName();*/
+        String sender = principal.getName();
 
         simpMessagingTemplate.convertAndSendToUser(recipient, "/queue/private", message);
         simpMessagingTemplate.convertAndSendToUser(sender, "/queue/private", message);
