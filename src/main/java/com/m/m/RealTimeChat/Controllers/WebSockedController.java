@@ -45,34 +45,33 @@ public class WebSockedController {
     @SendTo("/queue/public")
     public Message sendMsg(@Payload MessageDTO msg, Principal principal) {
         Message message = messageService.generateMessage(msg, userStorageService.getUser(principal.getName()).getNickname());
-        if (msg.getType().equals("kick") || msg.getType().equals("BAN") || msg.getType().equals("UNBAN")) {
-            if(principal.getName().equals("Admin")) {
-                messageHistoryService.saveMessage(message);
-                return message;
-            } else {
-                return null;
-            }
+        if (isAuthorized(principal, msg.getType())) {
+            messageHistoryService.saveMessage(message);
+            return message;
+        } else {
+            return null;
         }
-        messageHistoryService.saveMessage(message);
-        return message;
     }
 
     @MessageMapping("/chat/private")
-    public void sendPrivateMessage(@Payload MessageDTO incomingMsg,Principal principal) {
+    public void sendPrivateMessage(@Payload MessageDTO incomingMsg, Principal principal) {
         Message message = messageService.generateMessage(incomingMsg, userStorageService.getUser(principal.getName()).getNickname());
-        messageHistoryService.saveMessage(message);
+        if (isAuthorized(principal, incomingMsg.getType())) {
 
-        String recipient = userStorageService.getUserByNickname(incomingMsg.getRecipient()).getUserName();
-        String sender = principal.getName();
+            messageHistoryService.saveMessage(message);
 
-        simpMessagingTemplate.convertAndSendToUser(recipient, "/queue/private", message);
-        simpMessagingTemplate.convertAndSendToUser(sender, "/queue/private", message);
+            String recipient = userStorageService.getUserByNickname(incomingMsg.getRecipient()).getUserName();
+            String sender = principal.getName();
+
+            simpMessagingTemplate.convertAndSendToUser(recipient, "/queue/private", message);
+            simpMessagingTemplate.convertAndSendToUser(sender, "/queue/private", message);
+        }
     }
 
 
     @MessageMapping("/user")
     @SendTo("/queue/public")
-    public Message newUser(@Payload MessageDTO incomingMsg,Principal principal, SimpMessageHeaderAccessor headerAccessor) {
+    public Message newUser(@Payload MessageDTO incomingMsg, Principal principal, SimpMessageHeaderAccessor headerAccessor) {
         Message message = messageService.generateMessage(incomingMsg, userStorageService.getUser(principal.getName()).getNickname());
         Objects.requireNonNull(headerAccessor.getSessionAttributes()).put("sender", message.getSender());
         messageHistoryService.saveMessage(message);
@@ -81,6 +80,13 @@ public class WebSockedController {
         }
         return message;
 
+    }
+
+    private boolean isAuthorized(Principal sender, String msgType) {
+        if (msgType.equalsIgnoreCase("kick") || msgType.equalsIgnoreCase("BAN") || msgType.equalsIgnoreCase("UNBAN")) {
+            return sender.getName().equals("Admin");
+        }
+        return true;
     }
 
 }
