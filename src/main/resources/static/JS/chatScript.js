@@ -138,8 +138,8 @@ function onMessageReceived(payload) {
         if (message.type === "Leave") {
             prepareMessage(messageContainer, message);
 
-            if (usersContainer.querySelector(`.${rawNick}`)) {
-                usersContainer.querySelector(`.${rawNick}`).remove();
+            if (usersContainer.querySelector(`.${message.sender}`)) {
+                usersContainer.querySelector(`.${message.sender}`).remove();
             }
         }
 
@@ -423,13 +423,13 @@ function getFullPersonalHistory() {
             'sender': nickname
         })
     })
-            .then(response => response.json())
-            .then(message => {
-                message.forEach((msg) => {
-                    prepareMessage(historyContainer, msg);
+        .then(response => response.json())
+        .then(message => {
+            message.forEach((msg) => {
+                prepareMessage(historyContainer, msg);
 
-                });
             });
+        });
 }
 
 // function for creating message to display
@@ -818,56 +818,66 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
 
         body: formData
     })
-        .then(response => response.json())
-        .then(data => {
+        .then(response => {
+            var status = response.status;
+            return response.json().then(data => {
+                return { status: status, data: data };
+            });
 
+
+        })
+        .then(result => {
+            var status = result.status;
+            var message = result.data;
+            console.log("STATUS:" + status);
+            console.log("MESSAGE: " + message);
             let updateMsg;
+            if (status === 200) {
+                if (Object.keys(message).length == 2 && message.hasOwnProperty("pass")) {
 
-            if (Object.keys(data).length == 2 && data.hasOwnProperty("pass")) {
+                } else {
+                    if (message.hasOwnProperty("newNickname")) {
+                        updateMsg =
+                        {
+                            "content": message["newNickname"],
+                            "oldNick": nickname,
+                            "type": 'update-nick',
+                            "recipient": 'public'
+                        }
 
-            } else {
-                if (data.hasOwnProperty("newNickname")) {
-                    updateMsg =
-                    {
-                        "content": data["newNickname"],
-                        "oldNick": nickname,
-                        "type": 'update-nick',
-                        "recipient": 'public'
-                    }
+                        fetch(`${serverURL}history/update`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                [csrfHeader]: csrfToken
 
-                    fetch(`${serverURL}history/update`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            [csrfHeader]: csrfToken
-
-                        },
-                        body: JSON.stringify({
-                            'prevNick': nickname,
-                            'actNick': data["newNickname"]
+                            },
+                            body: JSON.stringify({
+                                'prevNick': nickname,
+                                'actNick': message["newNickname"]
+                            })
                         })
-                    })
-                        .then(() => {
+                            .then(() => {
 
-                            stompClient.send("/app/chat/public", {}, JSON.stringify(updateMsg));
+                                stompClient.send("/app/chat/public", {}, JSON.stringify(updateMsg));
 
-                        });
+                            });
 
-                } else if (data.hasOwnProperty("profPic")) {
+                    } else if (message.hasOwnProperty("profPic")) {
 
-                    updateMsg =
-                    {
-                        "content": nickname,
-                        "type": 'update-profilePic',
-                        "recipient": 'public'
+                        updateMsg =
+                        {
+                            "content": nickname,
+                            "type": 'update-profilePic',
+                            "recipient": 'public'
+                        }
+                        stompClient.send("/app/chat/public", {}, JSON.stringify(updateMsg));
                     }
-                    stompClient.send("/app/chat/public", {}, JSON.stringify(updateMsg));
-                }
 
+                }
             }
 
-
-            if (data["message"].includes("successfully")) {
+            if (message["message"].includes("successfully")) {
                 response.style.color = "#345635";
                 clearUpdateForm();
             } else {
@@ -876,7 +886,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                 document.getElementById("new-pass-input").value = "";
                 document.getElementById("re-type-new-pass-input").value = "";
             }
-            response.innerHTML = `${data["message"]}`;
+            response.textContent = `${message["message"]}`;
 
         });
 

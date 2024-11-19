@@ -38,21 +38,21 @@ public class ProfileSettingsService {
 
     public ResponseEntity<String> deleteUserProfile(String userName, String pass) {
         if (!userStorageService.confirmActualPassword(userName, pass)) {
-            return new ResponseEntity<>("incorrect password", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("incorrect password", HttpStatus.NOT_MODIFIED);
         }
         if (userStorageService.removeUserFromStorage(userName)) {
             return new ResponseEntity<>("Your profile was deleted!", HttpStatus.OK);
         }
-        return new ResponseEntity<>("Profile cannot be deleted", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>("Profile cannot be deleted", HttpStatus.NOT_MODIFIED);
     }
 
 
-    public Map<String, String> updateUserProfile(Authentication auth,
-                                                 MultipartFile file,
-                                                 String nickname,
-                                                 String newPass,
-                                                 String reTypedPass,
-                                                 String actualPass) {
+    public ResponseEntity<Map<String, String>> updateUserProfile(Authentication auth,
+                                                                 MultipartFile file,
+                                                                 String nickname,
+                                                                 String newPass,
+                                                                 String reTypedPass,
+                                                                 String actualPass) {
         databasePath = userStorageService.getUser(auth.getName()).getProfilePic();
 
         Map<String, String> message = new HashMap<>();
@@ -61,18 +61,22 @@ public class ProfileSettingsService {
 
             if (file.isEmpty() && nickname.isEmpty() && newPass.isEmpty()) {
                 message.put(msg, "There is nothing to update");
-
+                return new ResponseEntity<>(message, HttpStatus.ACCEPTED);
             } else {
                 if (isNicknameAvailable(nickname, auth, message) && isNewPasswordAvailable(newPass, reTypedPass, actualPass, message)
                 ) {
                     doProfileChanges(nickname, newPass, file, auth, message);
+                } else {
+
+                    return new ResponseEntity<>(message, HttpStatus.ACCEPTED);
                 }
             }
 
         } else {
             message.put("message", "Wrong actual password");
+            return new ResponseEntity<>(message, HttpStatus.ACCEPTED);
         }
-        return message;
+            return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     public String loadImage(String nickname) {
@@ -178,12 +182,18 @@ public class ProfileSettingsService {
     // verification methods
     private boolean isNicknameAvailable(String newNickname, Authentication auth, Map<String, String> message) {
         if (!newNickname.isEmpty()) {
-            if (newNickname.equals(userStorageService.getUser(auth.getName()).getNickname())) {
-                message.put(msg, "New nickname must be different from the current one");
-                return false;
-            }
-            if (isNewNicknameTaken(newNickname)) {
-                message.put(msg, "Nickname is already taken");
+            if (newNickname.matches("[A-Za-z0-9]{2,}")) {
+                if (newNickname.equals(userStorageService.getUser(auth.getName()).getNickname())) {
+                    message.put(msg, "New nickname must be different from the current one");
+                    return false;
+                }
+
+                if (isNewNicknameTaken(newNickname)) {
+                    message.put(msg, "Nickname is already taken");
+                    return false;
+                }
+            } else {
+                message.put("message", "Nickname contains not allowed characters \\, /, :, *, ?, \", <, >, |");
                 return false;
             }
         }

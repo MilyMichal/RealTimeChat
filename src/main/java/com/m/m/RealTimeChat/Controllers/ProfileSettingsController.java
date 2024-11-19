@@ -29,7 +29,7 @@ public class    ProfileSettingsController {
                                                                 @RequestParam(required = false) String reTypedPass,
                                                                 @RequestParam String actualPass) {
 
-        return new ResponseEntity<>(profileSettingsService.updateUserProfile(auth, file, nickname, newPass, reTypedPass, actualPass), HttpStatus.OK);
+        return profileSettingsService.updateUserProfile(auth, file, nickname, newPass, reTypedPass, actualPass);
     }
 
     @GetMapping("/get")
