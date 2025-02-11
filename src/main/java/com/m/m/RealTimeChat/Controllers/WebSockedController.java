@@ -8,13 +8,21 @@ import com.m.m.RealTimeChat.Services.MessageHistoryService;
 import com.m.m.RealTimeChat.Services.MessageService;
 import com.m.m.RealTimeChat.Services.OnlineUserService;
 import com.m.m.RealTimeChat.Services.UserStorageService;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import com.sendgrid.*;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Objects;
 
@@ -34,6 +42,7 @@ public class WebSockedController {
     private final MessageService messageService;
 
     public WebSockedController(MessageHistoryService messageHistoryService, OnlineUserService onlineUserService, SimpMessagingTemplate simpMessagingTemplate, UserStorageService userStorageService, MessageService messageService) {
+
         this.messageHistoryService = messageHistoryService;
         this.onlineUserService = onlineUserService;
         this.simpMessagingTemplate = simpMessagingTemplate;
@@ -88,5 +97,5 @@ public class WebSockedController {
         }
         return true;
     }
-
 }
+

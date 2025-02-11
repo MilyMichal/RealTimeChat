@@ -4,9 +4,9 @@ const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('con
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
 
-  function back() {
-        window.location.href = '/login';
-  }
+function back() {
+    window.location.href = '/login';
+}
 
 
 document.getElementById("pass-reset-form").addEventListener("submit", function () {
@@ -19,17 +19,22 @@ document.getElementById("pass-reset-form").addEventListener("submit", function (
         headers: {
             [csrfHeader]: csrfToken
         },
-                body: FormData
+        body: formData
     })
         .then(response => {
-            if (response.ok) {
+            if (response.status == 200) {
                 resetResponse.style.color = "#345635";
-                resetResponse.textContent = `Link for reset your password was send to your email.`
             } else {
-                resetResponse.textContent = `There is no registred user with this email!`
+
                 resetResponse.style.color = "#7E102C";
             }
+            return response.text();
+
+
+        })
+        .then(data => {
+            resetResponse.textContent = data;
         });
-    
-    
+
+
 })

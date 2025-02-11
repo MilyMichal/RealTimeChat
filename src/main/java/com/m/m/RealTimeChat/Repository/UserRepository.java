@@ -3,6 +3,7 @@ package com.m.m.RealTimeChat.Repository;
 import com.m.m.RealTimeChat.Models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 
 import java.util.List;
@@ -16,4 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "SELECT nickname FROM users", nativeQuery = true)
     List<String> findAllNicknames();
+
+    @Query(value = "SELECT * FROm users where email = :mail",nativeQuery = true)
+    Optional<User> findUserByMail(@Param("mail")String mail);
 }

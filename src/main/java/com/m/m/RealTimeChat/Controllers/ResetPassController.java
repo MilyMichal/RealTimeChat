@@ -9,17 +9,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @Controller
 @RequestMapping("/passReset")
 public class ResetPassController {
 
     @Value("${spring.datasource.serverURL}")
     private String serverURL;
-   // private final PasswordResetService passwordResetService;
 
-  /*  public ResetPassController(PasswordResetService passwordResetService) {
+    private final PasswordResetService passwordResetService;
+
+    public ResetPassController(PasswordResetService passwordResetService) {
         this.passwordResetService = passwordResetService;
-    }*/
+    }
 
     @GetMapping
     public String showPasswordResetForm(Model model){
@@ -29,8 +32,8 @@ public class ResetPassController {
 
 
     @PostMapping
-    public ResponseEntity<?> sendResetRequest(@RequestBody String email) {
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<String> sendResetRequest(@RequestParam String email) throws IOException {
+        return passwordResetService.processPassResetRequest(email);
     }
 
 }
