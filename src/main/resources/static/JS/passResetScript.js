@@ -22,7 +22,7 @@ document.getElementById("pass-reset-form").addEventListener("submit", function (
                 resetResponse.style.color = "#345635";
 
                   setTimeout(function() {
-                        window.location.href = '/login';
+                        window.location.href = '/chat';
                     }, 3500);
 
             } else {
