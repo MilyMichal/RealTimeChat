@@ -21,11 +21,11 @@ public class MailService {
 
 
 
-    public void sendEmail(String requestedEmail) throws IOException {
+    public void sendEmail(String requestedEmail, String link) throws IOException {
         Email from = new Email("azrael.taleri@gmail.com");
-        String subject = "Testing mail";
+        String subject = "Reset password request";
         Email to = new Email(requestedEmail);
-        Content content = new Content("text/plain", "This is your link for reset your password.");
+        Content content = new Content("text/plain", "This is your link for reset your password: " + link);
         Mail mail = new Mail(from, subject,to,content);
 
         SendGrid sg = new SendGrid(APIKEY);

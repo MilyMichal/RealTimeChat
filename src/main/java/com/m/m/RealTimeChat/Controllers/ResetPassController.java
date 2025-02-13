@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/passReset")
@@ -25,7 +26,7 @@ public class ResetPassController {
     }
 
     @GetMapping
-    public String showPasswordResetForm(Model model){
+    public String showPasswordResetForm(Model model) {
         model.addAttribute("serverURL", serverURL);
         return "PassResetPage";
     }
@@ -34,6 +35,32 @@ public class ResetPassController {
     @PostMapping
     public ResponseEntity<String> sendResetRequest(@RequestParam String email) throws IOException {
         return passwordResetService.processPassResetRequest(email);
+    }
+
+    @GetMapping("/{token}/{nick}")
+    public String proceedPasswordReset(@PathVariable String token, @PathVariable String nick, Model model) {
+        if (passwordResetService.isOneTimeTokenValid(token)) {
+            model.addAttribute("Nickname", nick);
+            model.addAttribute("token", token);
+            model.addAttribute("serverURL",serverURL);
+            return "OneTimeResetFormPage";
+        }
+        return "ExpiredTokenPage";
+    }
+
+    @PostMapping("/{token}/{nick}")
+    public ResponseEntity<String> submitPasswordChange(@PathVariable String token,
+                                                       @PathVariable String nick,
+                                                       @RequestParam String newPass,
+                                                       @RequestParam String reTypedPass) {
+        if (passwordResetService.isOneTimeTokenValid(token)) {
+
+            if (Objects.equals(newPass, reTypedPass)) {
+                passwordResetService.invalidateOneTimeToken(token);
+                return passwordResetService.saveNewPassword(nick, newPass);
+            }
+        }
+        return new ResponseEntity<>("New password and re-typed password doesn't match", HttpStatus.PARTIAL_CONTENT);
     }
 
 }
