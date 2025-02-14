@@ -37,27 +37,25 @@ public class ResetPassController {
         return passwordResetService.processPassResetRequest(email);
     }
 
-    @GetMapping("/{token}/{nick}")
-    public String proceedPasswordReset(@PathVariable String token, @PathVariable String nick, Model model) {
+    @GetMapping("/{token}")
+    public String proceedPasswordReset(@PathVariable String token, Model model) {
         if (passwordResetService.isOneTimeTokenValid(token)) {
-            model.addAttribute("Nickname", nick);
             model.addAttribute("token", token);
-            model.addAttribute("serverURL",serverURL);
+            model.addAttribute("serverURL", serverURL);
             return "OneTimeResetFormPage";
         }
         return "ExpiredTokenPage";
     }
 
-    @PostMapping("/{token}/{nick}")
+    @PostMapping("/{token}")
     public ResponseEntity<String> submitPasswordChange(@PathVariable String token,
-                                                       @PathVariable String nick,
                                                        @RequestParam String newPass,
                                                        @RequestParam String reTypedPass) {
         if (passwordResetService.isOneTimeTokenValid(token)) {
 
             if (Objects.equals(newPass, reTypedPass)) {
                 passwordResetService.invalidateOneTimeToken(token);
-                return passwordResetService.saveNewPassword(nick, newPass);
+                return passwordResetService.saveNewPassword(token, newPass);
             }
         }
         return new ResponseEntity<>("New password and re-typed password doesn't match", HttpStatus.PARTIAL_CONTENT);

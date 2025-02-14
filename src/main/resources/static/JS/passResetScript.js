@@ -1,6 +1,5 @@
 const serverURL = document.getElementById("serverURL").getAttribute("data-URL");
 const token = document.getElementById("token").value;
-const nick = document.getElementById("nick").value;
 const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
@@ -10,7 +9,7 @@ document.getElementById("pass-reset-form").addEventListener("submit", function (
     let formData = new FormData(this);
     let resetResponse = document.querySelector(".reset_response");
 
-    fetch(`${serverURL}passReset/${token}/${nick}`, {
+    fetch(`${serverURL}passReset/${token}`, {
         method: 'POST',
         headers: {
             [csrfHeader]: csrfToken

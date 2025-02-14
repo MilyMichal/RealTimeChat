@@ -24,7 +24,9 @@ public class PasswordResetService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private final Map<String,Boolean> oneTimeTokenMap = new ConcurrentHashMap<>();
+    private final Map<String, Boolean> oneTimeTokenMap = new ConcurrentHashMap<>();
+
+    private final Map<String, String> userIdentification = new ConcurrentHashMap<>();
 
     public PasswordResetService(MailService mailService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.mailService = mailService;
@@ -37,37 +39,41 @@ public class PasswordResetService {
     public ResponseEntity<String> processPassResetRequest(String email) throws IOException {
         Optional<User> existingUser = userRepository.findUserByMail(email);
         if (existingUser.isPresent()) {
-            mailService.sendEmail(email,generateOneTimeLink(existingUser.get().getNickname()));
+            mailService.sendEmail(email, generateOneTimeLink(existingUser.get().getNickname()));
             return new ResponseEntity<>("Reset request was send to your email", HttpStatus.OK);
         }
         return new ResponseEntity<>("There is no user with this email", HttpStatus.ACCEPTED);
     }
 
-    public ResponseEntity<String> saveNewPassword(String nickname, String newPass) {
+    public ResponseEntity<String> saveNewPassword(String token, String newPass) {
+        String nickname = userIdentification.get(token);
+        userIdentification.remove(token);
         Optional<User> updatedUser = userRepository.findUserByNickname(nickname);
-        if(updatedUser.isPresent()){
+        if (updatedUser.isPresent()) {
             User user = updatedUser.get();
             user.setPassword(passwordEncoder.encode(newPass));
             userRepository.save(user);
+
             return new ResponseEntity<>("Password was successfully changed", HttpStatus.ACCEPTED);
         }
-        return new ResponseEntity<>("User with nickname " + nickname + "was not found!",HttpStatus.OK);
+        return new ResponseEntity<>("User with nickname " + nickname + " was not found!", HttpStatus.OK);
     }
 
 
     private String generateOneTimeLink(String nick) {
         String oneTimeToken = UUID.randomUUID().toString();
-        oneTimeTokenMap.put(oneTimeToken,true);
-        return serverURL +"passReset/" + oneTimeToken + "/" + nick;
+        userIdentification.put(oneTimeToken, nick);
+        oneTimeTokenMap.put(oneTimeToken, true);
+        return serverURL + "passReset/" + oneTimeToken;
 
     }
 
     public boolean isOneTimeTokenValid(String token) {
-       return oneTimeTokenMap.getOrDefault(token,false);
+        return oneTimeTokenMap.getOrDefault(token, false);
     }
 
     public void invalidateOneTimeToken(String token) {
-        oneTimeTokenMap.put(token,false);
+        oneTimeTokenMap.put(token, false);
     }
 
 
