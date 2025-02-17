@@ -22,7 +22,7 @@ public class    ProfileSettingsController {
 
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<Map<String,String>> updateUserProfile(Authentication auth, @RequestParam(required = false) MultipartFile file,
                                                                 @RequestParam(required = false) String nickname,
                                                                 @RequestParam(required = false) String newPass,
@@ -42,7 +42,7 @@ public class    ProfileSettingsController {
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<String> deleteUserProfile(Authentication auth, @RequestParam String actualPass) {
         return profileSettingsService.deleteUserProfile(auth.getName(), actualPass);
     }

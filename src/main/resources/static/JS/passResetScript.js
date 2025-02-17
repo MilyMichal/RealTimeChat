@@ -10,7 +10,7 @@ document.getElementById("pass-reset-form").addEventListener("submit", function (
     let resetResponse = document.querySelector(".reset_response");
 
     fetch(`${serverURL}passReset/${token}`, {
-        method: 'POST',
+        method: 'PUT',
         headers: {
             [csrfHeader]: csrfToken
         },

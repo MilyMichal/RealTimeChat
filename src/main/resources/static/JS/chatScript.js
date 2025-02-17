@@ -778,7 +778,7 @@ if (nickname !== "Admin") {
         logOutUser();
 
         fetch(`${serverURL}profile/delete`, {
-            method: 'POST',
+            method: 'DELETE',
             headers: {
                 [csrfHeader]: csrfToken
             },
@@ -813,7 +813,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
     const formData = new FormData(this);
     let response = document.querySelector(".response");
     fetch(`${serverURL}profile/update`, {
-        method: 'POST',
+        method: 'PUT',
         [csrfHeader]: csrfToken,
 
         body: formData

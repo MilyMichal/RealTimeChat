@@ -49,7 +49,7 @@ public class ResetPassController {
         return "ExpiredTokenPage";
     }
 
-    @PostMapping("/{token}")
+    @PutMapping("/{token}")
     public ResponseEntity<String> submitPasswordChange(@PathVariable String token,
                                                        @RequestParam String newPass,
                                                        @RequestParam String reTypedPass) {
