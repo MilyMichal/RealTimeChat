@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AnonymousConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 import org.springframework.security.web.authentication.logout.LogoutHandler;
@@ -58,7 +59,7 @@ public class SecurityConfig {
                 .logout(logout -> logout.logoutSuccessUrl("/").permitAll()
 
                         .addLogoutHandler(customLogoutHandler())
-                        .deleteCookies("JSESSIONID").invalidateHttpSession(true)
+                        /*.deleteCookies("JSESSIONID").invalidateHttpSession(true)*/
 
 
                 )
