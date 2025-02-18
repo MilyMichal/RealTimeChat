@@ -5,7 +5,7 @@ import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
-import com.sendgrid.helpers.mail.objects.Content;
+
 import com.sendgrid.helpers.mail.objects.Email;
 import com.sendgrid.helpers.mail.objects.Personalization;
 import org.apache.logging.log4j.Level;
@@ -23,19 +23,20 @@ public class MailService {
 
     @Value("${app.api.sendgridapikey}")
     private String APIKEY;
-
+    @Value("${app.api.sendgridTemplateId}")
+    private String TEMPLATEID;
 
     public void sendEmail(String requestedEmail, String link) throws IOException {
 
 
-        Email from = new Email("azrael.taleri@gmail.com","Real-time chat app suppor");
+        Email from = new Email("azrael.taleri@gmail.com","Real-time chat app support");
         String subject = "Reset password request";
         Email to = new Email(requestedEmail);
 
         Mail mail = new Mail();
         mail.setFrom(from);
         mail.setSubject(subject);
-        mail.setTemplateId("d-513f6a0c2ae04e57b079d7bf7d4cf059");
+        mail.setTemplateId(TEMPLATEID);
 
         Personalization personalization = new Personalization();
         personalization.addTo(to);
