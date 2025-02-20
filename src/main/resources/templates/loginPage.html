@@ -44,16 +44,18 @@
                                     <label class="form-label" for="typePasswordX"
                                            style="color: #f6caab">Password</label>
                                 </div>
-
                                 <p class="mb-0" style="color:#f6caab"><a th:href="@{/passReset}" style="color: #f6924c; text-decoration: underline;">Forgot password?</a>
                                 </p>
                                 <br>
 
                                 <button class="btn  button" type="submit">Log in
-                                </button>
-
-
+                                </button><br><br>
+                                <a th:href="@{/oauth2/authorization/google}">
+                                    <img src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA" style="width: 20px; height: 20px;" alt="">
+                                    Sign in with google
+                                </a>
                             </div>
+
 
                             <div>
                                 <p class="mb-0" style="color:#f6caab">Don't have an account? <a th:href="@{/register}"

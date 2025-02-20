@@ -49,9 +49,15 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
 
                 )
+                .oauth2Login(oauth2->oauth2.loginPage("/login")
+                        .permitAll()
+                        .defaultSuccessUrl("/chat/oauth2/google",true)
+                        .failureUrl("/login-error")
+                )
 
                 .formLogin(form -> form.loginPage("/login")
                         .permitAll()
+                        .defaultSuccessUrl("/chat",true)
                         .failureUrl("/login-error")
                 )
                 .authenticationProvider(customAuthenticationProvider)
