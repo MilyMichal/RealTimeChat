@@ -927,7 +927,11 @@ function setProfilePicture(button, btnNickname) {
         })
         .then(imageUrl => {
             const imgElement = button.querySelector('.profile-img-online');
-            imgElement.src = `${serverURL}${imageUrl}`;
+            if (imageUrl.includes("https")) {
+                imgElement.src = `${imageUrl}`;
+            } else {
+                imgElement.src = `${serverURL}${imageUrl}`;
+            }
         })
         .catch(error => {
             console.error('Error fetching image:', error);
@@ -944,7 +948,11 @@ function updateActiveUserInfo(nameElement, imgElement) {
             }
         })
         .then(imageUrl => {
-            imgElement.src = `${serverURL}${imageUrl}`;
+              if (imageUrl.includes("https")) {
+              imgElement.src = `${imageUrl}`;
+             } else {
+                imgElement.src = `${serverURL}${imageUrl}`;
+            }
         }).catch(error => {
             console.error(`Error fetching image: `, error);
         });

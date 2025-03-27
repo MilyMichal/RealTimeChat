@@ -8,21 +8,12 @@ import com.m.m.RealTimeChat.Services.MessageHistoryService;
 import com.m.m.RealTimeChat.Services.MessageService;
 import com.m.m.RealTimeChat.Services.OnlineUserService;
 import com.m.m.RealTimeChat.Services.UserStorageService;
-import com.sendgrid.helpers.mail.Mail;
-import com.sendgrid.helpers.mail.objects.Content;
-import com.sendgrid.helpers.mail.objects.Email;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import com.sendgrid.*;
-
-import java.io.IOException;
 import java.security.Principal;
 import java.util.Objects;
 
@@ -64,16 +55,12 @@ public class WebSockedController {
 
     @MessageMapping("/chat/private")
     public void sendPrivateMessage(@Payload MessageDTO incomingMsg, Principal principal) {
-        Message message = messageService.generateMessage(incomingMsg, userStorageService.getUser(principal.getName()).getNickname());
+       Message message = messageService.generateMessage(incomingMsg, userStorageService.getUser(principal.getName()).getNickname());
         if (isAuthorized(principal, incomingMsg.getType())) {
-
             messageHistoryService.saveMessage(message);
-
             String recipient = userStorageService.getUserByNickname(incomingMsg.getRecipient()).getUserName();
-            String sender = principal.getName();
-
             simpMessagingTemplate.convertAndSendToUser(recipient, "/queue/private", message);
-            simpMessagingTemplate.convertAndSendToUser(sender, "/queue/private", message);
+            simpMessagingTemplate.convertAndSendToUser(principal.getName(), "/queue/private", message);
         }
     }
 
@@ -93,7 +80,7 @@ public class WebSockedController {
 
     private boolean isAuthorized(Principal sender, String msgType) {
         if (msgType.equalsIgnoreCase("kick") || msgType.equalsIgnoreCase("BAN") || msgType.equalsIgnoreCase("UNBAN")) {
-            return sender.getName().equals("Admin");
+            return userStorageService.getUser(sender.getName()).getRoles().equals("Admin");
         }
         return true;
     }

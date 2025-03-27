@@ -10,13 +10,18 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AnonymousConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.web.SecurityFilterChain;
 
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Configuration
@@ -49,15 +54,16 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
 
                 )
-                .oauth2Login(oauth2->oauth2.loginPage("/login")
+                .oauth2Login(oauth2 -> oauth2.loginPage("/login")
                         .permitAll()
-                        .defaultSuccessUrl("/chat/oauth2/google",true)
                         .failureUrl("/login-error")
+                        .successHandler(customOauth2SuccessHandler())
+                        .userInfoEndpoint(info -> info.userAuthoritiesMapper(userAuthoritiesMapper()))
                 )
 
                 .formLogin(form -> form.loginPage("/login")
                         .permitAll()
-                        .defaultSuccessUrl("/chat",true)
+                        .defaultSuccessUrl("/chat", true)
                         .failureUrl("/login-error")
                 )
                 .authenticationProvider(customAuthenticationProvider)
@@ -70,7 +76,7 @@ public class SecurityConfig {
 
                 )
 
-                .anonymous(AnonymousConfigurer::disable)
+               // .anonymous(AnonymousConfigurer::disable)
                 .csrf(Customizer.withDefaults())
                 .build();
     }
@@ -86,5 +92,23 @@ public class SecurityConfig {
         return new CustomLogoutHandler(messagingTemplates);
     }
 
+    @Bean
+    public AuthenticationSuccessHandler customOauth2SuccessHandler() {
+        return new CustomOauth2SuccessHandler();
+    }
 
+    @Bean
+    public GrantedAuthoritiesMapper userAuthoritiesMapper() {
+        return authorities -> {
+            Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
+            for (GrantedAuthority authority : authorities) {
+                if (authority.getAuthority().equals("OIDC_USER")) {
+                    mappedAuthorities.add(new SimpleGrantedAuthority("ROLE_user"));
+                } else {
+                    mappedAuthorities.add(authority);
+                }
+            }
+            return mappedAuthorities;
+        };
+    }
 }

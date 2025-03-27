@@ -76,16 +76,18 @@ public class ProfileSettingsService {
             message.put("message", "Wrong actual password");
             return new ResponseEntity<>(message, HttpStatus.ACCEPTED);
         }
-            return new ResponseEntity<>(message, HttpStatus.OK);
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     public String loadImage(String nickname) {
         String picURL = userStorageService.getUserByNickname(nickname).getProfilePic();
-        Path path = Path.of(picURL);
-        if (Files.exists(path)) {
-            return path.toString();
+        if (!picURL.contains("https")) {
+            Path path = Path.of(picURL);
+            if (Files.exists(path)) {
+                return path.toString();
+            }
         }
-        return null;
+        return picURL;
     }
 
     private boolean isNewNicknameTaken(String newNickname) {

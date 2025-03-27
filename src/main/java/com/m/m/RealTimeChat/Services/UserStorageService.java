@@ -10,6 +10,7 @@ import com.m.m.RealTimeChat.Models.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service("userStorage")
 public class UserStorageService {
@@ -26,7 +27,9 @@ public class UserStorageService {
     @Transactional
     public void saveUserToStorage(User user) {
         if (user != null) {
-            user.setProfilePic("ProfilePic/defaultPic.jpg");
+            if(user.getProfilePic() == null) {
+                user.setProfilePic("ProfilePic/defaultPic.jpg");
+            }
             user.setPassword(passwordEncoder.encode(user.getPassword()));
 
             if (user.getUserName().equals("Admin")) {
@@ -79,7 +82,6 @@ public class UserStorageService {
 
 
     public User getUser(String name) {
-
         return userRepository.findUserByUserName(name).orElseThrow(() -> new UsernameNotFoundException("Username doesn't exist"));
     }
 
@@ -114,6 +116,10 @@ public class UserStorageService {
     public boolean validateRequestUser(String requestUser, String sender, String sendTo) {
         String nickname = getUser(requestUser).getNickname();
         return nickname.equals(sender) || nickname.equals(sendTo);
+    }
+
+    public Optional<User> findUser(String email) {
+        return userRepository.findUserByMail(email);
     }
 }
 
