@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import com.m.m.RealTimeChat.Models.User;
 
@@ -105,8 +106,8 @@ public class UserStorageService {
 
     }
 
-    public boolean confirmActualPassword(String user, String password) {
-        return passwordEncoder.matches(password, getUser(user).getPassword());
+    public boolean confirmActualPassword(Authentication auth, String password) {
+        return auth instanceof OAuth2AuthenticationToken ||  passwordEncoder.matches(password, getUser(auth.getName()).getPassword());
     }
 
     public boolean isNewPassNotDifferent(String newPassword, String actualPassword) {

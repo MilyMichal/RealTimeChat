@@ -27,9 +27,9 @@ public class    ProfileSettingsController {
                                                                 @RequestParam(required = false) String nickname,
                                                                 @RequestParam(required = false) String newPass,
                                                                 @RequestParam(required = false) String reTypedPass,
-                                                                @RequestParam String actualPass) {
+                                                                @RequestParam(required = false) String actualPass) {
 
-        return profileSettingsService.updateUserProfile(auth, file, nickname, newPass, reTypedPass, actualPass);
+        return profileSettingsService.updateUserProfile(auth, file, nickname, newPass, reTypedPass,actualPass);
     }
 
     @GetMapping("/get")
@@ -44,6 +44,6 @@ public class    ProfileSettingsController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteUserProfile(Authentication auth, @RequestParam String actualPass) {
-        return profileSettingsService.deleteUserProfile(auth.getName(), actualPass);
+        return profileSettingsService.deleteUserProfile(auth, actualPass);
     }
 }

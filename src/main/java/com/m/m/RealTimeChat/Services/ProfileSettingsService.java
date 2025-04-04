@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,11 +37,11 @@ public class ProfileSettingsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public ResponseEntity<String> deleteUserProfile(String userName, String pass) {
-        if (!userStorageService.confirmActualPassword(userName, pass)) {
+    public ResponseEntity<String> deleteUserProfile(Authentication auth, String pass) {
+        if (!userStorageService.confirmActualPassword(auth, pass)) {
             return new ResponseEntity<>("incorrect password", HttpStatus.NOT_MODIFIED);
         }
-        if (userStorageService.removeUserFromStorage(userName)) {
+        if (userStorageService.removeUserFromStorage(auth.getName())) {
             return new ResponseEntity<>("Your profile was deleted!", HttpStatus.OK);
         }
         return new ResponseEntity<>("Profile cannot be deleted", HttpStatus.NOT_MODIFIED);
@@ -53,11 +54,12 @@ public class ProfileSettingsService {
                                                                  String newPass,
                                                                  String reTypedPass,
                                                                  String actualPass) {
+
         databasePath = userStorageService.getUser(auth.getName()).getProfilePic();
 
         Map<String, String> message = new HashMap<>();
 
-        if (userStorageService.confirmActualPassword(auth.getName(), actualPass)) {
+        if (userStorageService.confirmActualPassword(auth, actualPass)) {
 
             if (file.isEmpty() && nickname.isEmpty() && newPass.isEmpty()) {
                 message.put(msg, "There is nothing to update");
@@ -116,19 +118,21 @@ public class ProfileSettingsService {
 
     //change user nickname
     private void changeNickname(String newNickname, AtomicBoolean isRenamed, Map<String, String> message, Authentication auth) {
-        if (!userStorageService.getUser(auth.getName()).getProfilePic().contains("defaultPic")) {
-            File currentFolder = new File(imageFolder + "/" + userStorageService.getUser(auth.getName()).getNickname());
-            String currPic = Objects.requireNonNull(currentFolder.listFiles())[0].getName();
-            File newFolder = new File(currentFolder.getParent(), newNickname);
+        if (!(auth instanceof OAuth2AuthenticationToken)) {
+            if (!userStorageService.getUser(auth.getName()).getProfilePic().contains("defaultPic") ) {
+                File currentFolder = new File(imageFolder + "/" + userStorageService.getUser(auth.getName()).getNickname());
+                String currPic = Objects.requireNonNull(currentFolder.listFiles())[0].getName();
+                File newFolder = new File(currentFolder.getParent(), newNickname);
 
-            if (currentFolder.exists()) {
-                isRenamed.set(currentFolder.renameTo(newFolder));
+                if (currentFolder.exists()) {
+                    isRenamed.set(currentFolder.renameTo(newFolder));
 
-                Path newPath = Paths.get(newFolder.getPath(), currPic);
+                    Path newPath = Paths.get(newFolder.getPath(), currPic);
 
-                databasePath = newPath.toString();
+                    databasePath = newPath.toString();
+                }
+
             }
-
         }
         message.put("newNickname", newNickname);
     }
