@@ -775,7 +775,6 @@ if (nickname !== "Admin") {
         const formData = new FormData(this);
         let deleteResponse = document.querySelector('.delete-response');
         deleteResponse.innerHTML = "";
-        logOutUser();
 
         fetch(`${serverURL}profile/delete`, {
             method: 'DELETE',
@@ -787,16 +786,17 @@ if (nickname !== "Admin") {
             .then(response => {
 
                 if (response.ok) {
-                    alert("Your profile was succesfully deleted!");
+                    logOutUser();
+                    alert("Your profile was successfully deleted!");
                     window.location.href = serverURL;
                 } else {
-                    response.text()
-                        .then(errorText => {
-                            deleteResponse.innerHTML = errorText;
-                            deleteResponse.style.color = "#7E102C";
-                        });
-
+                    return response.text();
                 }
+            })
+            .then(responseBody => {
+
+                deleteResponse.innerHTML = responseBody;
+                deleteResponse.style.color = "#7E102C";
 
             });
 
@@ -829,8 +829,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
         .then(result => {
             var status = result.status;
             var message = result.data;
-            console.log("STATUS:" + status);
-            console.log("MESSAGE: " + message);
+           
             let updateMsg;
             if (status === 200) {
                 if (Object.keys(message).length == 2 && message.hasOwnProperty("pass")) {
@@ -948,9 +947,9 @@ function updateActiveUserInfo(nameElement, imgElement) {
             }
         })
         .then(imageUrl => {
-              if (imageUrl.includes("https")) {
+            if (imageUrl.includes("https")) {
               imgElement.src = `${imageUrl}`;
-             } else {
+            } else {
                 imgElement.src = `${serverURL}${imageUrl}`;
             }
         }).catch(error => {

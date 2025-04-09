@@ -38,13 +38,13 @@ public class ProfileSettingsService {
     }
 
     public ResponseEntity<String> deleteUserProfile(Authentication auth, String pass) {
-        if (!userStorageService.confirmActualPassword(auth, pass)) {
-            return new ResponseEntity<>("incorrect password", HttpStatus.NOT_MODIFIED);
+        if (!(auth instanceof OAuth2AuthenticationToken) && !userStorageService.confirmActualPassword(auth, pass)) {
+            return new ResponseEntity<>("incorrect password", HttpStatus.UNPROCESSABLE_ENTITY);
         }
-        if (userStorageService.removeUserFromStorage(auth.getName())) {
+        if (userStorageService.removeUserFromStorage(auth)) {
             return new ResponseEntity<>("Your profile was deleted!", HttpStatus.OK);
         }
-        return new ResponseEntity<>("Profile cannot be deleted", HttpStatus.NOT_MODIFIED);
+        return new ResponseEntity<>("Profile cannot be deleted", HttpStatus.CONFLICT);
     }
 
 
@@ -118,8 +118,7 @@ public class ProfileSettingsService {
 
     //change user nickname
     private void changeNickname(String newNickname, AtomicBoolean isRenamed, Map<String, String> message, Authentication auth) {
-        if (!(auth instanceof OAuth2AuthenticationToken)) {
-            if (!userStorageService.getUser(auth.getName()).getProfilePic().contains("defaultPic") ) {
+        if (!(auth instanceof OAuth2AuthenticationToken) && !userStorageService.getUser(auth.getName()).getProfilePic().contains("defaultPic")) {
                 File currentFolder = new File(imageFolder + "/" + userStorageService.getUser(auth.getName()).getNickname());
                 String currPic = Objects.requireNonNull(currentFolder.listFiles())[0].getName();
                 File newFolder = new File(currentFolder.getParent(), newNickname);
@@ -133,7 +132,7 @@ public class ProfileSettingsService {
                 }
 
             }
-        }
+
         message.put("newNickname", newNickname);
     }
 

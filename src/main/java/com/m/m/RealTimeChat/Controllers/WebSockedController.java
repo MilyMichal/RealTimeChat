@@ -80,7 +80,7 @@ public class WebSockedController {
 
     private boolean isAuthorized(Principal sender, String msgType) {
         if (msgType.equalsIgnoreCase("kick") || msgType.equalsIgnoreCase("BAN") || msgType.equalsIgnoreCase("UNBAN")) {
-            return userStorageService.getUser(sender.getName()).getRoles().equals("Admin");
+            return userStorageService.getUser(sender.getName()).getRoles().equalsIgnoreCase("Admin");
         }
         return true;
     }
