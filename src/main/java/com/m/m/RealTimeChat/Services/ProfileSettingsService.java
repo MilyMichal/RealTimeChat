@@ -28,11 +28,12 @@ public class ProfileSettingsService {
     String imageFolder = "ProfilePic";
     String databasePath;
 
-
+private final OnlineUserService onlineUserService;
     private final UserStorageService userStorageService;
     private final PasswordEncoder passwordEncoder;
 
-    public ProfileSettingsService(UserStorageService userStorageService, PasswordEncoder passwordEncoder) {
+    public ProfileSettingsService(OnlineUserService onlineUserService, UserStorageService userStorageService, PasswordEncoder passwordEncoder) {
+        this.onlineUserService = onlineUserService;
         this.userStorageService = userStorageService;
         this.passwordEncoder = passwordEncoder;
     }
@@ -59,13 +60,13 @@ public class ProfileSettingsService {
 
         Map<String, String> message = new HashMap<>();
 
-        if (userStorageService.confirmActualPassword(auth, actualPass)) {
+        if (auth instanceof OAuth2AuthenticationToken || userStorageService.confirmActualPassword(auth, actualPass)) {
 
-            if (file.isEmpty() && nickname.isEmpty() && newPass.isEmpty()) {
+            if (file.isEmpty() && nickname.isEmpty() && (auth instanceof OAuth2AuthenticationToken || newPass.isEmpty())) {
                 message.put(msg, "There is nothing to update");
                 return new ResponseEntity<>(message, HttpStatus.ACCEPTED);
             } else {
-                if (isNicknameAvailable(nickname, auth, message) && isNewPasswordAvailable(newPass, reTypedPass, actualPass, message)
+                if (isNicknameAvailable(nickname, auth, message) && (auth instanceof OAuth2AuthenticationToken || isNewPasswordAvailable(newPass, reTypedPass, actualPass, message))
                 ) {
                     doProfileChanges(nickname, newPass, file, auth, message);
                 } else {
@@ -103,7 +104,7 @@ public class ProfileSettingsService {
             changeNickname(newNickname, renamed, finalMessage, auth);
         }
 
-        if (!newPassword.isEmpty()) {
+        if (!(auth instanceof OAuth2AuthenticationToken) && !newPassword.isEmpty() ) {
             changeUserPassword(newPassword, auth, finalMessage);
         }
 
@@ -111,7 +112,7 @@ public class ProfileSettingsService {
             changeUserProfilePicture(picture, renamed, newNickname, auth, finalMessage);
         }
 
-        userStorageService.updateUserInfo(auth.getName(), databasePath, newPassword, newNickname);
+        userStorageService.updateUserInfo(auth, databasePath, newPassword, newNickname);
 
         finalMessage.put(msg, "Profile was successfully updated!");
     }

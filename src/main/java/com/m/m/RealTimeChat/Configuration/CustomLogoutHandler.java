@@ -6,6 +6,7 @@ import com.m.m.RealTimeChat.Models.Message;
 import com.m.m.RealTimeChat.Services.MessageHistoryService;
 import com.m.m.RealTimeChat.Services.OnlineUserService;
 import com.m.m.RealTimeChat.Services.UserStorageService;
+import com.nimbusds.jose.util.JSONObjectUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +48,7 @@ public class CustomLogoutHandler implements LogoutHandler {
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         synchronized (lock) {
-
-            if (authentication != null) {
+              if (authentication != null) {
                 String user = userStorageService.getUser(authentication.getName()).getNickname();
                 Map<String, String> message = new HashMap<>();
                 message.put("type", "Leave");

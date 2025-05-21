@@ -4,6 +4,7 @@ const serverURL = document.getElementById("serverURL").getAttribute("data-URL");
 const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
+var auth = document.getElementById("auth");
 const activeUserName = document.querySelector(".active-user-name");
 let activeUserImage = document.querySelector(".active");
 
@@ -23,7 +24,7 @@ let emojiPicker = document.getElementById('emoji-win');
 const { DateTime } = luxon;
 
 let privateChatWith;
-var loggedOutByButton = false;
+//var loggedOutByButton = false;
 let isScrolledToBottom = true;
 
 var actDate = () => DateTime.now().setZone('Europe/Prague');
@@ -621,7 +622,7 @@ function setUpOnlineUserBtn(btn) {
 function logOutUser() {
 
 
-    loggedOutByButton = true;
+    //loggedOutByButton = true;
     try {
         fetch(`${serverURL}logout`, {
             method: 'POST',
@@ -674,7 +675,9 @@ window.onclick = function (event) {
 
     /* close only profile delete window when click outside  */
     if (event.target.matches('.modal.delete-mod')) {
-        document.getElementById("pass-confirm-input").value = "";
+        if (document.getElementById("pass-confirm-input")) {
+            document.getElementById("pass-confirm-input").value = "";
+        }
         document.querySelector('.delete-response').innerHTML = "";
         deleteProfileModal.style.display = "none";
     }
@@ -790,16 +793,13 @@ if (nickname !== "Admin") {
                     alert("Your profile was successfully deleted!");
                     window.location.href = serverURL;
                 } else {
-                    return response.text();
+                    response.text()
+                        .then(responseBody => {
+                            deleteResponse.innerHTML = responseBody;
+                            deleteResponse.style.color = "#7E102C";
+                        });
                 }
-            })
-            .then(responseBody => {
-
-                deleteResponse.innerHTML = responseBody;
-                deleteResponse.style.color = "#7E102C";
-
             });
-
     });
 }
 
@@ -829,7 +829,6 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
         .then(result => {
             var status = result.status;
             var message = result.data;
-           
             let updateMsg;
             if (status === 200) {
                 if (Object.keys(message).length == 2 && message.hasOwnProperty("pass")) {
@@ -881,9 +880,11 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                 clearUpdateForm();
             } else {
                 response.style.color = "#7E102C";
+                if (!auth) {
                 document.getElementById("act-pass-input").value = "";
                 document.getElementById("new-pass-input").value = "";
-                document.getElementById("re-type-new-pass-input").value = "";
+                    document.getElementById("re-type-new-pass-input").value = "";
+                }
             }
             response.textContent = `${message["message"]}`;
 
@@ -896,9 +897,11 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
 //#endregion
 
 function clearUpdateForm() {
+    if (!auth) {
     document.getElementById("act-pass-input").value = "";
     document.getElementById("new-pass-input").value = "";
     document.getElementById("re-type-new-pass-input").value = "";
+    }
     document.getElementById("name-input").value = "";
     document.getElementById("fileData").value = null;
     document.getElementById("drop").innerHTML = "Drag your profile picture HERE <br> Max size of picture: 2MB";

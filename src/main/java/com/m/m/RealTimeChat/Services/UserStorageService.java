@@ -18,11 +18,12 @@ public class UserStorageService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+private final OnlineUserService onlineUserService;
 
-
-    public UserStorageService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserStorageService(UserRepository userRepository, PasswordEncoder passwordEncoder, OnlineUserService onlineUserService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.onlineUserService = onlineUserService;
     }
 
     @Transactional
@@ -53,6 +54,7 @@ public class UserStorageService {
 
     public boolean removeUserFromStorage(Authentication auth) {
         User userToDelete = userRepository.findUserByUserName(auth.getName()).orElseThrow(() -> new UsernameNotFoundException("User doesn't exist"));
+        onlineUserService.removeOnlineUser(userRepository.findUserByUserName(auth.getName()).get().getNickname());
         userRepository.delete(userToDelete);
         return userRepository.findUserByUserName(auth.getName()).isEmpty();
     }
@@ -91,12 +93,12 @@ public class UserStorageService {
     }
 
 
-    public void updateUserInfo(String name, String profilePicPath, String newPassword, String newNickname) {
-        User user = getUser(name);
+    public void updateUserInfo(Authentication auth,String profilePicPath, String newPassword, String newNickname) {
+        User user = getUser(auth.getName());
         if (!profilePicPath.isEmpty()) {
             user.setProfilePic(profilePicPath);
         }
-        if (!newPassword.isEmpty()) {
+        if (!(auth instanceof OAuth2AuthenticationToken) && !newPassword.isEmpty()) {
             user.setPassword(passwordEncoder.encode(newPassword));
         }
         if (!newNickname.isEmpty()) {

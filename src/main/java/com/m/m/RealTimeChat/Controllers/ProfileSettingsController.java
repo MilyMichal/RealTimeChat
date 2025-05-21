@@ -43,7 +43,7 @@ public class    ProfileSettingsController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteUserProfile(Authentication auth, @RequestParam String actualPass) {
+    public ResponseEntity<String> deleteUserProfile(Authentication auth, @RequestParam (required = false) String actualPass) {
         return profileSettingsService.deleteUserProfile(auth, actualPass);
     }
 }
