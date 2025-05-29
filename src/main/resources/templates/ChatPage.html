@@ -37,29 +37,37 @@
             <div class="modal-header head-font rnd-brd-15t"> Profile settings
             </div>
             <div class="update-window rnd-brd-15b">
-                <label for="name-input">Select new nickname</label>
-                <input id="name-input" class="rnd-brd-10" type="text" maxlength="20" name="nickname" placeholder="new nickname" >
-                <span th:if="${!Oauth}">
-                <label for="new-pass-input">Select new password</label>
-                <input id="new-pass-input" class="rnd-brd-10" type="password" name="newPass" minlength="8"
-                       title="Must be min 8 characters long" placeholder="new password">
-
-                <label for="re-type-new-pass-input">Re-type new password</label>
-                <input id="re-type-new-pass-input" class="rnd-brd-10" type="password" name="reTypedPass"
-                       placeholder="repeat new password">
-                </span>
-                <label for="drop">Upload new image</label>
-                <div class="drag-and-drop">
-                    <div id="drop" class="drop-area">
-                        Drag your profile picture HERE <br> Max size of picture: 2MB
+                <div class="form-group">
+                    <label for="name-input">Select new nickname</label>
+                    <input id="name-input" class="rnd-brd-10" type="text" maxlength="20" name="nickname"
+                           placeholder="new nickname">
+                </div>
+                <div class="form-group" th:if="${!Oauth}">
+                    <label for="new-pass-input">Select new password</label>
+                    <input id="new-pass-input" class="rnd-brd-10" type="password" name="newPass" minlength="8"
+                           title="Must be min 8 characters long" placeholder="new password">
+                </div>
+                <div class="form-group" th:if="${!Oauth}">
+                    <label for="re-type-new-pass-input">Re-type new password</label>
+                    <input id="re-type-new-pass-input" class="rnd-brd-10" type="password" name="reTypedPass"
+                           placeholder="repeat new password">
+                </div>
+                <div class="form-group">
+                    <label for="drop">Upload new image</label>
+                    <div class="drag-and-drop">
+                        <div id="drop" class="drop-area">
+                            Drag your profile picture HERE <br> Max size of picture: 2MB
+                        </div>
                     </div>
                 </div>
 
-                <span th:if="${!Oauth}">
-                <label for="act-pass-input">Confirm actual password<br></label>
-                <input id="act-pass-input" class="rnd-brd-10" type="password" name="actualPass"
-                       placeholder="Actual password" >
-                </span>
+
+                <div class="form-group" th:if="${!Oauth}">
+                    <label for="act-pass-input">Confirm actual password<br></label>
+                    <input id="act-pass-input" class="rnd-brd-10" type="password" name="actualPass"
+                           placeholder="Actual password">
+                </div>
+
                 <input id="fileData" type="file" name="file" style="visibility:hidden; position:absolute">
                 <button class="button-basic rnd-brd-10" type="submit">Update profile</button>
                 <div class="response" style="font-size: 12px"></div>
@@ -108,9 +116,9 @@
                 <div style="padding:5px; text-align: center; margin: 10Opx 30px; color:red;">
                     This action cannot be undone!
                 </div>
-            <span th:if="${!Oauth}">
+                <span th:if="${!Oauth}">
                 <input id="pass-confirm-input" class="rnd-brd-10" type="password" name="actualPass"
-                       placeholder="Actual password" >
+                       placeholder="Actual password">
                 </span>
                 <div class="delete-response" style="font-size: 12px"></div>
                 <button class="button-basic rnd-brd-10" type="submit">Delete profile</button>
