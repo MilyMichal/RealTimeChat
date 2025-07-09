@@ -1,4 +1,3 @@
-
 const serverURL = document.getElementById("serverURL").getAttribute("data-URL");
 
 const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
@@ -21,10 +20,10 @@ let deleteProfileModal = document.querySelector('.modal.delete-mod');
 
 let emojiPicker = document.getElementById('emoji-win');
 
-const { DateTime } = luxon;
+const {DateTime} = luxon;
 
 let privateChatWith;
-//var loggedOutByButton = false;
+
 let isScrolledToBottom = true;
 
 var actDate = () => DateTime.now().setZone('Europe/Prague');
@@ -36,13 +35,10 @@ let sock = new SockJS(`${serverURL}chat`, null, {
 });
 
 
-
 register();
 
 var nicknameElement = document.getElementById("user-data");
 var nickname = nicknameElement.getAttribute("data-user");
-
-
 
 
 //event listener for UNDO step from chat page
@@ -59,7 +55,7 @@ window.addEventListener('popstate', function (event) {
 
 if (!sessionStorage.getItem('chatVisited')) {
     sessionStorage.setItem('chatVisited', 'true');
-    history.pushState({ chat: true }, '', '');
+    history.pushState({chat: true}, '', '');
 }
 
 
@@ -177,11 +173,9 @@ function onMessageReceived(payload) {
         }
 
 
-
         if (message.type === "update-nick") {
 
             if (nickname === message.sender) {
-
 
 
                 nickname = message.content;
@@ -332,6 +326,7 @@ function onConnectedSuccessfully() {
             }
         });
 }
+
 //"Public chat" switch button
 function switchToPublic() {
 
@@ -352,6 +347,7 @@ function switchToPublic() {
         publicBtn.style.setProperty("color", "darkgrey");
     }
 }
+
 // getting message history form server
 function getLatestHistory() {
     if (chatWithElement.innerHTML === "Public chat") {
@@ -383,18 +379,16 @@ function getLatestHistory() {
                 }
 
             }).then(data => {
-                data.forEach((msg) => {
-                    prepareMessage(messageContainer, msg);
-                });
-            })
+            data.forEach((msg) => {
+                prepareMessage(messageContainer, msg);
+            });
+        })
             .catch(error => {
                 console.log(`Nastala chyba: ${error}`);
 
             });
     }
 }
-
-
 
 
 function getFullPublicHistory() {
@@ -438,7 +432,6 @@ function prepareMessage(container, messageData) {
 
     //#region messageVariables
     const rawText = document.createTextNode(messageData.content);
-
     const rawNick = document.createTextNode(messageData.sender);
     const newMessageContainer = document.createElement("div");
     newMessageContainer.className = "message-container";
@@ -460,7 +453,7 @@ function prepareMessage(container, messageData) {
 
     var rawDate = messageData.date.replace(" ", "T");
 
-    var formatedDate = DateTime.fromISO(rawDate, { setZone: true });
+    var formatedDate = DateTime.fromISO(rawDate, {setZone: true});
 
     var cleanDate = formatedDate.toFormat('d.M.yyyy H:mm:ss');
 
@@ -621,7 +614,6 @@ function setUpOnlineUserBtn(btn) {
 
 function logOutUser() {
 
-
     //loggedOutByButton = true;
     try {
         fetch(`${serverURL}logout`, {
@@ -660,6 +652,7 @@ function show() {
     }
 
 }
+
 /* Modals open/close settings*/
 //#region ModalsDisplay
 
@@ -698,7 +691,6 @@ window.onclick = function (event) {
     }
 
 
-
     /* close any other current open modal */
     if (event.target.matches('.modal') && !event.target.matches('.modal.delete-mod')) {
         var modals = document.getElementsByClassName("modal");
@@ -720,6 +712,7 @@ function openSelectedModal(modal) {
     document.querySelector(`.${modal}`).style.display = "block";
 
 }
+
 //#endregion
 
 /*drag and drop area setup*/
@@ -732,7 +725,6 @@ dragAndDrop.addEventListener("dragleave", setPreventDefaults, false);
 dragAndDrop.addEventListener("dragover", setPreventDefaults, false);
 dragAndDrop.addEventListener("drop", setPreventDefaults, false);
 dragAndDrop.addEventListener("drop", handleDrop, false);
-
 
 
 function setPreventDefaults(ev) {
@@ -769,6 +761,7 @@ function handleFiles(files) {
         reader.readAsDataURL(file);
     }
 }
+
 //#endregion
 
 //#region DeleteProfileUpdate
@@ -821,7 +814,7 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
         .then(response => {
             var status = response.status;
             return response.json().then(data => {
-                return { status: status, data: data };
+                return {status: status, data: data};
             });
 
 
@@ -836,12 +829,12 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                 } else {
                     if (message.hasOwnProperty("newNickname")) {
                         updateMsg =
-                        {
-                            "content": message["newNickname"],
-                            "oldNick": nickname,
-                            "type": 'update-nick',
-                            "recipient": 'public'
-                        }
+                            {
+                                "content": message["newNickname"],
+                                "oldNick": nickname,
+                                "type": 'update-nick',
+                                "recipient": 'public'
+                            }
 
                         fetch(`${serverURL}history/update`, {
                             method: 'PUT',
@@ -864,11 +857,11 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
                     } else if (message.hasOwnProperty("profPic")) {
 
                         updateMsg =
-                        {
-                            "content": nickname,
-                            "type": 'update-profilePic',
-                            "recipient": 'public'
-                        }
+                            {
+                                "content": nickname,
+                                "type": 'update-profilePic',
+                                "recipient": 'public'
+                            }
                         stompClient.send("/app/chat/public", {}, JSON.stringify(updateMsg));
                     }
 
@@ -881,8 +874,8 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
             } else {
                 response.style.color = "#7E102C";
                 if (!auth) {
-                document.getElementById("act-pass-input").value = "";
-                document.getElementById("new-pass-input").value = "";
+                    document.getElementById("act-pass-input").value = "";
+                    document.getElementById("new-pass-input").value = "";
                     document.getElementById("re-type-new-pass-input").value = "";
                 }
             }
@@ -891,16 +884,15 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
         });
 
 
-
-
 });
+
 //#endregion
 
 function clearUpdateForm() {
     if (!auth) {
-    document.getElementById("act-pass-input").value = "";
-    document.getElementById("new-pass-input").value = "";
-    document.getElementById("re-type-new-pass-input").value = "";
+        document.getElementById("act-pass-input").value = "";
+        document.getElementById("new-pass-input").value = "";
+        document.getElementById("re-type-new-pass-input").value = "";
     }
     document.getElementById("name-input").value = "";
     document.getElementById("fileData").value = null;
@@ -951,13 +943,13 @@ function updateActiveUserInfo(nameElement, imgElement) {
         })
         .then(imageUrl => {
             if (imageUrl.includes("https")) {
-              imgElement.src = `${imageUrl}`;
+                imgElement.src = `${imageUrl}`;
             } else {
                 imgElement.src = `${serverURL}${imageUrl}`;
             }
         }).catch(error => {
-            console.error(`Error fetching image: `, error);
-        });
+        console.error(`Error fetching image: `, error);
+    });
 
     if (nameElement.innerHTML !== "") {
         nameElement.innerHTML = "";
