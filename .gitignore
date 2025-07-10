@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ###dev properities###
-**/resources/main/application-dev.properties
+**/application-dev.properties
