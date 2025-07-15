@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/register")
 public class RegistrationController {
 
-    private static final String TEMPLATE = "Register";
+    private static final String TEMPLATE = "register";
 
     private final UserStorageService userStorageService;
 

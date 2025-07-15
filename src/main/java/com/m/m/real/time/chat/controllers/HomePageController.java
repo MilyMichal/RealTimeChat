@@ -12,7 +12,7 @@ public class HomePageController {
     @GetMapping
     public String home() {
 
-        return "HomePage";
+        return "homePage";
     }
 
 }

@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Service
 public class ProfileSettingsService {
     static final String MSG = "message";
-    String imageFolder = "ProfilePic";
+    String imageFolder = "profilePic";
     String databasePath;
 
     private final UserStorageService userStorageService;

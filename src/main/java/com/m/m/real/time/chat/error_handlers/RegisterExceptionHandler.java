@@ -12,7 +12,7 @@ public class RegisterExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ModelAndView handleNotAllowedNicknameRegistration(MethodArgumentNotValidException ex) {
-        ModelAndView modelAndView = new ModelAndView("Register");
+        ModelAndView modelAndView = new ModelAndView("register");
         modelAndView.addObject("message", Objects.requireNonNull(Objects.requireNonNull(ex.getFieldError()).getDefaultMessage()));
         return modelAndView;
     }

@@ -36,9 +36,9 @@ public class ChatController {
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equalsIgnoreCase("role_admin"))) {
             model.addAttribute("users", onlineUserService.getAllOnlineUsers());
             model.addAttribute("bannedUsers", userStorageService.getBannedNicknames());
-            return "chat-admin";
+            return "chatAdmin";
         }
-        return "ChatPage";
+        return "chatPage";
     }
 
  }

@@ -30,7 +30,7 @@ public class ResetPassController {
     @GetMapping
     public String showPasswordResetForm(Model model) {
         model.addAttribute("serverURL", serverURL);
-        return "PassResetPage";
+        return "passResetPage";
     }
 
 
@@ -44,9 +44,9 @@ public class ResetPassController {
         if (passwordResetService.isOneTimeTokenValid(token)) {
             model.addAttribute("token", token);
             model.addAttribute("serverURL", serverURL);
-            return "OneTimeResetFormPage";
+            return "oneTimeResetFormPage";
         }
-        return "ExpiredTokenPage";
+        return "expiredTokenPage";
     }
 
     @PutMapping("/{token}")

@@ -13,7 +13,7 @@ public class DatabaseExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ModelAndView handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
         String errorMessage = extractErrorMessage(exception);
-        ModelAndView modelAndView = new ModelAndView("Register");
+        ModelAndView modelAndView = new ModelAndView("register");
         modelAndView.addObject("message", errorMessage);
         return modelAndView;
     }
