@@ -3,7 +3,7 @@ const serverURL = document.getElementById("serverURL").getAttribute("data-URL");
 const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
 const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-var auth = document.getElementById("auth");
+var isOauth = document.getElementById("auth").getAttribute("data-auth");
 const activeUserName = document.querySelector(".active-user-name");
 let activeUserImage = document.querySelector(".active");
 
@@ -882,18 +882,19 @@ document.getElementById("profile-update-form").addEventListener("submit", functi
             response.textContent = `${message["message"]}`;
 
         });
-
-
 });
 
 //#endregion
 
 function clearUpdateForm() {
-    if (!auth) {
+    if (isOauth === "false") {
         document.getElementById("act-pass-input").value = "";
-        document.getElementById("new-pass-input").value = "";
-        document.getElementById("re-type-new-pass-input").value = "";
+        if (document.getElementById("new-pass-input") && document.getElementById("re-type-new-pass-input")) {
+            document.getElementById("new-pass-input").value = "";
+            document.getElementById("re-type-new-pass-input").value = "";
+        }
     }
+
     document.getElementById("name-input").value = "";
     document.getElementById("fileData").value = null;
     document.getElementById("drop").innerHTML = "Drag your profile picture HERE <br> Max size of picture: 2MB";

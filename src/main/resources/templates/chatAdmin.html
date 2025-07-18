@@ -36,7 +36,7 @@
             <div class="update-window rnd-brd-15b">
 
                 <label for="name-input">Select new nickname</label>
-                <input id="name-input" class="rnd-brd-10" type="text" name="userName"
+                <input id="name-input" class="rnd-brd-10" type="text" name="nickname"
                        placeholder="not allowed for admin"
                        readonly>
 
@@ -44,6 +44,7 @@
                 <input id="new-pass-input" class="rnd-brd-10" type="password" name="newPass"
                        placeholder="not allowed for admin"
                        readonly>
+
                 <label for="drop">Upload new image</label>
                 <div class="drag-and-drop">
                     <div id="drop" class="drop-area">
@@ -195,6 +196,8 @@
 
 <div id="user-data" th:data-user="${user}"></div>
 <div id="serverURL" th:data-URL="${serverURL}"></div>
+
+<div id="auth" th:data-auth="${Oauth}"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"
         integrity="sha512-aHuAnb+FZ/yM5zYvdiA8q0sxLdsBQ3PRwO8D/08qsenCLQ2gWsosB43Cn1X8esAz0IpaC7Ns5cAPyKIdJQ0hNw=="

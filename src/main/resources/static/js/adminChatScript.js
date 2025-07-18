@@ -87,7 +87,9 @@ function onMessageReceived(payload) {
 
                 setProfilePicture(onUserbtn, message.sender);
 
-            }
+            } else {
+                              updateActiveUserInfo(activeUserName, activeUserImage);
+                          }
             prepareMessage(messageContainer, message);
 
         }
