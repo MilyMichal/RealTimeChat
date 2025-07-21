@@ -1,4 +1,4 @@
-package com.m.m.RealTimeChat.Configuration;
+package com.m.m.real.time.chat.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;

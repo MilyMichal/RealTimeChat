@@ -30,7 +30,7 @@ private final OnlineUserService onlineUserService;
     public void saveUserToStorage(User user) {
         if (user != null) {
             if(user.getProfilePic() == null) {
-                user.setProfilePic("ProfilePic/defaultPic.jpg");
+                user.setProfilePic("profilePic/defaultPic.jpg");
             }
             user.setPassword(passwordEncoder.encode(user.getPassword()));
 
