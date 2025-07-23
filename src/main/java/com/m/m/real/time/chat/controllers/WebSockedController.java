@@ -1,5 +1,6 @@
 package com.m.m.real.time.chat.controllers;
 
+import com.m.m.real.time.chat.configuration.RateLimitConfiguration;
 import com.m.m.real.time.chat.models.Message;
 
 
@@ -8,6 +9,7 @@ import com.m.m.real.time.chat.services.MessageHistoryService;
 import com.m.m.real.time.chat.services.MessageService;
 import com.m.m.real.time.chat.services.OnlineUserService;
 import com.m.m.real.time.chat.services.UserStorageService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -31,25 +33,33 @@ public class WebSockedController {
     private final UserStorageService userStorageService;
 
     private final MessageService messageService;
+    private final RateLimitConfiguration rateLimitConfiguration;
 
-    public WebSockedController(MessageHistoryService messageHistoryService, OnlineUserService onlineUserService, SimpMessagingTemplate simpMessagingTemplate, UserStorageService userStorageService, MessageService messageService) {
+    public WebSockedController(MessageHistoryService messageHistoryService, OnlineUserService onlineUserService, SimpMessagingTemplate simpMessagingTemplate, UserStorageService userStorageService, MessageService messageService, RateLimitConfiguration rateLimitConfiguration) {
 
         this.messageHistoryService = messageHistoryService;
         this.onlineUserService = onlineUserService;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.userStorageService = userStorageService;
         this.messageService = messageService;
+        this.rateLimitConfiguration = rateLimitConfiguration;
     }
 
     @MessageMapping("/chat/public")
     @SendTo("/queue/public")
     public Message sendMsg(@Payload MessageDTO msg, Principal principal) {
-        Message message = messageService.generateMessage(msg, userStorageService.getUser(principal.getName()).getNickname());
-        if (isAuthorized(principal, msg.getType())) {
-            messageHistoryService.saveMessage(message);
-            return message;
+        if (!rateLimitConfiguration.isRateLimitExceeded(principal)) {
+            System.out.println("DEBUG: WEBSOCKETCONTROLLER - sendMsg triggered");
+            Message message = messageService.generateMessage(msg, userStorageService.getUser(principal.getName()).getNickname());
+            if (isAuthorized(principal, msg.getType())) {
+                messageHistoryService.saveMessage(message);
+                return message;
+            } else {
+                return null;
+            }
         } else {
             return null;
+
         }
     }
 
