@@ -306,6 +306,9 @@ function onConnectedSuccessfully() {
 
     stompClient.subscribe("/queue/public", onMessageReceived);
     stompClient.subscribe(`/user/queue/private`, onMessageReceived);
+    stompClient.subscribe(`/user/queue/errors`, msg => {
+        alert(msg.body);
+    });
 
     fetch(`${serverURL}users`)
         .then(response => response.json())

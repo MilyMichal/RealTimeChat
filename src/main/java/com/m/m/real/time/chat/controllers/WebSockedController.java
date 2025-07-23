@@ -1,6 +1,7 @@
 package com.m.m.real.time.chat.controllers;
 
 import com.m.m.real.time.chat.configuration.RateLimitConfiguration;
+import com.m.m.real.time.chat.errors.RateLimitExceededException;
 import com.m.m.real.time.chat.models.Message;
 
 
@@ -9,7 +10,6 @@ import com.m.m.real.time.chat.services.MessageHistoryService;
 import com.m.m.real.time.chat.services.MessageService;
 import com.m.m.real.time.chat.services.OnlineUserService;
 import com.m.m.real.time.chat.services.UserStorageService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -49,7 +49,6 @@ public class WebSockedController {
     @SendTo("/queue/public")
     public Message sendMsg(@Payload MessageDTO msg, Principal principal) {
         if (!rateLimitConfiguration.isRateLimitExceeded(principal)) {
-            System.out.println("DEBUG: WEBSOCKETCONTROLLER - sendMsg triggered");
             Message message = messageService.generateMessage(msg, userStorageService.getUser(principal.getName()).getNickname());
             if (isAuthorized(principal, msg.getType())) {
                 messageHistoryService.saveMessage(message);
@@ -58,19 +57,24 @@ public class WebSockedController {
                 return null;
             }
         } else {
-            return null;
+            throw new RateLimitExceededException("Too many messages in short time! \n Try again after few seconds.");
 
         }
     }
 
     @MessageMapping("/chat/private")
     public void sendPrivateMessage(@Payload MessageDTO incomingMsg, Principal principal) {
+        if (!rateLimitConfiguration.isRateLimitExceeded(principal)) {
        Message message = messageService.generateMessage(incomingMsg, userStorageService.getUser(principal.getName()).getNickname());
         if (isAuthorized(principal, incomingMsg.getType())) {
             messageHistoryService.saveMessage(message);
             String recipient = userStorageService.getUserByNickname(incomingMsg.getRecipient()).getUserName();
             simpMessagingTemplate.convertAndSendToUser(recipient, "/queue/private", message);
             simpMessagingTemplate.convertAndSendToUser(principal.getName(), "/queue/private", message);
+
+        }
+        } else {
+            throw new RateLimitExceededException("Too many messages in short time! \n Try again after few seconds.");
         }
     }
 
