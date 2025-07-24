@@ -46,11 +46,12 @@ public class CustomOauth2SuccessHandler implements AuthenticationSuccessHandler 
             //If a user is not registered, new acc is created
             if (existingUser.isEmpty()) {
                 Map<String, Object> attributes = token.getPrincipal().getAttributes();
+                String givenName = attributes.get("given_name").toString().replace(" ", "_");
 
                 User newOauth2User = new User();
                 newOauth2User.setProfilePic(attributes.get("picture").toString());
                 newOauth2User.setRoles("user");
-                newOauth2User.setNickname(attributes.get("given_name").toString().replace(" ", "_"));
+                newOauth2User.setNickname(userStorageService.isNicknameDuplicit(givenName) ? givenName + "1" : givenName);
                 newOauth2User.setUserName(token.getPrincipal().getName());
                 newOauth2User.setEmail(attributes.get("email").toString());
                 newOauth2User.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
