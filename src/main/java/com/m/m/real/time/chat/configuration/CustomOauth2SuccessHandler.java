@@ -43,7 +43,7 @@ public class CustomOauth2SuccessHandler implements AuthenticationSuccessHandler 
             // check if logged user is already registered in DB
             Optional<User> existingUser = userStorageService.findUser(token.getPrincipal().getAttribute("email"));
 
-            //If user is not registered, new acc is created
+            //If a user is not registered, new acc is created
             if (existingUser.isEmpty()) {
                 Map<String, Object> attributes = token.getPrincipal().getAttributes();
 
@@ -58,7 +58,7 @@ public class CustomOauth2SuccessHandler implements AuthenticationSuccessHandler 
                 userStorageService.saveUserToStorage(newOauth2User);
 
             }
-            //check if already registered user is banned
+            //check if an already registered user is banned
             if (existingUser.isPresent() && !existingUser.get().isNonBanned()) {
                 throw new LockedException(String.format(
                         "Your account is BANNED! <br> BAN will expire on: %s", existingUser.get()

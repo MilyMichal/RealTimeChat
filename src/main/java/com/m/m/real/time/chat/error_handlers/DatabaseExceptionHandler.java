@@ -24,6 +24,8 @@ public class DatabaseExceptionHandler {
             return "Email is already registered";
         } else if (errorMessage.contains("Key (user_name)")) {
             return "username already exists";
+        } else if (errorMessage.contains("Key (nickname)")) {
+            return "nickname already taken";
         } else {
             return "ERROR: " + errorMessage;
         }

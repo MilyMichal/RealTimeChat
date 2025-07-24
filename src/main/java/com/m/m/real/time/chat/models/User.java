@@ -37,7 +37,7 @@ public class User implements Serializable {
     @NotBlank(message = "Nickname cannot be empty!")
     @Length(min = 2, max = 20, message = "Nickname must be at least 2 and max 20 characters long")
     @Pattern(regexp = "^[\\p{L}_0-9]{2,}$", message = "Nickname contains not allowed characters (\\, /, :, *, ?, \", <, >, |)")
-    @Column(length = 20, nullable = false)
+    @Column(length = 20, unique = true, nullable = false)
     String nickname;
 
     @NotBlank(message = "Email cannot be empty!")
