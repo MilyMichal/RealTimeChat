@@ -124,6 +124,10 @@ private final OnlineUserService onlineUserService;
     public Optional<User> findUser(String email) {
         return userRepository.findUserByMail(email);
     }
+
+    public boolean isNicknameDuplicit(String nick) {
+        return userRepository.findUserByNickname(nick).isPresent();
+    }
 }
 
 
