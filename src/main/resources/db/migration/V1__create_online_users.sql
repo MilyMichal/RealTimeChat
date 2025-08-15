@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS online_users (
+    id BIGSERIAL PRIMARY KEY,
+    nickname VARCHAR(255)
+);

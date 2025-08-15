@@ -1,0 +1,18 @@
+INSERT INTO users ( id,
+                    user_name,
+                    password,
+                    nickname,
+                    email,
+                    roles,
+                    pictureURL,
+                    is_non_banned,
+                    ban_expiration)
+ VALUES(    1,
+            'Admin',
+            '$2a$10$toADtYnTZksrJrdj41sIoeW2ZjdXnBvjYg4AxfMId17Q7GEEm1i0O',
+            'Admin',
+            'azrael.taleri@gmail.com',
+            'ADMIN',
+            'profilePic/defaultPic.jpg',
+            TRUE,
+            NULL);
