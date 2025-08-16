@@ -71,7 +71,7 @@ public class CustomOauth2SuccessHandler implements AuthenticationSuccessHandler 
         if (savedRequest != null) {
             requestCache.removeRequest(request, response);
         }
-        //redirection to chet page when authentication is valid
+        //redirection to chat page when authentication is valid
         redirectStrategy.sendRedirect(request, response, "/chat");
     }
 }
